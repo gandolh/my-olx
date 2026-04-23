@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="ro"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editorial Marketplace | Descoperă Comori Locale</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#8cf3f3",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-tertiary-container": "#9aec93",
+                        "secondary-fixed-dim": "#6fd7d6",
+                        "surface-dim": "#d9d9e4",
+                        "primary-fixed": "#dae2ff",
+                        "primary": "#0040a1",
+                        "surface-container-high": "#e7e7f2",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#002204",
+                        "tertiary": "#005312",
+                        "background": "#faf8ff",
+                        "on-primary-fixed-variant": "#0040a1",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#424654",
+                        "inverse-surface": "#2e3038",
+                        "on-tertiary-fixed-variant": "#005312",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-fixed": "#8cf3f3",
+                        "error-container": "#ffdad6",
+                        "secondary": "#006a6a",
+                        "tertiary-container": "#1c6d24",
+                        "primary-container": "#0056d2",
+                        "outline-variant": "#c3c6d6",
+                        "on-background": "#191b23",
+                        "surface-tint": "#0056d2",
+                        "on-primary-fixed": "#001847",
+                        "tertiary-fixed-dim": "#88d982",
+                        "on-secondary-container": "#007070",
+                        "surface-container-highest": "#e1e2ec",
+                        "inverse-primary": "#b2c5ff",
+                        "on-surface": "#191b23",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e1e2ec",
+                        "surface-container": "#ededf8",
+                        "outline": "#737785",
+                        "on-primary-container": "#ccd8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f2f3fe",
+                        "tertiary-fixed": "#a3f69c",
+                        "surface": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black text-blue-800 tracking-tight">Editorial Marketplace</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-slate-600 font-medium hover:text-blue-600 transition-colors" href="#">Categorii</a>
+<a class="text-slate-600 font-medium hover:text-blue-600 transition-colors" href="#">Favorite</a>
+<a class="text-slate-600 font-medium hover:text-blue-600 transition-colors" href="#">Mesaje</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 text-slate-600 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold hover:scale-105 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20">
+                    Adaugă Anunț
+                </button>
+</div>
+</div>
+</nav>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="px-8 py-16 md:py-24 bg-surface-container-low">
+<div class="max-w-screen-xl mx-auto text-center space-y-12">
+<div class="space-y-4">
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-on-surface">
+                        Caută în toată <span class="text-primary">România</span>
+</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl mx-auto">
+                        Descoperă mii de anunțuri verificate, de la electronice de ultimă generație până la locuințe de vis și servicii profesionale.
+                    </p>
+</div>
+<!-- Search Bar Container -->
+<div class="max-w-4xl mx-auto bg-surface-container-lowest p-2 rounded-full shadow-[0_20px_50px_rgba(0,64,161,0.08)] flex items-center gap-2">
+<div class="flex-1 flex items-center px-6 gap-3">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-lg py-3 placeholder:text-outline" placeholder="Ce cauți astăzi?" type="text"/>
+</div>
+<div class="hidden md:flex items-center px-4 border-l border-outline-variant/30 gap-2">
+<span class="material-symbols-outlined text-outline">location_on</span>
+<input class="bg-transparent border-none focus:ring-0 text-lg py-3 w-40 placeholder:text-outline" placeholder="Toată România" type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-10 py-4 rounded-full font-bold text-lg hover:bg-primary-container transition-colors">
+                        Caută
+                    </button>
+</div>
+</div>
+</section>
+<!-- Category Grid (Tiles) -->
+<section class="px-8 py-20 max-w-screen-2xl mx-auto">
+<div class="flex justify-between items-end mb-12">
+<h2 class="text-3xl font-bold tracking-tight">Categorii Populare</h2>
+<a class="text-primary font-bold hover:underline" href="#">Vezi toate categoriile</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- Electronics -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">devices</span>
+</div>
+<span class="font-bold">Electronice</span>
+</div>
+<!-- Vehicles -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">directions_car</span>
+</div>
+<span class="font-bold">Auto, moto și ambarcațiuni</span>
+</div>
+<!-- Real Estate -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">home</span>
+</div>
+<span class="font-bold">Imobiliare</span>
+</div>
+<!-- Home & Garden -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">chair</span>
+</div>
+<span class="font-bold">Casă și grădină</span>
+</div>
+<!-- Fashion -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">apparel</span>
+</div>
+<span class="font-bold">Modă și frumusețe</span>
+</div>
+<!-- Jobs -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">work</span>
+</div>
+<span class="font-bold">Locuri de muncă</span>
+</div>
+<!-- Services -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">build</span>
+</div>
+<span class="font-bold">Servicii, afaceri</span>
+</div>
+<!-- Hobbies & Sports -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">fitness_center</span>
+</div>
+<span class="font-bold">Sport și timp liber</span>
+</div>
+<!-- For Free -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all border border-transparent hover:border-primary/10 group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">volunteer_activism</span>
+</div>
+<span class="font-bold">Oferite gratuit</span>
+</div>
+<!-- More -->
+<div class="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 border-2 border-dashed border-outline-variant group cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-lowest rounded-full flex items-center justify-center text-outline group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">grid_view</span>
+</div>
+<span class="font-bold">Toate categoriile</span>
+</div>
+</div>
+</section>
+<!-- Featured Listings Grid -->
+<section class="px-8 py-20 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-3xl font-bold tracking-tight mb-2">Anunțuri Recomandate</h2>
+<p class="text-on-surface-variant">Cele mai noi oportunități selectate pentru tine</p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Laptop premium pe birou" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="close-up of a modern high-end laptop on a minimalist wooden desk with soft morning light and a coffee cup in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoyymS_o1nDHqi9TrN4U-OzKIK0dQ90fW-4iMBqqchpW604ncSWZ5q5zvc9EOP2d85BI3x7jjd4dtoQIwGTivNavZd4Kb6D5DFBlw5RZCvfr9125KpsVJ9CoElHmgeaQq8aQ15D7NP-SAaftWBy8XRzi9C6kIDLgeWxz0qAaJDIPJAB3rLnc_p99lJVo0AGtKZFt8LtBVzHNaCseheT2ydnMN2pUXO_LOnn7hO9bt3gUJkMCEm5KfxNOzr2jfJ36C76KTbwpfR_ak"/>
+<button class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex flex-col">
+<span class="text-2xl font-black text-primary">4.200 RON</span>
+<h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors">Laptop Gaming Performance Edition - Stare Impecabilă</h3>
+</div>
+<div class="flex items-center gap-2 text-sm text-outline font-medium tracking-wide">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>BUCUREȘTI • ACUM 2 MINUTE</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Masina moderna electrica" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="sleek modern electric car parked in an urban environment at dusk with dramatic street lighting reflections on the car body" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj77I_SEkBhKECEJgIo0WntsV5fYp3NDeRRO0gT9q_BdO23RHE0nc14mMPaD8R5rXWAoPgbNA65nkDry89FhWfhi4-SpkXuJbhplnt58HCUwKq_RBv7tjPrrpLJrjOhJy4x7kyLVy2BOpjHAy82FBN4W1ABfkZPsYmvkI8eHeHGlavs9D6FEK5cSPiFdo0lns-RnT3PXL9OpmWfa950N-DoSyZ8WXf09KI4btUcG3f5pobxFsaZsT_FRgHj1fEw0s4ig4ySUNR-JM"/>
+<button class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<span class="absolute bottom-4 left-4 bg-tertiary-container text-white text-xs font-bold px-3 py-1 rounded-full">VERIFICAT</span>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex flex-col">
+<span class="text-2xl font-black text-primary">89.500 RON</span>
+<h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors">SUV Electric Premium 2022 - Primul Proprietar</h3>
+</div>
+<div class="flex items-center gap-2 text-sm text-outline font-medium tracking-wide">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>CLUJ-NAPOCA • ACUM 15 MINUTE</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Interior apartament modern" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="bright spacious modern apartment living room with large windows, minimalist furniture, and plants in warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv1g0dEnKd9IxmqHv_CBWpZ4cVJpbtwOpmvaze_wM3ZaSm6uWBxPmWjiPteErRIFmCpctAcxoQfK0__0hVJArE71qTHmMPA_DISaxy5OInRBI0gW0rG8R9cFaOwRZee39DaUoE-_pvD0dgaCd-magIT5rP76ch6ZKWMPi99jqKfo89ACAYyE7hLLNo1lOnuondIp1OFXOyW90Hya85dYMdXlA2gEY6UHQju0A6lLU7nnijMQIjrhZrAUcPds1pzrLzXPVljnTETOc"/>
+<button class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex flex-col">
+<span class="text-2xl font-black text-primary">3.400 RON / lună</span>
+<h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors">Apartament 2 Camere - Design Scandinavian - Zona Centrală</h3>
+</div>
+<div class="flex items-center gap-2 text-sm text-outline font-medium tracking-wide">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>IAȘI • AZI 09:30</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Ceas inteligent" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="close-up of a high-end luxury smartwatch on a neutral gray background with professional studio lighting and clean reflections" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2SFEy3B6wT8_8otVJGyvEQjbaXBhJd0LxpRA9ZgUmhP369HaCIunBKkup8RgYUrur8yb7B8plh9SeJ_OH1KWr2CcTKV5-pLobC0I62QIw3NCox811QdNpSWFXZ6av5GIewExKPlbyIzWuo0Q3BZplk6JgPYfi9NK4nSmJrq0OSx1bXlOkQK8YrBaSMYVPrIVqHSsIpgmzBsQ3Z8oUdrZglDwu-9jLTmIoK3UoPj9bl5gwpqhIPaEdvtGRWiail9huePJpYN5O6lQ"/>
+<button class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-white transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex flex-col">
+<span class="text-2xl font-black text-primary">1.250 RON</span>
+<h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors">Ceas Smart Ultima Generație - Sigilat - Garanție</h3>
+</div>
+<div class="flex items-center gap-2 text-sm text-outline font-medium tracking-wide">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>TIMIȘOARA • IERI 18:45</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 text-center">
+<button class="bg-surface-container-lowest border border-outline-variant px-8 py-4 rounded-full font-bold hover:bg-surface-bright transition-colors shadow-sm">
+                        Încarcă mai multe anunțuri
+                    </button>
+</div>
+</div>
+</section>
+<!-- Newsletter / CTA -->
+<section class="px-8 py-24 max-w-screen-xl mx-auto">
+<div class="bg-primary-container rounded-[2rem] p-12 md:p-20 text-center space-y-8 overflow-hidden relative">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+<div class="relative z-10 space-y-4">
+<h2 class="text-4xl md:text-5xl font-black text-white">Vrei să vinzi ceva rapid?</h2>
+<p class="text-on-primary-container text-lg max-w-xl mx-auto">Alătură-te celei mai active comunități din România. Postează primul tău anunț în mai puțin de 2 minute!</p>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row gap-4 justify-center items-center">
+<button class="bg-white text-primary px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl">Postează un Anunț Acum</button>
+<button class="text-white border border-white/30 px-10 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-colors">Cum funcționează?</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-100 mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 gap-8 max-w-screen-2xl mx-auto">
+<div class="space-y-4 text-center md:text-left">
+<div class="font-['Manrope'] font-bold text-2xl text-slate-900">Editorial Marketplace</div>
+<p class="text-slate-500 font-['Inter'] text-sm tracking-wide">© 2024 Editorial Marketplace. Toate drepturile rezervate.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4">
+<a class="text-slate-500 font-medium hover:text-blue-700 transition-colors hover:underline decoration-blue-500/30" href="#">Termeni și Condiții</a>
+<a class="text-slate-500 font-medium hover:text-blue-700 transition-colors hover:underline decoration-blue-500/30" href="#">Politică de Confidențialitate</a>
+<a class="text-slate-500 font-medium hover:text-blue-700 transition-colors hover:underline decoration-blue-500/30" href="#">Ajutor</a>
+<a class="text-slate-500 font-medium hover:text-blue-700 transition-colors hover:underline decoration-blue-500/30" href="#">Contact</a>
+<a class="text-slate-500 font-medium hover:text-blue-700 transition-colors hover:underline decoration-blue-500/30" href="#">Harta Site-ului</a>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-600 hover:border-primary hover:text-primary transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-600 hover:border-primary hover:text-primary transition-all">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

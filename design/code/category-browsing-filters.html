@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html lang="ro"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editorial Marketplace - Explorează Anunțuri</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#8cf3f3",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "on-tertiary-container": "#9aec93",
+                    "secondary-fixed-dim": "#6fd7d6",
+                    "surface-dim": "#d9d9e4",
+                    "primary-fixed": "#dae2ff",
+                    "primary": "#0040a1",
+                    "surface-container-high": "#e7e7f2",
+                    "surface-bright": "#faf8ff",
+                    "on-tertiary-fixed": "#002204",
+                    "tertiary": "#005312",
+                    "background": "#faf8ff",
+                    "on-primary-fixed-variant": "#0040a1",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#424654",
+                    "inverse-surface": "#2e3038",
+                    "on-tertiary-fixed-variant": "#005312",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#002020",
+                    "secondary-fixed": "#8cf3f3",
+                    "error-container": "#ffdad6",
+                    "secondary": "#006a6a",
+                    "tertiary-container": "#1c6d24",
+                    "primary-container": "#0056d2",
+                    "outline-variant": "#c3c6d6",
+                    "on-background": "#191b23",
+                    "surface-tint": "#0056d2",
+                    "on-primary-fixed": "#001847",
+                    "tertiary-fixed-dim": "#88d982",
+                    "on-secondary-container": "#007070",
+                    "surface-container-highest": "#e1e2ec",
+                    "inverse-primary": "#b2c5ff",
+                    "on-surface": "#191b23",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e1e2ec",
+                    "surface-container": "#ededf8",
+                    "outline": "#737785",
+                    "on-primary-container": "#ccd8ff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f3fe",
+                    "tertiary-fixed": "#a3f69c",
+                    "surface": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; color: #191b23; }
+        h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black text-blue-800 dark:text-blue-300 font-['Manrope'] tracking-tight">Editorial Marketplace</span>
+<div class="hidden lg:flex items-center bg-surface-container-high rounded-full px-4 py-2 w-96 group focus-within:bg-surface-container-lowest focus-within:ring-1 focus-within:ring-primary/30 transition-all">
+<span class="material-symbols-outlined text-outline mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-sm font-body" placeholder="Caută în editorial..." type="text"/>
+</div>
+</div>
+<nav class="flex items-center gap-8">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-blue-700 dark:text-blue-400 font-bold border-b-2 border-blue-700 font-['Manrope'] tracking-tight transition-colors" href="#">Categorii</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium font-['Manrope'] tracking-tight hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Favorite</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium font-['Manrope'] tracking-tight hover:text-blue-600 dark:hover:text-blue-300 transition-colors" href="#">Mesaje</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container rounded-full transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container rounded-full transition-colors" data-icon="person">person</button>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm tracking-wide active:scale-95 duration-150 ease-in-out shadow-lg shadow-primary/20">Adaugă Anunț</button>
+</div>
+</nav>
+</div>
+</header>
+<main class="mt-24 flex-grow max-w-screen-2xl mx-auto w-full px-8 pb-16 flex gap-8">
+<!-- Sidebar Filters -->
+<aside class="w-72 flex-shrink-0 hidden md:block">
+<div class="sticky top-28 space-y-10">
+<div class="space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-outline">Locație</h3>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary/20">
+<option>Toată România</option>
+<option>București</option>
+<option>Cluj-Napoca</option>
+<option>Timișoara</option>
+<option>Iași</option>
+<option>Brașov</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-bold uppercase tracking-widest text-outline">Preț (RON)</h3>
+</div>
+<div class="space-y-4">
+<div class="flex gap-2">
+<input class="w-full bg-surface-container-low border-none rounded-xl py-2 px-3 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Min" type="number"/>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-2 px-3 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Max" type="number"/>
+</div>
+<div class="h-1.5 bg-surface-container-highest rounded-full relative">
+<div class="absolute left-1/4 right-1/4 top-0 h-full bg-primary rounded-full"></div>
+<div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md cursor-pointer"></div>
+<div class="absolute right-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md cursor-pointer"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-outline">Data Publicării</h3>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-primary bg-surface-container focus:ring-0 border-none rounded-full" name="date" type="radio"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Ultimele 24 ore</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-primary bg-surface-container focus:ring-0 border-none rounded-full" name="date" type="radio"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Ultima săptămână</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 text-primary bg-surface-container focus:ring-0 border-none rounded-full" name="date" type="radio"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Oricând</span>
+</label>
+</div>
+</div>
+<div class="pt-6 border-t border-surface-container">
+<label class="flex items-center justify-between cursor-pointer">
+<span class="text-sm font-bold text-on-surface">Vânzători Verificați</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary-container"></div>
+</div>
+</label>
+</div>
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-full font-bold text-sm tracking-wide active:scale-95 transition-all">Resetează Filtre</button>
+</div>
+</aside>
+<!-- Listing Grid -->
+<section class="flex-grow">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div>
+<h1 class="text-3xl font-black text-on-surface tracking-tight">Rezultate Căutare</h1>
+<p class="text-outline font-medium">1,248 de anunțuri găsite în România</p>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<div class="flex bg-surface-container-low p-1 rounded-xl">
+<button class="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="grid_view">grid_view</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-outline" data-icon="view_list">view_list</span>
+</button>
+</div>
+<div class="relative flex-grow md:flex-grow-0">
+<select class="w-full bg-surface-container-low border-none rounded-xl py-2.5 pl-4 pr-10 text-sm font-bold appearance-none focus:ring-2 focus:ring-primary/20">
+<option>Cele mai noi</option>
+<option>Preț: Mic la Mare</option>
+<option>Preț: Mare la Mic</option>
+<option>Relevanță</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-outline pointer-events-none" data-icon="swap_vert">swap_vert</span>
+</div>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Listing Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="minimalist mid-century modern velvet sofa in emerald green with gold legs against a white gallery wall in soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwb-sk9aMxMpF1TzyERcUc3b9ADqwmopjffm6YxnNOmSZ7Om1YYFJ3BQystO11f0K6x_vLqo0sbUgU9hwX00dsW988-PTJDD7Dez3JsSIoT691_8QpwYSCb5-6A4xIqXdYm0xPIGvVjZ3mjcmloAt-nWdkLucVNsQu8GgqXZ4KDxSVUINfaeOS6V9SrkS_kbS7PpXP_u0ae2o1DfLHLCi3oO0EOpe7-LbmIISqf2yrFoTxGyTl84eGPlpWI6_hXSEzt8tBJlGKuVI"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-tertiary-container text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Verificat</span>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Canapea Catifea Smarald</h2>
+<span class="text-xl font-black text-primary">2.450 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> BUCUREȘTI</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ACUM 10 MIN</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="vintage leather armchair with dark mahogany wooden frame in a sunlit cozy studio apartment interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh14nXmk-9rD_ruViG_kXc_xTRp8PdFok76cg6NXGpiWzw8rUkVmc6cD_eyFBRoHSZw7r-QC4ifkJiH6S1oECnU-Pfr_6QcvTROYShenNX3eoOey1vLIzlr915S-bb53BXRL4zm_CVfOG2Z-CK6yQ3u98ORmx_Z-Q7jopwezhzqdLaZOLvxWYIzoJo7Ib1FmwIjBU1aJQq6Nn5qFKLdxGtfWiz6BoYuTAyhz45M1OUMApB1bQV7T27QyGPIuMxzAIBxEJAHQtC6dI"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Fotoliu Vintage Piele</h2>
+<span class="text-xl font-black text-primary">890 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> CLUJ-NAPOCA</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ASTĂZI</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="sleek modern glass and metal coffee table with an art book and ceramic vase on top in a minimalist living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhxLV-3K9F3md5YmsXdpmimc9kHrp9Kp37z7MmT2zU_84piTzo6A3VNhoSX_IVJenA2lTkNFdtdBfSAs28oxJQOX7wz0QZF4TVOE-M7C9nwuG1Hoyhif8y2ZZdPGBsuJQVPa8iVCRuepai7GgoE1cDHfqHB0U2B6NRNKNvkzIPUzN6BYYtpG5K4qEyDSwq2bhbHGXVpI5pZ0OkuL4Xt-t0sWfNbs5RhgCx5Nfzi-tI0dW0-q7M7C56vvaiw-bDDy3y898JwkxUOdQ"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-tertiary-container text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Verificat</span>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Măsuță Cafea Design Nordic</h2>
+<span class="text-xl font-black text-primary">420 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> BRAȘOV</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ACUM 2 ORE</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 4 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="professional silver DSLR camera with a prime lens on a textured gray concrete surface with soft dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFEKpt6tW2OEaVyjw-xjjXK4bgKtzXppumQRV1gRR1GYTAzqjOeLDy3pkNND4nYv-ZctZZ8ATGSOdBerM8RN3-coMtvq5d1Pa4ohxJcAy7AxsfDtcZ8GKVhF0BgI8BPXsNGO5pioR-S236go3XKKCW7t6Td8WNwznI-tcaf16lZ_Dyg5BfxdfiCy5art-8sGMd28rbCEnI3lrHMY82mvtO-mgyTYZy1opLKGaTBMM9aDf2wwPxlyTlGcq0gWmGLQhbrO8BdJcgZfk"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Aparat Foto Mirrorless</h2>
+<span class="text-xl font-black text-primary">3.200 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> IAȘI</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> IERI</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 5 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="matte black mountain bike leaning against an industrial brick wall in soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD2_fu3U5QUgOMY_zHzCaoDHvaC2zZsxDd77QAwJhNjtMWZcrvx6Mkmg83GTiThti8jT2z3_cPgZ9hZA8pl4nx4nXnXNinwX7ZUBKo3Zj_SmcOhnapkud1gXLXd2Euetxje51eFKnl9YTYx-V7LxHhY1nwA08tJtWEh3ritGzrYwwppX_IH_mBPJNmTzk89ZRn-3NZlWfAwpPmRApZXRUJOxkaZbquUcguspgly6_9NeihiGv-VtNIzia8GRIcrcYkS5zdArAqeaI"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-tertiary-container text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Verificat</span>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Bicicletă MTB 29 inch</h2>
+<span class="text-xl font-black text-primary">1.850 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> TIMIȘOARA</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ACUM 5 ORE</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 6 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="collection of art monographs and design books stacked elegantly on a solid oak bookshelf in a bright airy room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3slsDayhobJmOBmRNwTVTPdEUXJJ8xZqLDq1ZIoixzB4D6ji7b4Kth7G8Z-zQ2LEcPgiuRFOBdS1ojSwyw9iFGKpVcg27hInJ9dZR2VZjFTX6y_ToaETDOh--mekkPdDF2iadztm7HX0Umo0sAwuWgjKcwnp-bSSpPib5U13aKUZ5z3rrKG4NgkMJMgLc4rASJFUC5pl975lk_kROpvVCxHdFozJLzkciOiQQz7bfD8HxdISPxk7yJFweyWLM2lUhv1Za7wiN7CQ"/>
+<div class="absolute top-4 right-4">
+<button class="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h2 class="text-lg font-bold text-on-surface line-clamp-1 group-hover:text-primary transition-colors">Colecție Cărți Artă &amp; Design</h2>
+<span class="text-xl font-black text-primary">350 RON</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-outline uppercase tracking-wider">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> BUCUREȘTI</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ACUM 3 MIN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-16 flex justify-center items-center gap-4">
+<button class="w-12 h-12 flex items-center justify-center rounded-full border border-surface-container-highest text-outline hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="w-12 h-12 rounded-full bg-primary text-on-primary font-bold">1</button>
+<button class="w-12 h-12 rounded-full hover:bg-surface-container text-on-surface-variant font-bold transition-colors">2</button>
+<button class="w-12 h-12 rounded-full hover:bg-surface-container text-on-surface-variant font-bold transition-colors">3</button>
+<span class="text-outline px-2">...</span>
+<button class="w-12 h-12 rounded-full hover:bg-surface-container text-on-surface-variant font-bold transition-colors">24</button>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full border border-surface-container-highest text-outline hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="w-full mt-auto bg-slate-100 dark:bg-slate-950">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 gap-8 max-w-screen-2xl mx-auto">
+<div class="space-y-4">
+<span class="font-['Manrope'] font-bold text-slate-900 dark:text-white text-xl">Editorial Marketplace</span>
+<p class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 max-w-xs">Curatorul tău de încredere pentru experiențe de marketplace premium în România.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-8">
+<a class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 hover:underline decoration-blue-500/30 opacity-80 hover:opacity-100 transition-opacity" href="#">Termeni și Condiții</a>
+<a class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 hover:underline decoration-blue-500/30 opacity-80 hover:opacity-100 transition-opacity" href="#">Politică de Confidențialitate</a>
+<a class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 hover:underline decoration-blue-500/30 opacity-80 hover:opacity-100 transition-opacity" href="#">Ajutor</a>
+<a class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 hover:underline decoration-blue-500/30 opacity-80 hover:opacity-100 transition-opacity" href="#">Contact</a>
+<a class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 hover:underline decoration-blue-500/30 opacity-80 hover:opacity-100 transition-opacity" href="#">Harta Site-ului</a>
+</nav>
+<div class="text-right">
+<p class="font-['Inter'] text-sm tracking-wide text-slate-500 dark:text-slate-500 opacity-80">© 2024 Editorial Marketplace. Toate drepturile rezervate.</p>
+</div>
+</div>
+</footer>
+</body></html>
