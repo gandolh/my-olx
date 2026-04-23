@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AppRoutes } from "@/routes";
 import { useAuth } from "@/lib/auth";
+import { Toaster } from "sonner";
 
 export default function App() {
   const hydrate = useAuth((state) => state.hydrate);
@@ -21,6 +22,7 @@ export default function App() {
         <AppRoutes />
         <Footer />
       </BrowserRouter>
+      <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );
 }

@@ -25,6 +25,14 @@
   "listing": {
     "verified": "VERIFICAT"
   },
+  "favorites": {
+    "title": "Favoritele mele",
+    "emptyTitle": "Nu ai încă anunțuri salvate",
+    "emptySubtitle": "Când salvezi anunțuri, le vei găsi aici pentru a reveni rapid la ele.",
+    "browse": "Explorează categoriile",
+    "loginRequired": "Conectează-te pentru a salva anunțuri.",
+    "updateError": "Nu am putut actualiza favoritele."
+  },
   "footer": {
     "copyright": "© {{year}} PiațăRo. Toate drepturile rezervate.",
     "terms": "Termeni și Condiții",

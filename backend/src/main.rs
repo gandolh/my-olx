@@ -28,6 +28,7 @@ async fn main() -> anyhow::Result<()> {
 
     let cfg = config::Config::from_env()?;
     let db = sqlx::PgPool::connect(&cfg.database_url).await?;
+    sqlx::migrate!("./migrations").run(&db).await?;
     let redis = redis::Client::open(cfg.redis_url.clone())?;
     let region_provider = RegionProviderChain::first_try(Region::new(cfg.aws_region.clone()))
         .or_default_provider();

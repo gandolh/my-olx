@@ -1,60 +1,75 @@
-import type { SellerSummary } from '../types'
+import type { SellerSummary } from "../types";
 
 interface SellerCardProps {
-  seller: SellerSummary
+  seller: SellerSummary;
 }
 
 export function SellerCard({ seller }: SellerCardProps) {
+  const sellerName = seller.displayName || "Vânzător PiațăRo";
+
   return (
     <div className="bg-surface-container-low p-8 rounded-2xl space-y-6">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0">
-            <img src={seller.avatarUrl} alt={seller.name} className="w-full h-full object-cover" />
+            {seller.avatarUrl ? (
+              <img
+                src={seller.avatarUrl}
+                alt={sellerName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-outline">
+                <span className="material-symbols-outlined">person</span>
+              </div>
+            )}
           </div>
           <div>
-            <h3 className="font-bold text-lg text-on-surface">{seller.name}</h3>
-            {seller.verified && (
+            <h3 className="font-bold text-lg text-on-surface">{sellerName}</h3>
+            {seller.phoneVerified && (
               <div className="flex items-center gap-1.5 bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full w-fit mt-1">
                 <span
                   className="material-symbols-outlined text-[14px]"
-                  style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}
+                  style={{
+                    fontVariationSettings:
+                      "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24",
+                  }}
                 >
                   verified
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider">Vânzător Verificat</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider">
+                  Vânzător Verificat
+                </span>
               </div>
             )}
           </div>
         </div>
-        <button className="text-primary hover:underline font-bold text-sm">Profil</button>
+        <button className="text-primary hover:underline font-bold text-sm">
+          Profil
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <span className="text-[10px] text-outline uppercase tracking-widest font-bold">Membru din</span>
-          <div className="font-semibold text-on-surface">{seller.memberSince}</div>
+          <span className="text-[10px] text-outline uppercase tracking-widest font-bold">
+            Membru din
+          </span>
+          <div className="font-semibold text-on-surface">
+            {new Date(seller.memberSince).toLocaleDateString("ro-RO", {
+              month: "long",
+              year: "numeric",
+            })}
+          </div>
         </div>
         <div className="space-y-1">
-          <span className="text-[10px] text-outline uppercase tracking-widest font-bold">Anunțuri active</span>
-          <div className="font-semibold text-on-surface">{seller.activeListings} anunțuri</div>
-        </div>
-      </div>
-
-      <div className="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span
-            className="material-symbols-outlined text-secondary"
-            style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}
-          >
-            star
+          <span className="text-[10px] text-outline uppercase tracking-widest font-bold">
+            Anunțuri active
           </span>
-          <span className="font-bold text-on-surface">
-            {seller.rating.toFixed(1)} / 5.0
-          </span>
+          <div className="font-semibold text-on-surface">
+            {seller.activeListingsCount} anunțuri
+          </div>
         </div>
-        <span className="text-xs text-outline">{seller.reviewCount} recenzii</span>
       </div>
     </div>
-  )
+  );
 }

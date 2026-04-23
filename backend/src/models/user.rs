@@ -8,6 +8,7 @@ pub struct User {
     pub email: String,
     pub password_hash: String,
     pub display_name: Option<String>,
+    pub avatar_url: Option<String>,
     pub email_verified: bool,
     pub phone: Option<String>,
     pub phone_verified: bool,

@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/lib/auth";
 import { useLogoutMutation } from "@/modules/auth/hooks/useLogoutMutation";
+import { useFavoriteIds } from "@/modules/favorites/hooks/useFavoriteIds";
 
 export function Navbar() {
   const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const logoutMutation = useLogoutMutation();
+  const favoriteIds = useFavoriteIds();
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -37,6 +39,11 @@ export function Navbar() {
             className="text-on-surface-variant font-medium hover:text-primary transition-colors no-underline"
           >
             {t("nav.favorites")}
+            {isAuthenticated && (favoriteIds.data?.length ?? 0) > 0 && (
+              <span className="ml-1 text-primary font-bold">
+                ({favoriteIds.data?.length})
+              </span>
+            )}
           </Link>
           <Link
             to="/mesaje"

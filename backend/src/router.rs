@@ -14,7 +14,9 @@ pub fn build(state: AppState) -> Router {
 
     Router::new()
         .nest("/auth", routes::auth::router())
+        .nest("/favorites", routes::favorites::router())
         .nest("/listings", routes::listings::router())
+        .nest("/me", routes::me::router())
         .nest("/users", routes::users::router())
         .layer(CompressionLayer::new())
         .layer(cors)

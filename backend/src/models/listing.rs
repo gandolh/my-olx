@@ -13,6 +13,7 @@ pub struct Listing {
     pub category: String,
     pub city: String,
     pub active: bool,
+    pub view_count: i64,
     pub expires_at: DateTime<Utc>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,

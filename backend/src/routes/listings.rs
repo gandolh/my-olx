@@ -1,11 +1,13 @@
 use axum::{
-    routing::{delete, post},
+    routing::get,
     Router,
 };
 use crate::{handlers::listings, state::AppState};
 
 pub fn router() -> Router<AppState> {
     Router::new()
-        .route("/", post(listings::create_listing).get(listings::list_my_listings))
-        .route("/:id", delete(listings::delete_listing))
+        .route("/", get(listings::list_public).post(listings::create_listing))
+        .route("/featured", get(listings::list_featured))
+        .route("/:id", get(listings::get_listing).delete(listings::delete_listing))
+        .route("/:id/related", get(listings::get_related))
 }

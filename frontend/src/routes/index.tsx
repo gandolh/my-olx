@@ -40,6 +40,12 @@ const ForgotPasswordPage = lazy(() =>
   })),
 );
 
+const FavoritesPage = lazy(() =>
+  import("@/modules/favorites/pages/FavoritesPage").then((m) => ({
+    default: m.FavoritesPage,
+  })),
+);
+
 const ResetPasswordPage = lazy(() =>
   import("@/modules/auth/pages/ResetPasswordPage").then((m) => ({
     default: m.ResetPasswordPage,
@@ -70,6 +76,7 @@ export function AppRoutes() {
         <Route path="/verifica-email" element={<EmailVerifyPage />} />
         <Route path="/parola-uitata" element={<ForgotPasswordPage />} />
         <Route path="/reseteaza-parola" element={<ResetPasswordPage />} />
+        <Route path="/favorite" element={<FavoritesPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Routes>
     </Suspense>

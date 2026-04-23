@@ -1,65 +1,352 @@
-import type { MockListing, FilterState, ListingsResponse } from '../types'
-import { PAGE_SIZE } from '../types'
+import type { ListingCard } from "@/types/listing";
+import type { FilterState, ListingsResponse } from "../types";
+import { PAGE_SIZE } from "../types";
 
-const now = new Date()
-const hoursAgo = (h: number) => new Date(now.getTime() - h * 3_600_000)
+const now = new Date();
+const hoursAgo = (h: number) => new Date(now.getTime() - h * 3_600_000);
+
+type MockListing = ListingCard & {
+  locationSlug: string;
+};
 
 export const MOCK_LISTINGS: MockListing[] = [
-  { id: '1', categorySlug: 'electronice', title: 'iPhone 14 Pro 256GB', price: 4200, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(1), verified: true, image: 'https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600&q=80' },
-  { id: '2', categorySlug: 'electronice', title: 'MacBook Air M2', price: 6500, location: 'Cluj-Napoca', locationSlug: 'cluj-napoca', postedAt: hoursAgo(3), verified: false, image: 'https://images.unsplash.com/photo-1611186871525-d6debc14b791?w=600&q=80' },
-  { id: '3', categorySlug: 'electronice', title: 'Sony WH-1000XM5', price: 1100, location: 'Timișoara', locationSlug: 'timisoara', postedAt: hoursAgo(10), verified: true, image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600&q=80' },
-  { id: '4', categorySlug: 'electronice', title: 'Monitor LG 27" 4K', price: 2300, location: 'Iași', locationSlug: 'iasi', postedAt: hoursAgo(36), verified: false, image: 'https://images.unsplash.com/photo-1527443224154-c4a573d5f5dc?w=600&q=80' },
-  { id: '5', categorySlug: 'electronice', title: 'Tastatură Mecanică Keychron', price: 650, location: 'Brașov', locationSlug: 'brasov', postedAt: hoursAgo(50), verified: true, image: 'https://images.unsplash.com/photo-1561112078-7d24e04c3407?w=600&q=80' },
-  { id: '6', categorySlug: 'mobila', title: 'Canapea Catifea Smarald', price: 2450, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(2), verified: true, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80' },
-  { id: '7', categorySlug: 'mobila', title: 'Fotoliu Vintage Piele', price: 890, location: 'Cluj-Napoca', locationSlug: 'cluj-napoca', postedAt: hoursAgo(8), verified: false, image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80' },
-  { id: '8', categorySlug: 'mobila', title: 'Masă Dining Stejar Masiv', price: 3200, location: 'Timișoara', locationSlug: 'timisoara', postedAt: hoursAgo(24), verified: true, image: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&q=80' },
-  { id: '9', categorySlug: 'mobila', title: 'Bibliotecă Modulară Albă', price: 750, location: 'Constanța', locationSlug: 'constanta', postedAt: hoursAgo(72), verified: false, image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=600&q=80' },
-  { id: '10', categorySlug: 'auto', title: 'VW Golf 7 2018 Benzină', price: 18500, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(5), verified: true, image: 'https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=600&q=80' },
-  { id: '11', categorySlug: 'auto', title: 'Dacia Logan MCV 2020', price: 11200, location: 'Iași', locationSlug: 'iasi', postedAt: hoursAgo(20), verified: false, image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=600&q=80' },
-  { id: '12', categorySlug: 'auto', title: 'Anvelope Iarnă 205/55 R16', price: 800, location: 'Brașov', locationSlug: 'brasov', postedAt: hoursAgo(48), verified: true, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
-  { id: '13', categorySlug: 'sport', title: 'Bicicletă MTB 29 inch', price: 1850, location: 'Timișoara', locationSlug: 'timisoara', postedAt: hoursAgo(6), verified: true, image: 'https://images.unsplash.com/photo-1558980394-034764373a8d?w=600&q=80' },
-  { id: '14', categorySlug: 'sport', title: 'Schiuri Atomic Redster', price: 1200, location: 'Brașov', locationSlug: 'brasov', postedAt: hoursAgo(30), verified: false, image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80' },
-  { id: '15', categorySlug: 'sport', title: 'Cort Camping 4 Persoane', price: 450, location: 'Cluj-Napoca', locationSlug: 'cluj-napoca', postedAt: hoursAgo(96), verified: false, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=80' },
-  { id: '16', categorySlug: 'carti', title: 'Colecție Cărți Design & Artă', price: 350, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(4), verified: false, image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80' },
-  { id: '17', categorySlug: 'carti', title: 'Enciclopedie Universală', price: null, location: 'Iași', locationSlug: 'iasi', postedAt: hoursAgo(15), verified: false, image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&q=80' },
-  { id: '18', categorySlug: 'haine', title: 'Geacă Piele Maro Vintage', price: 580, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(7), verified: true, image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80' },
-  { id: '19', categorySlug: 'haine', title: 'Pantofi Sport Nike Air Max', price: 320, location: 'Cluj-Napoca', locationSlug: 'cluj-napoca', postedAt: hoursAgo(22), verified: false, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80' },
-  { id: '20', categorySlug: 'imobiliare', title: 'Apartament 2 camere Floreasca', price: 142000, location: 'București', locationSlug: 'bucuresti', postedAt: hoursAgo(12), verified: true, image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80' },
-]
+  {
+    id: "1",
+    category: "electronice",
+    title: "iPhone 14 Pro 256GB",
+    priceRon: 4200,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(1).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "2",
+    category: "electronice",
+    title: "MacBook Air M2",
+    priceRon: 6500,
+    city: "Cluj-Napoca",
+    locationSlug: "cluj-napoca",
+    postedAt: hoursAgo(3).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1611186871525-d6debc14b791?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "3",
+    category: "electronice",
+    title: "Sony WH-1000XM5",
+    priceRon: 1100,
+    city: "Timișoara",
+    locationSlug: "timisoara",
+    postedAt: hoursAgo(10).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "4",
+    category: "electronice",
+    title: 'Monitor LG 27" 4K',
+    priceRon: 2300,
+    city: "Iași",
+    locationSlug: "iasi",
+    postedAt: hoursAgo(36).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1527443224154-c4a573d5f5dc?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "5",
+    category: "electronice",
+    title: "Tastatură Mecanică Keychron",
+    priceRon: 650,
+    city: "Brașov",
+    locationSlug: "brasov",
+    postedAt: hoursAgo(50).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1561112078-7d24e04c3407?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "6",
+    category: "mobila",
+    title: "Canapea Catifea Smarald",
+    priceRon: 2450,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(2).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "7",
+    category: "mobila",
+    title: "Fotoliu Vintage Piele",
+    priceRon: 890,
+    city: "Cluj-Napoca",
+    locationSlug: "cluj-napoca",
+    postedAt: hoursAgo(8).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "8",
+    category: "mobila",
+    title: "Masă Dining Stejar Masiv",
+    priceRon: 3200,
+    city: "Timișoara",
+    locationSlug: "timisoara",
+    postedAt: hoursAgo(24).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "9",
+    category: "mobila",
+    title: "Bibliotecă Modulară Albă",
+    priceRon: 750,
+    city: "Constanța",
+    locationSlug: "constanta",
+    postedAt: hoursAgo(72).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1618220179428-22790b461013?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "10",
+    category: "auto",
+    title: "VW Golf 7 2018 Benzină",
+    priceRon: 18500,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(5).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "11",
+    category: "auto",
+    title: "Dacia Logan MCV 2020",
+    priceRon: 11200,
+    city: "Iași",
+    locationSlug: "iasi",
+    postedAt: hoursAgo(20).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "12",
+    category: "auto",
+    title: "Anvelope Iarnă 205/55 R16",
+    priceRon: 800,
+    city: "Brașov",
+    locationSlug: "brasov",
+    postedAt: hoursAgo(48).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "13",
+    category: "sport",
+    title: "Bicicletă MTB 29 inch",
+    priceRon: 1850,
+    city: "Timișoara",
+    locationSlug: "timisoara",
+    postedAt: hoursAgo(6).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1558980394-034764373a8d?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "14",
+    category: "sport",
+    title: "Schiuri Atomic Redster",
+    priceRon: 1200,
+    city: "Brașov",
+    locationSlug: "brasov",
+    postedAt: hoursAgo(30).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "15",
+    category: "sport",
+    title: "Cort Camping 4 Persoane",
+    priceRon: 450,
+    city: "Cluj-Napoca",
+    locationSlug: "cluj-napoca",
+    postedAt: hoursAgo(96).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "16",
+    category: "carti",
+    title: "Colecție Cărți Design & Artă",
+    priceRon: 350,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(4).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "17",
+    category: "carti",
+    title: "Enciclopedie Universală",
+    priceRon: null,
+    city: "Iași",
+    locationSlug: "iasi",
+    postedAt: hoursAgo(15).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "18",
+    category: "haine",
+    title: "Geacă Piele Maro Vintage",
+    priceRon: 580,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(7).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "19",
+    category: "haine",
+    title: "Pantofi Sport Nike Air Max",
+    priceRon: 320,
+    city: "Cluj-Napoca",
+    locationSlug: "cluj-napoca",
+    postedAt: hoursAgo(22).toISOString(),
+    sellerVerified: false,
+    coverUrl:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+  {
+    id: "20",
+    category: "imobiliare",
+    title: "Apartament 2 camere Floreasca",
+    priceRon: 142000,
+    city: "București",
+    locationSlug: "bucuresti",
+    postedAt: hoursAgo(12).toISOString(),
+    sellerVerified: true,
+    coverUrl:
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80",
+    active: true,
+    expiresAt: new Date(now.getTime() + 20 * 86_400_000).toISOString(),
+  },
+];
 
-export function fetchMockListings(slug: string, filters: FilterState): Promise<ListingsResponse> {
+export function fetchMockListings(
+  slug: string,
+  filters: FilterState,
+): Promise<ListingsResponse> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const DAY_MS = 86_400_000
-      const WEEK_MS = 7 * DAY_MS
-      const now = Date.now()
+      const DAY_MS = 86_400_000;
+      const WEEK_MS = 7 * DAY_MS;
+      const now = Date.now();
 
       const results = MOCK_LISTINGS.filter((l) => {
-        if (l.categorySlug !== slug) return false
-        if (filters.loc && l.locationSlug !== filters.loc) return false
-        if (filters.pret_min !== null && (l.price === null || l.price < filters.pret_min)) return false
-        if (filters.pret_max !== null && (l.price === null || l.price > filters.pret_max)) return false
-        if (filters.verificat && !l.verified) return false
-        if (filters.data === '24h' && now - l.postedAt.getTime() > DAY_MS) return false
-        if (filters.data === 'saptamana' && now - l.postedAt.getTime() > WEEK_MS) return false
-        return true
-      })
+        if (l.category !== slug) return false;
+        if (filters.loc && l.locationSlug !== filters.loc) return false;
+        if (
+          filters.pret_min !== null &&
+          (l.priceRon === null || l.priceRon < filters.pret_min)
+        )
+          return false;
+        if (
+          filters.pret_max !== null &&
+          (l.priceRon === null || l.priceRon > filters.pret_max)
+        )
+          return false;
+        if (filters.verificat && !l.sellerVerified) return false;
+        if (
+          filters.data === "24h" &&
+          now - new Date(l.postedAt).getTime() > DAY_MS
+        )
+          return false;
+        if (
+          filters.data === "saptamana" &&
+          now - new Date(l.postedAt).getTime() > WEEK_MS
+        )
+          return false;
+        return true;
+      });
 
-      if (filters.sortare === 'pret_asc') {
-        results.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))
-      } else if (filters.sortare === 'pret_desc') {
-        results.sort((a, b) => (b.price ?? 0) - (a.price ?? 0))
+      if (filters.sortare === "pret_asc") {
+        results.sort((a, b) => (a.priceRon ?? 0) - (b.priceRon ?? 0));
+      } else if (filters.sortare === "pret_desc") {
+        results.sort((a, b) => (b.priceRon ?? 0) - (a.priceRon ?? 0));
       } else {
-        results.sort((a, b) => b.postedAt.getTime() - a.postedAt.getTime())
+        results.sort(
+          (a, b) =>
+            new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime(),
+        );
       }
 
-      const totalCount = results.length
-      const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
-      const page = Math.max(1, Math.min(filters.pagina, totalPages))
-      const start = (page - 1) * PAGE_SIZE
-      const listings = results.slice(start, start + PAGE_SIZE)
+      const totalCount = results.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+      const page = Math.max(1, Math.min(filters.pagina, totalPages));
+      const start = (page - 1) * PAGE_SIZE;
+      const listings = results.slice(start, start + PAGE_SIZE);
 
-      resolve({ listings, totalCount, totalPages })
-    }, 500)
-  })
+      resolve({ listings, totalCount, totalPages });
+    }, 500);
+  });
 }
