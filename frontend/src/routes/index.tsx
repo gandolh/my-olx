@@ -1,8 +1,16 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { ComingSoon } from '@/components/ui/ComingSoon'
 import { HomePage } from '@/modules/home/pages/HomePage'
 import { CardSkeleton } from '@/components/ui/Skeleton'
+
+const CategoryPage = lazy(() =>
+  import('@/modules/categories/pages/CategoryPage').then((m) => ({ default: m.CategoryPage }))
+)
+
+const ListingDetailPage = lazy(() =>
+  import('@/modules/listings/pages/ListingDetailPage').then((m) => ({ default: m.ListingDetailPage }))
+)
 
 function PageLoader() {
   return (
@@ -19,6 +27,8 @@ export function AppRoutes() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/categorii/:slug" element={<CategoryPage />} />
+        <Route path="/anunturi/:id" element={<ListingDetailPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Routes>
     </Suspense>
