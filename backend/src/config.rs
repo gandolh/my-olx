@@ -7,9 +7,16 @@ pub struct Config {
     pub jwt_secret: String,
     pub jwt_expiry_seconds: u64,
     pub aws_region: String,
+    #[allow(dead_code)]
     pub aws_s3_bucket: String,
     pub host: String,
     pub port: u16,
+    pub smtp_host: String,
+    pub smtp_port: u16,
+    pub smtp_username: String,
+    pub smtp_password: String,
+    pub smtp_from: String,
+    pub frontend_base_url: String,
 }
 
 impl Config {
@@ -20,6 +27,12 @@ impl Config {
             .set_default("host", "0.0.0.0")?
             .set_default("port", 8080)?
             .set_default("jwt_expiry_seconds", 86400)?
+            .set_default("smtp_host", "localhost")?
+            .set_default("smtp_port", 1025)?
+            .set_default("smtp_username", "")?
+            .set_default("smtp_password", "")?
+            .set_default("smtp_from", "noreply@piataro.ro")?
+            .set_default("frontend_base_url", "http://localhost:5173")?
             .build()?
             .try_deserialize()
     }
@@ -40,6 +53,12 @@ mod tests {
             aws_s3_bucket: "bucket".into(),
             host: "0.0.0.0".into(),
             port: 8080,
+            smtp_host: "localhost".into(),
+            smtp_port: 1025,
+            smtp_username: "user".into(),
+            smtp_password: "pass".into(),
+            smtp_from: "noreply@piataro.ro".into(),
+            frontend_base_url: "http://localhost:5173".into(),
         };
         assert_eq!(cfg.port, 8080);
         assert_eq!(cfg.jwt_expiry_seconds, 3600);

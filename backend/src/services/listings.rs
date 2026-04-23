@@ -4,21 +4,29 @@ use crate::{
     dto::listing::{CreateListingRequest, ListingResponse},
     error::AppError,
     models::listing::Listing,
-    repositories::listings::ListingRepository,
+    repositories::{listings::ListingRepository, users::UserRepository},
 };
 
 const WEEKLY_POST_LIMIT: i64 = 5;
 
-pub struct ListingService<R: ListingRepository> {
+pub struct ListingService<R: ListingRepository, U: UserRepository> {
     pub repo: Arc<R>,
+    pub user_repo: Arc<U>,
 }
 
-impl<R: ListingRepository> ListingService<R> {
-    pub fn new(repo: Arc<R>) -> Self {
-        Self { repo }
+impl<R: ListingRepository, U: UserRepository> ListingService<R, U> {
+    pub fn new(repo: Arc<R>, user_repo: Arc<U>) -> Self {
+        Self { repo, user_repo }
     }
 
     pub async fn create(&self, user_id: Uuid, data: &CreateListingRequest) -> Result<ListingResponse, AppError> {
+        let user = self.user_repo.find_by_id(user_id).await?
+            .ok_or(AppError::NotFound)?;
+        
+        if !user.email_verified {
+            return Err(AppError::Forbidden);
+        }
+        
         let count = self.repo.count_this_week(user_id).await?;
         if count >= WEEKLY_POST_LIMIT {
             return Err(AppError::RateLimit);
@@ -86,9 +94,6 @@ mod tests {
     impl crate::repositories::listings::ListingRepository for MockListingRepo {
         async fn create(&self, user_id: Uuid, _data: &CreateListingRequest) -> Result<Listing, AppError> {
             Ok(make_listing(user_id))
-        }
-        async fn find_by_id(&self, _id: Uuid) -> Result<Option<Listing>, AppError> {
-            Ok(None)
         }
         async fn list_by_user(&self, user_id: Uuid) -> Result<Vec<Listing>, AppError> {
             Ok(vec![make_listing(user_id)])

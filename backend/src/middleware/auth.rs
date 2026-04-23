@@ -15,9 +15,7 @@ pub(crate) struct Claims {
 }
 
 #[derive(Debug, Clone)]
-pub struct AuthUser {
-    pub user_id: Uuid,
-}
+pub struct AuthUser(pub Uuid);
 
 pub(crate) fn decode_token(token: &str, secret: &str) -> Result<Uuid, AppError> {
     let data = decode::<Claims>(
@@ -41,7 +39,7 @@ impl FromRequestParts<AppState> for AuthUser {
             .and_then(|v| v.strip_prefix("Bearer "))
             .ok_or(AppError::Unauthorized)?;
         let user_id = decode_token(auth_header, &state.config.jwt_secret)?;
-        Ok(AuthUser { user_id })
+        Ok(AuthUser(user_id))
     }
 }
 

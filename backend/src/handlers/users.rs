@@ -1,15 +1,29 @@
 use axum::{extract::State, Json};
-use serde::Serialize;
-use crate::{error::AppError, middleware::auth::AuthUser, state::AppState};
-
-#[derive(Serialize)]
-pub struct MeResponse {
-    pub user_id: String,
-}
+use std::sync::Arc;
+use crate::{
+    dto::auth::UserSummary,
+    error::AppError,
+    middleware::auth::AuthUser,
+    repositories::{users::PgUserRepository, email_tokens::EmailTokenRepository, password_tokens::PasswordTokenRepository},
+    services::auth::AuthService,
+    state::AppState,
+};
 
 pub async fn me(
-    State(_state): State<AppState>,
-    auth: AuthUser,
-) -> Result<Json<MeResponse>, AppError> {
-    Ok(Json(MeResponse { user_id: auth.user_id.to_string() }))
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+) -> Result<Json<UserSummary>, AppError> {
+    let repo = Arc::new(PgUserRepository { pool: state.db.clone() });
+    let email_token_repo = EmailTokenRepository::new(state.db.clone());
+    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let svc = AuthService::new(
+        repo,
+        email_token_repo,
+        password_token_repo,
+        state.email.clone(),
+        state.config.jwt_secret.clone(),
+        state.config.jwt_expiry_seconds,
+    );
+    let user_summary = svc.get_user_summary(user_id).await?;
+    Ok(Json(user_summary))
 }

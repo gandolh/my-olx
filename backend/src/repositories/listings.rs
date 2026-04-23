@@ -5,7 +5,6 @@ use crate::{dto::listing::CreateListingRequest, error::AppError, models::listing
 #[async_trait]
 pub trait ListingRepository: Send + Sync {
     async fn create(&self, user_id: Uuid, data: &CreateListingRequest) -> Result<Listing, AppError>;
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<Listing>, AppError>;
     async fn list_by_user(&self, user_id: Uuid) -> Result<Vec<Listing>, AppError>;
     async fn delete(&self, id: Uuid, owner_id: Uuid) -> Result<(), AppError>;
     async fn count_this_week(&self, user_id: Uuid) -> Result<i64, AppError>;
@@ -35,14 +34,6 @@ impl ListingRepository for PgListingRepository {
         .bind(&data.city)
         .fetch_one(&self.pool)
         .await?;
-        Ok(listing)
-    }
-
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<Listing>, AppError> {
-        let listing = sqlx::query_as::<_, Listing>("SELECT * FROM listings WHERE id = $1")
-            .bind(id)
-            .fetch_optional(&self.pool)
-            .await?;
         Ok(listing)
     }
 
