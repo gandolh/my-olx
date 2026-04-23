@@ -1,0 +1,4 @@
+# Wiki Log
+
+[2026-04-23] backfill | architecture pages from docs/specs/01-backend-setup-design.md
+[2026-04-23] backfill | feature specs from docs/requirements-summary.md and docs/design-brief.md
