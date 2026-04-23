@@ -33,6 +33,16 @@
     "loginRequired": "Conectează-te pentru a salva anunțuri.",
     "updateError": "Nu am putut actualiza favoritele."
   },
+  "imageUpload": {
+    "dragPrompt": "Trage poze aici sau selectează din telefon",
+    "fileTypeError": "Formatul fișierului nu este suportat. Acceptăm JPG, PNG, WebP.",
+    "fileSizeError": "Un fișier depășește 10MB. Redu dimensiunea și încearcă din nou.",
+    "progress": "Încărcare {{progress}}%",
+    "retry": "Încearcă din nou",
+    "delete": "Șterge poza",
+    "setAsCover": "Setează copertă",
+    "limitReached": "Ai atins limita de 10 poze"
+  },
   "footer": {
     "copyright": "© {{year}} PiațăRo. Toate drepturile rezervate.",
     "terms": "Termeni și Condiții",

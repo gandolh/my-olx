@@ -174,9 +174,8 @@ fn image_url(value: Option<String>, config: &Config) -> Option<String> {
             raw
         } else {
             format!(
-                "https://{}.s3.{}.amazonaws.com/{}",
-                config.aws_s3_bucket,
-                config.aws_region,
+                "{}/{}",
+                config.s3_public_base_url.trim_end_matches('/'),
                 raw.trim_start_matches('/')
             )
         }

@@ -2,7 +2,7 @@ use axum::{
     routing::get,
     Router,
 };
-use crate::{handlers::listings, state::AppState};
+use crate::{handlers::listings, routes::images, state::AppState};
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -10,4 +10,5 @@ pub fn router() -> Router<AppState> {
         .route("/featured", get(listings::list_featured))
         .route("/:id", get(listings::get_listing).delete(listings::delete_listing))
         .route("/:id/related", get(listings::get_related))
+        .nest("/:id/images", images::router())
 }
