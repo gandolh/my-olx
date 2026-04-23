@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "categories": "Categories",
+    "favorites": "Favorites",
+    "messages": "Messages",
+    "addListing": "Add Listing"
+  },
+  "home": {
+    "heroTitle": "Search all of",
+    "heroTitleHighlight": "Romania",
+    "heroSubtitle": "Discover thousands of verified listings, from latest electronics to dream homes and professional services.",
+    "searchPlaceholder": "What are you looking for?",
+    "locationPlaceholder": "All of Romania",
+    "searchButton": "Search",
+    "popularCategories": "Popular Categories",
+    "viewAllCategories": "View all categories",
+    "featuredListings": "Featured Listings",
+    "featuredSubtitle": "The newest opportunities selected for you",
+    "loadMore": "Load more listings",
+    "ctaTitle": "Want to sell something fast?",
+    "ctaSubtitle": "Join Romania's most active community. Post your first listing in less than 2 minutes!",
+    "ctaButton": "Post a Listing Now",
+    "ctaHowItWorks": "How does it work?"
+  },
+  "listing": {
+    "verified": "VERIFIED"
+  },
+  "footer": {
+    "copyright": "© {{year}} PiațăRo. All rights reserved.",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "help": "Help",
+    "contact": "Contact"
+  },
+  "comingSoon": {
+    "title": "Coming Soon",
+    "subtitle": "This page is under development."
+  }
+}

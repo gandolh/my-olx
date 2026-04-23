@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "categories": "Categorii",
+    "favorites": "Favorite",
+    "messages": "Mesaje",
+    "addListing": "Adaugă Anunț"
+  },
+  "home": {
+    "heroTitle": "Caută în toată",
+    "heroTitleHighlight": "România",
+    "heroSubtitle": "Descoperă mii de anunțuri verificate, de la electronice de ultimă generație până la locuințe de vis și servicii profesionale.",
+    "searchPlaceholder": "Ce cauți astăzi?",
+    "locationPlaceholder": "Toată România",
+    "searchButton": "Caută",
+    "popularCategories": "Categorii Populare",
+    "viewAllCategories": "Vezi toate categoriile",
+    "featuredListings": "Anunțuri Recomandate",
+    "featuredSubtitle": "Cele mai noi oportunități selectate pentru tine",
+    "loadMore": "Încarcă mai multe anunțuri",
+    "ctaTitle": "Vrei să vinzi ceva rapid?",
+    "ctaSubtitle": "Alătură-te celei mai active comunități din România. Postează primul tău anunț în mai puțin de 2 minute!",
+    "ctaButton": "Postează un Anunț Acum",
+    "ctaHowItWorks": "Cum funcționează?"
+  },
+  "listing": {
+    "verified": "VERIFICAT"
+  },
+  "footer": {
+    "copyright": "© {{year}} PiațăRo. Toate drepturile rezervate.",
+    "terms": "Termeni și Condiții",
+    "privacy": "Politică de Confidențialitate",
+    "help": "Ajutor",
+    "contact": "Contact"
+  },
+  "comingSoon": {
+    "title": "În curând",
+    "subtitle": "Această pagină este în curs de dezvoltare."
+  }
+}
