@@ -1,5 +1,7 @@
 use crate::{routes, state::AppState};
 use axum::{http::{HeaderValue, Method}, routing::get, Router};
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 use tower_http::{
     compression::CompressionLayer,
     cors::CorsLayer,
@@ -30,6 +32,7 @@ pub fn build(state: AppState) -> Router {
         .allow_credentials(false);
 
     Router::new()
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", routes::openapi::ApiDoc::openapi()))
         .nest("/auth", routes::auth::router())
         .nest("/favorites", routes::favorites::router())
         .nest("/conversations", routes::messaging::router())

@@ -2,6 +2,7 @@
 
 ## Architecture
 
+- [OpenAPI Documentation](architecture/openapi-documentation.md) — use utoipa and utoipa-swagger-ui for automated API docs
 - [Why Axum](architecture/why-axum.md) — chose Axum 0.7 over Rocket for ecosystem momentum, type safety, and WebSocket support
 - [Four-Layer Architecture](architecture/four-layer-architecture.md) — Router → Handler → Service → Repository; each layer talks only to the one below
 - [Auth: JWT + Argon2](architecture/auth-jwt-argon2.md) — stateless JWT auth via type-level Axum extractor; Argon2 for password hashing

@@ -18,6 +18,16 @@ use axum::{extract::State, http::StatusCode, Json};
 use std::sync::Arc;
 use validator::Validate;
 
+/// Register a new user
+#[utoipa::path(
+    post,
+    path = "/auth/register",
+    request_body = RegisterRequest,
+    responses(
+        (status = 200, description = "User registered successfully", body = AuthResponse),
+        (status = 400, description = "Invalid input or email already exists")
+    )
+)]
 pub async fn register(
     State(state): State<AppState>,
     Json(body): Json<RegisterRequest>,
@@ -43,6 +53,16 @@ pub async fn register(
     Ok(Json(resp))
 }
 
+/// Login with email and password
+#[utoipa::path(
+    post,
+    path = "/auth/login",
+    request_body = LoginRequest,
+    responses(
+        (status = 200, description = "Login successful", body = AuthResponse),
+        (status = 401, description = "Invalid credentials")
+    )
+)]
 pub async fn login(
     State(state): State<AppState>,
     Json(body): Json<LoginRequest>,

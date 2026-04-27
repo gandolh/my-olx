@@ -33,6 +33,17 @@ fn listing_service(state: &AppState) -> ListingService<PgListingRepository, PgUs
     ListingService::new(repo, user_repo, state.config.clone())
 }
 
+/// List public listings with filters
+#[utoipa::path(
+    get,
+    path = "/listings",
+    params(
+        ListingFilters
+    ),
+    responses(
+        (status = 200, description = "List of listings", body = ListingsPageResponse)
+    )
+)]
 pub async fn list_public(
     State(state): State<AppState>,
     Query(filters): Query<ListingFilters>,
@@ -50,6 +61,18 @@ pub async fn list_featured(
     Ok(Json(listings))
 }
 
+/// Get listing details
+#[utoipa::path(
+    get,
+    path = "/listings/{id}",
+    params(
+        ("id" = Uuid, Path, description = "Listing ID")
+    ),
+    responses(
+        (status = 200, description = "Listing details", body = ListingDetailResponse),
+        (status = 404, description = "Listing not found")
+    )
+)]
 pub async fn get_listing(
     State(state): State<AppState>,
     auth_user: Option<AuthUser>,
@@ -71,6 +94,20 @@ pub async fn get_related(
     Ok(Json(listings))
 }
 
+/// Create a new listing
+#[utoipa::path(
+    post,
+    path = "/listings",
+    request_body = CreateListingRequest,
+    responses(
+        (status = 200, description = "Listing created", body = ListingResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 400, description = "Invalid input")
+    ),
+    security(
+        ("jwt" = [])
+    )
+)]
 pub async fn create_listing(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,

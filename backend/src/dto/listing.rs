@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Validate, Clone)]
+#[derive(Debug, Deserialize, Validate, Clone, ToSchema)]
 pub struct CreateListingRequest {
     #[validate(length(min = 5, max = 200, message = "title must be 5-200 characters"))]
     pub title: String,
@@ -18,7 +19,7 @@ pub struct CreateListingRequest {
     pub active: Option<bool>,
 }
 
-#[derive(Debug, Default, Deserialize, Validate, Clone)]
+#[derive(Debug, Default, Deserialize, Validate, Clone, ToSchema)]
 pub struct UpdateListingRequest {
     #[validate(length(min = 5, max = 200, message = "title must be 5-200 characters"))]
     pub title: Option<String>,
@@ -37,7 +38,7 @@ pub struct UpdateListingRequest {
     pub active: Option<bool>,
 }
 
-#[derive(Debug, Deserialize, Default, Clone)]
+#[derive(Debug, Deserialize, Default, Clone, ToSchema, IntoParams)]
 pub struct ListingFilters {
     pub q: Option<String>,
     pub category: Option<String>,
@@ -79,7 +80,7 @@ impl ListingFilters {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct ListingResponse {
     pub id: Uuid,
     pub user_id: Uuid,
@@ -94,7 +95,7 @@ pub struct ListingResponse {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct ListingCardResponse {
     pub id: Uuid,
     pub title: String,
@@ -108,7 +109,7 @@ pub struct ListingCardResponse {
     pub expires_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct ListingsPageResponse {
     pub listings: Vec<ListingCardResponse>,
     pub total_count: i64,
@@ -116,19 +117,19 @@ pub struct ListingsPageResponse {
     pub page: i64,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct FavoritesIdsResponse {
     pub ids: Vec<Uuid>,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct ListingImageResponse {
     pub id: Uuid,
     pub url: String,
     pub position: i32,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct SellerSummary {
     pub id: Uuid,
     pub display_name: Option<String>,
@@ -138,7 +139,7 @@ pub struct SellerSummary {
     pub active_listings_count: i64,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, ToSchema)]
 pub struct ListingDetailResponse {
     pub id: Uuid,
     pub title: String,

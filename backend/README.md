@@ -40,3 +40,7 @@ Or create a new `.sql` file in `migrations/` with a timestamp prefix `YYYYMMDDHH
    ```bash
    cargo run
    ```
+
+## swagger
+
+http://localhost:8080/swagger-ui/

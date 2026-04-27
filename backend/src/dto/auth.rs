@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use uuid::Uuid;
 use validator::Validate;
 use once_cell::sync::Lazy;
@@ -16,7 +17,7 @@ pub fn validate_phone(phone: &str) -> Result<(), validator::ValidationError> {
     }
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct RegisterRequest {
     #[validate(email(message = "invalid email"))]
     pub email: String,
@@ -24,32 +25,32 @@ pub struct RegisterRequest {
     pub password: String,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct RequestPhoneCodeRequest {
     #[validate(custom(function = "validate_phone"))]
     pub phone: String,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct VerifyPhoneRequest {
     #[validate(length(equal = 6, message = "code must be 6 digits"))]
     pub code: String,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct LoginRequest {
     #[validate(email(message = "invalid email"))]
     pub email: String,
     pub password: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct AuthResponse {
     pub token: String,
     pub user: UserSummary,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct UserSummary {
     pub id: Uuid,
     pub email: String,
@@ -61,18 +62,18 @@ pub struct UserSummary {
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct VerifyEmailRequest {
     pub token: String,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct ForgotPasswordRequest {
     #[validate(email(message = "invalid email"))]
     pub email: String,
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct ResetPasswordRequest {
     pub token: String,
     #[validate(length(min = 8, message = "password must be at least 8 characters"))]
