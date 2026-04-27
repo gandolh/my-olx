@@ -10,8 +10,8 @@ mod routes;
 mod services;
 mod state;
 
-use aws_config::BehaviorVersion;
 use aws_config::meta::region::RegionProviderChain;
+use aws_config::BehaviorVersion;
 use aws_sdk_s3::config::Region;
 use std::sync::Arc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -30,19 +30,24 @@ async fn main() -> anyhow::Result<()> {
     let db = sqlx::PgPool::connect(&cfg.database_url).await?;
     sqlx::migrate!("./migrations").run(&db).await?;
     let redis = redis::Client::open(cfg.redis_url.clone())?;
-    let region_provider = RegionProviderChain::first_try(Region::new(cfg.aws_region.clone()))
-        .or_default_provider();
+    let region_provider =
+        RegionProviderChain::first_try(Region::new(cfg.aws_region.clone())).or_default_provider();
     let aws_cfg = aws_config::defaults(BehaviorVersion::latest())
         .region(region_provider)
         .load()
         .await;
     let s3 = aws_sdk_s3::Client::new(&aws_cfg);
 
-    let email_service: Arc<dyn services::email::EmailService> = if cfg.smtp_host == "localhost" || cfg.smtp_host == "mailhog" {
-        Arc::new(services::email::LogOnlyEmailService::new(Arc::new(cfg.clone())))
-    } else {
-        Arc::new(services::email::SmtpEmailService::new(Arc::new(cfg.clone()))?)
-    };
+    let email_service: Arc<dyn services::email::EmailService> =
+        if cfg.smtp_host == "localhost" || cfg.smtp_host == "mailhog" {
+            Arc::new(services::email::LogOnlyEmailService::new(Arc::new(
+                cfg.clone(),
+            )))
+        } else {
+            Arc::new(services::email::SmtpEmailService::new(Arc::new(
+                cfg.clone(),
+            ))?)
+        };
 
     let state = state::AppState {
         db,

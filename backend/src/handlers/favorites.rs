@@ -1,10 +1,3 @@
-use axum::{
-    extract::{Path, Query, State},
-    http::StatusCode,
-    Json,
-};
-use std::sync::Arc;
-use uuid::Uuid;
 use crate::{
     dto::listing::{FavoritesIdsResponse, ListingFilters, ListingsPageResponse},
     error::AppError,
@@ -13,9 +6,18 @@ use crate::{
     services::favorites::FavoriteService,
     state::AppState,
 };
+use axum::{
+    extract::{Path, Query, State},
+    http::StatusCode,
+    Json,
+};
+use std::sync::Arc;
+use uuid::Uuid;
 
 fn favorite_service(state: &AppState) -> FavoriteService<PgFavoriteRepository> {
-    let repo = Arc::new(PgFavoriteRepository { pool: state.db.clone() });
+    let repo = Arc::new(PgFavoriteRepository {
+        pool: state.db.clone(),
+    });
     FavoriteService::new(repo, state.config.clone())
 }
 

@@ -7,7 +7,9 @@ use axum::{
 use uuid::Uuid;
 
 use crate::{
-    dto::image::{CommitImageRequest, ImageResponse, ReorderRequest, UploadUrlRequest, UploadUrlResponse},
+    dto::image::{
+        CommitImageRequest, ImageResponse, ReorderRequest, UploadUrlRequest, UploadUrlResponse,
+    },
     error::AppError,
     middleware::auth::AuthUser,
     repositories::images::PgImageRepository,

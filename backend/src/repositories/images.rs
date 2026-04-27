@@ -24,8 +24,16 @@ pub trait ImageRepository: Send + Sync {
         bytes: Option<i64>,
     ) -> Result<ListingImageDb, AppError>;
     async fn list_for_listing(&self, listing_id: Uuid) -> Result<Vec<ListingImageDb>, AppError>;
-    async fn reorder(&self, listing_id: Uuid, order: &[Uuid]) -> Result<Vec<ListingImageDb>, AppError>;
-    async fn delete_image(&self, listing_id: Uuid, image_id: Uuid) -> Result<Option<ListingImageDb>, AppError>;
+    async fn reorder(
+        &self,
+        listing_id: Uuid,
+        order: &[Uuid],
+    ) -> Result<Vec<ListingImageDb>, AppError>;
+    async fn delete_image(
+        &self,
+        listing_id: Uuid,
+        image_id: Uuid,
+    ) -> Result<Option<ListingImageDb>, AppError>;
 }
 
 #[derive(Debug, Clone)]
@@ -45,10 +53,12 @@ impl ImageRepository for PgImageRepository {
     }
 
     async fn count_for_listing(&self, listing_id: Uuid) -> Result<i64, AppError> {
-        let count = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM listing_images WHERE listing_id = $1")
-            .bind(listing_id)
-            .fetch_one(&self.pool)
-            .await?;
+        let count = sqlx::query_scalar::<_, i64>(
+            "SELECT COUNT(*) FROM listing_images WHERE listing_id = $1",
+        )
+        .bind(listing_id)
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(count)
     }
@@ -100,25 +110,33 @@ impl ImageRepository for PgImageRepository {
         Ok(rows)
     }
 
-    async fn reorder(&self, listing_id: Uuid, order: &[Uuid]) -> Result<Vec<ListingImageDb>, AppError> {
+    async fn reorder(
+        &self,
+        listing_id: Uuid,
+        order: &[Uuid],
+    ) -> Result<Vec<ListingImageDb>, AppError> {
         let mut tx = self.pool.begin().await?;
 
         for (index, image_id) in order.iter().enumerate() {
-            sqlx::query("UPDATE listing_images SET position = $1 WHERE id = $2 AND listing_id = $3")
-                .bind(-((index as i32) + 1))
-                .bind(image_id)
-                .bind(listing_id)
-                .execute(&mut *tx)
-                .await?;
+            sqlx::query(
+                "UPDATE listing_images SET position = $1 WHERE id = $2 AND listing_id = $3",
+            )
+            .bind(-((index as i32) + 1))
+            .bind(image_id)
+            .bind(listing_id)
+            .execute(&mut *tx)
+            .await?;
         }
 
         for (index, image_id) in order.iter().enumerate() {
-            sqlx::query("UPDATE listing_images SET position = $1 WHERE id = $2 AND listing_id = $3")
-                .bind(index as i32)
-                .bind(image_id)
-                .bind(listing_id)
-                .execute(&mut *tx)
-                .await?;
+            sqlx::query(
+                "UPDATE listing_images SET position = $1 WHERE id = $2 AND listing_id = $3",
+            )
+            .bind(index as i32)
+            .bind(image_id)
+            .bind(listing_id)
+            .execute(&mut *tx)
+            .await?;
         }
 
         tx.commit().await?;
@@ -126,7 +144,11 @@ impl ImageRepository for PgImageRepository {
         self.list_for_listing(listing_id).await
     }
 
-    async fn delete_image(&self, listing_id: Uuid, image_id: Uuid) -> Result<Option<ListingImageDb>, AppError> {
+    async fn delete_image(
+        &self,
+        listing_id: Uuid,
+        image_id: Uuid,
+    ) -> Result<Option<ListingImageDb>, AppError> {
         let mut tx = self.pool.begin().await?;
 
         let deleted = sqlx::query_as::<_, ListingImageDb>(

@@ -1,19 +1,24 @@
-use axum::{extract::State, Json};
-use std::sync::Arc;
 use crate::{
     dto::auth::UserSummary,
     error::AppError,
     middleware::auth::AuthUser,
-    repositories::{users::PgUserRepository, email_tokens::EmailTokenRepository, password_tokens::PasswordTokenRepository},
+    repositories::{
+        email_tokens::EmailTokenRepository, password_tokens::PasswordTokenRepository,
+        users::PgUserRepository,
+    },
     services::auth::AuthService,
     state::AppState,
 };
+use axum::{extract::State, Json};
+use std::sync::Arc;
 
 pub async fn me(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,
 ) -> Result<Json<UserSummary>, AppError> {
-    let repo = Arc::new(PgUserRepository { pool: state.db.clone() });
+    let repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
     let email_token_repo = EmailTokenRepository::new(state.db.clone());
     let password_token_repo = PasswordTokenRepository::new(state.db.clone());
     let svc = AuthService::new(

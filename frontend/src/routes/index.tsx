@@ -16,6 +16,12 @@ const ListingDetailPage = lazy(() =>
   })),
 );
 
+const CreateListingPage = lazy(() =>
+  import("@/modules/create-listing/pages/CreateListingPage").then((m) => ({
+    default: m.CreateListingPage,
+  })),
+);
+
 const LoginPage = lazy(() =>
   import("@/modules/auth/pages/LoginPage").then((m) => ({
     default: m.LoginPage,
@@ -52,6 +58,12 @@ const ResetPasswordPage = lazy(() =>
   })),
 );
 
+const EditListingPage = lazy(() =>
+  import("@/modules/listings/pages/EditListingPage").then((m) => ({
+    default: m.EditListingPage,
+  })),
+);
+
 function PageLoader() {
   return (
     <main className="pt-24 flex-1">
@@ -71,6 +83,9 @@ export function AppRoutes() {
         <Route path="/" element={<HomePage />} />
         <Route path="/categorii/:slug" element={<CategoryPage />} />
         <Route path="/anunturi/:id" element={<ListingDetailPage />} />
+        <Route path="/anunturi/:id/editeaza" element={<EditListingPage />} />
+        <Route path="/adauga-anunt" element={<CreateListingPage />} />
+        <Route path="/adauga-anunt/:draftId" element={<CreateListingPage />} />
         <Route path="/autentificare" element={<LoginPage />} />
         <Route path="/inregistrare" element={<RegisterPage />} />
         <Route path="/verifica-email" element={<EmailVerifyPage />} />

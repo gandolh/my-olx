@@ -8,6 +8,9 @@ import { ListingDescription } from "../components/ListingDescription";
 import { PricingCard } from "../components/PricingCard";
 import { SellerCard } from "../components/SellerCard";
 import { RelatedListings } from "../components/RelatedListings";
+import { useMemo } from "react";
+import { format } from "date-fns";
+import { ro } from "date-fns/locale";
 
 function PageLoader() {
   return (
@@ -35,15 +38,27 @@ export function ListingDetailPage() {
   const { data, isFetching, isError, refetch } = useListingDetail(id);
   const relatedListings = useRelatedListings(id);
 
+  const isExpired = useMemo(() => {
+    if (!data?.expiresAt) return false;
+    return new Date(data.expiresAt) < new Date();
+  }, [data?.expiresAt]);
+
   if (isFetching) return <PageLoader />;
 
   if (isError || !data) {
     return (
-      <main className="pt-28 pb-20 px-4 md:px-8 max-w-screen-2xl mx-auto flex items-center justify-center min-h-[50vh]">
+      <main className="pt-28 pb-20 px-4 md:px-8 max-w-screen-2xl mx-auto flex flex-col items-center justify-center min-h-[50vh] space-y-6">
         <ErrorCard
-          message="Nu am putut încărca anunțul."
+          message="Anunțul nu a fost găsit sau a fost dezactivat."
           onRetry={() => refetch()}
         />
+        <Link
+          to="/"
+          className="text-primary font-bold hover:underline flex items-center gap-2"
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+          Înapoi la pagina principală
+        </Link>
       </main>
     );
   }
@@ -55,6 +70,23 @@ export function ListingDetailPage() {
 
   return (
     <main className="pt-28 pb-20 px-4 md:px-8 max-w-screen-2xl mx-auto">
+      {(isExpired || !data.active) && (
+        <div className="mb-6 flex gap-3">
+          {isExpired && (
+            <div className="bg-error-container text-on-error-container px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+              <span className="material-symbols-outlined">timer_off</span>
+              Anunț Expirat
+            </div>
+          )}
+          {!data.active && (
+            <div className="bg-surface-container-highest text-on-surface-variant px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+              <span className="material-symbols-outlined">visibility_off</span>
+              Anunț Inactiv
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Breadcrumbs */}
       <nav
         className="flex items-center gap-2 mb-8 text-xs font-medium tracking-widest text-outline uppercase"
@@ -101,12 +133,24 @@ export function ListingDetailPage() {
             description={data.description}
             features={[]}
           />
+
+          <div className="pt-8 border-t border-surface-container-high text-xs text-outline flex items-center gap-4">
+            <span>
+              Postat la:{" "}
+              {format(new Date(data.postedAt), "d MMMM yyyy, HH:mm", {
+                locale: ro,
+              })}
+            </span>
+            <span>•</span>
+            <span>ID: {data.id}</span>
+          </div>
         </div>
 
         {/* Right column — sticky */}
         <div className="lg:col-span-4 sticky top-28 space-y-6">
           <PricingCard
             listingId={data.id}
+            sellerId={data.seller.id}
             title={data.title}
             priceRon={data.priceRon}
             location={data.city}

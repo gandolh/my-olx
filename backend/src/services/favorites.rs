@@ -1,11 +1,13 @@
-use std::sync::Arc;
-use uuid::Uuid;
 use crate::{
     config::Config,
-    dto::listing::{FavoritesIdsResponse, ListingCardResponse, ListingsPageResponse, ListingFilters},
+    dto::listing::{
+        FavoritesIdsResponse, ListingCardResponse, ListingFilters, ListingsPageResponse,
+    },
     error::AppError,
     repositories::favorites::{FavoriteListingRow, FavoriteRepository},
 };
+use std::sync::Arc;
+use uuid::Uuid;
 
 pub struct FavoriteService<R: FavoriteRepository> {
     repo: Arc<R>,
@@ -30,13 +32,24 @@ impl<R: FavoriteRepository> FavoriteService<R> {
         Ok(FavoritesIdsResponse { ids })
     }
 
-    pub async fn list(&self, user_id: Uuid, filters: &ListingFilters) -> Result<ListingsPageResponse, AppError> {
+    pub async fn list(
+        &self,
+        user_id: Uuid,
+        filters: &ListingFilters,
+    ) -> Result<ListingsPageResponse, AppError> {
         let (rows, total_count) = self.repo.list(user_id, filters).await?;
         let per_page = filters.per_page();
-        let total_pages = if total_count == 0 { 0 } else { (total_count + per_page - 1) / per_page };
+        let total_pages = if total_count == 0 {
+            0
+        } else {
+            (total_count + per_page - 1) / per_page
+        };
 
         Ok(ListingsPageResponse {
-            listings: rows.into_iter().map(|row| map_row(row, &self.config)).collect(),
+            listings: rows
+                .into_iter()
+                .map(|row| map_row(row, &self.config))
+                .collect(),
             total_count,
             total_pages,
             page: filters.page(),

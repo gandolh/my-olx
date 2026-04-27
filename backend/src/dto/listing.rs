@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, Clone)]
 pub struct CreateListingRequest {
     #[validate(length(min = 5, max = 200, message = "title must be 5-200 characters"))]
     pub title: String,
@@ -15,6 +15,26 @@ pub struct CreateListingRequest {
     pub category: String,
     #[validate(length(min = 1, message = "city is required"))]
     pub city: String,
+    pub active: Option<bool>,
+}
+
+#[derive(Debug, Default, Deserialize, Validate, Clone)]
+pub struct UpdateListingRequest {
+    #[validate(length(min = 5, max = 200, message = "title must be 5-200 characters"))]
+    pub title: Option<String>,
+    #[validate(length(
+        min = 10,
+        max = 5000,
+        message = "description must be 10-5000 characters"
+    ))]
+    pub description: Option<String>,
+    pub price_ron: Option<Option<i64>>,
+    pub is_negotiable: Option<bool>,
+    #[validate(length(min = 1, message = "category is required"))]
+    pub category: Option<String>,
+    #[validate(length(min = 1, message = "city is required"))]
+    pub city: Option<String>,
+    pub active: Option<bool>,
 }
 
 #[derive(Debug, Deserialize, Default, Clone)]

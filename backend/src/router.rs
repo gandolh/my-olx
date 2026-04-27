@@ -1,10 +1,10 @@
+use crate::{routes, state::AppState};
 use axum::Router;
 use tower_http::{
     compression::CompressionLayer,
     cors::{Any, CorsLayer},
     trace::TraceLayer,
 };
-use crate::{routes, state::AppState};
 
 pub fn build(state: AppState) -> Router {
     let cors = CorsLayer::new()

@@ -1,5 +1,5 @@
-use axum::{routing::post, Router};
 use crate::{handlers::auth, state::AppState};
+use axum::{routing::post, Router};
 
 pub fn router() -> Router<AppState> {
     Router::new()

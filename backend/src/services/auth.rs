@@ -1,24 +1,23 @@
-use std::sync::Arc;
-use base64::Engine;
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Argon2,
-};
-use jsonwebtoken::{encode, EncodingKey, Header};
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
-use chrono::Utc;
-use rand::Rng;
 use crate::{
     dto::auth::{AuthResponse, UserSummary},
     error::AppError,
     repositories::{
+        email_tokens::EmailTokenRepository, password_tokens::PasswordTokenRepository,
         users::UserRepository,
-        email_tokens::EmailTokenRepository,
-        password_tokens::PasswordTokenRepository,
     },
     services::email::EmailService,
 };
+use argon2::{
+    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
+    Argon2,
+};
+use base64::Engine;
+use chrono::Utc;
+use jsonwebtoken::{encode, EncodingKey, Header};
+use rand::Rng;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize)]
 struct Claims {
@@ -64,18 +63,28 @@ impl<R: UserRepository> AuthService<R> {
             .map_err(|e| AppError::Internal(anyhow::anyhow!("hash error: {}", e)))?
             .to_string();
         let user = self.user_repo.create(email, &hash).await?;
-        
+
         let verify_token = self.generate_token();
-        self.email_token_repo.create(user.id, &verify_token, 24).await?;
-        self.email_service.send_verification_email(&user.email, &verify_token).await?;
-        
+        self.email_token_repo
+            .create(user.id, &verify_token, 24)
+            .await?;
+        self.email_service
+            .send_verification_email(&user.email, &verify_token)
+            .await?;
+
         let token = self.make_token(user.id)?;
         let user_summary = self.user_to_summary(&user);
-        Ok(AuthResponse { token, user: user_summary })
+        Ok(AuthResponse {
+            token,
+            user: user_summary,
+        })
     }
 
     pub async fn login(&self, email: &str, password: &str) -> Result<AuthResponse, AppError> {
-        let user = self.user_repo.find_by_email(email).await?
+        let user = self
+            .user_repo
+            .find_by_email(email)
+            .await?
             .ok_or(AppError::Unauthorized)?;
         let parsed = PasswordHash::new(&user.password_hash)
             .map_err(|e| AppError::Internal(anyhow::anyhow!("hash parse error: {}", e)))?;
@@ -84,82 +93,109 @@ impl<R: UserRepository> AuthService<R> {
             .map_err(|_| AppError::Unauthorized)?;
         let token = self.make_token(user.id)?;
         let user_summary = self.user_to_summary(&user);
-        Ok(AuthResponse { token, user: user_summary })
+        Ok(AuthResponse {
+            token,
+            user: user_summary,
+        })
     }
 
     pub async fn verify_email(&self, token: &str) -> Result<(), AppError> {
-        let email_token = self.email_token_repo.find_by_token(token).await?
+        let email_token = self
+            .email_token_repo
+            .find_by_token(token)
+            .await?
             .ok_or(AppError::NotFound)?;
-        
+
         if email_token.used_at.is_some() {
             return Err(AppError::Validation("Token already used".into()));
         }
-        
+
         if email_token.expires_at < Utc::now() {
             return Err(AppError::Validation("Token expired".into()));
         }
-        
-        self.user_repo.set_email_verified(email_token.user_id).await?;
+
+        self.user_repo
+            .set_email_verified(email_token.user_id)
+            .await?;
         self.email_token_repo.mark_used(token).await?;
-        
+
         Ok(())
     }
 
     pub async fn resend_verification(&self, user_id: Uuid) -> Result<(), AppError> {
-        let user = self.user_repo.find_by_id(user_id).await?
+        let user = self
+            .user_repo
+            .find_by_id(user_id)
+            .await?
             .ok_or(AppError::NotFound)?;
-        
+
         if user.email_verified {
             return Err(AppError::Validation("Email already verified".into()));
         }
-        
+
         self.email_token_repo.delete_for_user(user_id).await?;
-        
+
         let verify_token = self.generate_token();
-        self.email_token_repo.create(user_id, &verify_token, 24).await?;
-        self.email_service.send_verification_email(&user.email, &verify_token).await?;
-        
+        self.email_token_repo
+            .create(user_id, &verify_token, 24)
+            .await?;
+        self.email_service
+            .send_verification_email(&user.email, &verify_token)
+            .await?;
+
         Ok(())
     }
 
     pub async fn forgot_password(&self, email: &str) -> Result<(), AppError> {
         if let Some(user) = self.user_repo.find_by_email(email).await? {
             self.password_token_repo.delete_for_user(user.id).await?;
-            
+
             let reset_token = self.generate_token();
-            self.password_token_repo.create(user.id, &reset_token, 1).await?;
-            self.email_service.send_password_reset_email(&user.email, &reset_token).await?;
+            self.password_token_repo
+                .create(user.id, &reset_token, 1)
+                .await?;
+            self.email_service
+                .send_password_reset_email(&user.email, &reset_token)
+                .await?;
         }
-        
+
         Ok(())
     }
 
     pub async fn reset_password(&self, token: &str, new_password: &str) -> Result<(), AppError> {
-        let password_token = self.password_token_repo.find_by_token(token).await?
+        let password_token = self
+            .password_token_repo
+            .find_by_token(token)
+            .await?
             .ok_or(AppError::NotFound)?;
-        
+
         if password_token.used_at.is_some() {
             return Err(AppError::Validation("Token already used".into()));
         }
-        
+
         if password_token.expires_at < Utc::now() {
             return Err(AppError::Validation("Token expired".into()));
         }
-        
+
         let salt = SaltString::generate(&mut OsRng);
         let hash = Argon2::default()
             .hash_password(new_password.as_bytes(), &salt)
             .map_err(|e| AppError::Internal(anyhow::anyhow!("hash error: {}", e)))?
             .to_string();
-        
-        self.user_repo.update_password_hash(password_token.user_id, &hash).await?;
+
+        self.user_repo
+            .update_password_hash(password_token.user_id, &hash)
+            .await?;
         self.password_token_repo.mark_used(token).await?;
-        
+
         Ok(())
     }
 
     pub async fn get_user_summary(&self, user_id: Uuid) -> Result<UserSummary, AppError> {
-        let user = self.user_repo.find_by_id(user_id).await?
+        let user = self
+            .user_repo
+            .find_by_id(user_id)
+            .await?
             .ok_or(AppError::NotFound)?;
         Ok(self.user_to_summary(&user))
     }
@@ -181,7 +217,10 @@ impl<R: UserRepository> AuthService<R> {
 
     fn make_token(&self, user_id: Uuid) -> Result<String, AppError> {
         let exp = (chrono::Utc::now().timestamp() as u64 + self.jwt_expiry_seconds) as usize;
-        let claims = Claims { sub: user_id.to_string(), exp };
+        let claims = Claims {
+            sub: user_id.to_string(),
+            exp,
+        };
         encode(
             &Header::default(),
             &claims,
@@ -194,10 +233,10 @@ impl<R: UserRepository> AuthService<R> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{models::user::User, error::AppError};
+    use crate::{error::AppError, models::user::User};
     use async_trait::async_trait;
-    use uuid::Uuid;
     use chrono::Utc;
+    use uuid::Uuid;
 
     struct MockUserRepo {
         user: Option<User>,
@@ -227,7 +266,11 @@ mod tests {
         async fn set_email_verified(&self, _id: Uuid) -> Result<(), AppError> {
             Ok(())
         }
-        async fn update_password_hash(&self, _id: Uuid, _password_hash: &str) -> Result<(), AppError> {
+        async fn update_password_hash(
+            &self,
+            _id: Uuid,
+            _password_hash: &str,
+        ) -> Result<(), AppError> {
             Ok(())
         }
     }

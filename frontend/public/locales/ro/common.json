@@ -23,7 +23,37 @@
     "ctaHowItWorks": "Cum funcționează?"
   },
   "listing": {
-    "verified": "VERIFICAT"
+    "verified": "VERIFICAT",
+    "status": {
+      "active": "Activ",
+      "paused": "Pauzat",
+      "expired": "Expirat"
+    },
+    "actions": {
+      "edit": "Editează",
+      "renew": "Reînnoiește",
+      "deactivate": "Pauzează",
+      "activate": "Activează",
+      "delete": "Șterge"
+    }
+  },
+  "edit": {
+    "title": "Editează anunțul",
+    "save": "Salvează modificările",
+    "cancel": "Anulează",
+    "success": "Anunț actualizat cu succes",
+    "sections": {
+      "details": "Detalii",
+      "photos": "Fotografii",
+      "locationPrice": "Locație și preț",
+      "status": "Status"
+    }
+  },
+  "renew": {
+    "button": "Reînnoiește (+30 zile)",
+    "remaining": "Expiră în {{days}} zile",
+    "expired": "Expirat",
+    "success": "Anunț reînnoit pentru 30 de zile"
   },
   "favorites": {
     "title": "Favoritele mele",

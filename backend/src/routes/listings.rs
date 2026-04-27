@@ -1,14 +1,26 @@
+use crate::{handlers::listings, routes::images, state::AppState};
 use axum::{
-    routing::get,
+    routing::{delete, get, patch, post},
     Router,
 };
-use crate::{handlers::listings, routes::images, state::AppState};
 
 pub fn router() -> Router<AppState> {
     Router::new()
-        .route("/", get(listings::list_public).post(listings::create_listing))
+        .route(
+            "/",
+            get(listings::list_public).post(listings::create_listing),
+        )
         .route("/featured", get(listings::list_featured))
-        .route("/:id", get(listings::get_listing).delete(listings::delete_listing))
+        .route(
+            "/:id",
+            get(listings::get_listing)
+                .patch(listings::update_listing)
+                .delete(listings::delete_listing),
+        )
+        .route("/:id/publish", post(listings::publish_listing))
+        .route("/:id/renew", post(listings::renew_listing))
+        .route("/:id/deactivate", post(listings::deactivate_listing))
+        .route("/:id/activate", post(listings::activate_listing))
         .route("/:id/related", get(listings::get_related))
         .nest("/:id/images", images::router())
 }

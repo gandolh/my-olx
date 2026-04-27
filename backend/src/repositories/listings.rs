@@ -1,11 +1,11 @@
-use async_trait::async_trait;
-use chrono::{DateTime, Utc};
-use uuid::Uuid;
 use crate::{
-    dto::listing::{CreateListingRequest, ListingFilters},
+    dto::listing::{CreateListingRequest, ListingFilters, UpdateListingRequest},
     error::AppError,
     models::listing::Listing,
 };
+use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct ListingCardRow {
@@ -52,16 +52,39 @@ pub struct ListingImageRow {
 
 #[async_trait]
 pub trait ListingRepository: Send + Sync {
-    async fn create(&self, user_id: Uuid, data: &CreateListingRequest) -> Result<Listing, AppError>;
-    async fn list_by_user(&self, user_id: Uuid) -> Result<Vec<Listing>, AppError>;
+    async fn create(&self, user_id: Uuid, data: &CreateListingRequest)
+        -> Result<Listing, AppError>;
+    async fn list_by_user(
+        &self,
+        user_id: Uuid,
+        active: Option<bool>,
+    ) -> Result<Vec<Listing>, AppError>;
     async fn delete(&self, id: Uuid, owner_id: Uuid) -> Result<(), AppError>;
     async fn count_this_week(&self, user_id: Uuid) -> Result<i64, AppError>;
-    async fn search(&self, filters: &ListingFilters) -> Result<(Vec<ListingCardRow>, i64), AppError>;
+    async fn search(
+        &self,
+        filters: &ListingFilters,
+    ) -> Result<(Vec<ListingCardRow>, i64), AppError>;
     async fn featured(&self, limit: i64) -> Result<Vec<ListingCardRow>, AppError>;
+    async fn find_by_id(&self, id: Uuid) -> Result<Option<Listing>, AppError>;
     async fn find_detail(&self, id: Uuid) -> Result<Option<ListingDetailRow>, AppError>;
     async fn list_images(&self, listing_id: Uuid) -> Result<Vec<ListingImageRow>, AppError>;
     async fn increment_view_count(&self, id: Uuid) -> Result<(), AppError>;
-    async fn list_related(&self, category: &str, exclude_id: Uuid, limit: i64) -> Result<Vec<ListingCardRow>, AppError>;
+    async fn list_related(
+        &self,
+        category: &str,
+        exclude_id: Uuid,
+        limit: i64,
+    ) -> Result<Vec<ListingCardRow>, AppError>;
+    async fn update(
+        &self,
+        id: Uuid,
+        owner_id: Uuid,
+        patch: &UpdateListingRequest,
+    ) -> Result<Listing, AppError>;
+    async fn renew(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError>;
+    async fn set_active(&self, id: Uuid, owner_id: Uuid, active: bool) -> Result<Listing, AppError>;
+    async fn publish(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError>;
 }
 
 pub struct PgListingRepository {
@@ -70,11 +93,15 @@ pub struct PgListingRepository {
 
 #[async_trait]
 impl ListingRepository for PgListingRepository {
-    async fn create(&self, user_id: Uuid, data: &CreateListingRequest) -> Result<Listing, AppError> {
+    async fn create(
+        &self,
+        user_id: Uuid,
+        data: &CreateListingRequest,
+    ) -> Result<Listing, AppError> {
         let listing = sqlx::query_as::<_, Listing>(
             r#"
             INSERT INTO listings (id, user_id, title, description, price_ron, is_negotiable, category, city, active, view_count, expires_at, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, 0, NOW() + INTERVAL '30 days', NOW(), NOW())
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0, NOW() + INTERVAL '30 days', NOW(), NOW())
             RETURNING *
             "#,
         )
@@ -86,18 +113,33 @@ impl ListingRepository for PgListingRepository {
         .bind(data.is_negotiable)
         .bind(&data.category)
         .bind(&data.city)
+        .bind(data.active.unwrap_or(true))
         .fetch_one(&self.pool)
         .await?;
         Ok(listing)
     }
 
-    async fn list_by_user(&self, user_id: Uuid) -> Result<Vec<Listing>, AppError> {
-        let listings = sqlx::query_as::<_, Listing>(
-            "SELECT * FROM listings WHERE user_id = $1 ORDER BY created_at DESC",
-        )
-        .bind(user_id)
-        .fetch_all(&self.pool)
-        .await?;
+    async fn list_by_user(
+        &self,
+        user_id: Uuid,
+        active: Option<bool>,
+    ) -> Result<Vec<Listing>, AppError> {
+        let listings = if let Some(active) = active {
+            sqlx::query_as::<_, Listing>(
+                "SELECT * FROM listings WHERE user_id = $1 AND active = $2 ORDER BY created_at DESC",
+            )
+            .bind(user_id)
+            .bind(active)
+            .fetch_all(&self.pool)
+            .await?
+        } else {
+            sqlx::query_as::<_, Listing>(
+                "SELECT * FROM listings WHERE user_id = $1 ORDER BY created_at DESC",
+            )
+            .bind(user_id)
+            .fetch_all(&self.pool)
+            .await?
+        };
         Ok(listings)
     }
 
@@ -115,7 +157,7 @@ impl ListingRepository for PgListingRepository {
 
     async fn count_this_week(&self, user_id: Uuid) -> Result<i64, AppError> {
         let row: (i64,) = sqlx::query_as(
-            "SELECT COUNT(*) FROM listings WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '7 days'",
+            "SELECT COUNT(*) FROM listings WHERE user_id = $1 AND active = TRUE AND created_at >= NOW() - INTERVAL '7 days'",
         )
         .bind(user_id)
         .fetch_one(&self.pool)
@@ -123,7 +165,18 @@ impl ListingRepository for PgListingRepository {
         Ok(row.0)
     }
 
-    async fn search(&self, filters: &ListingFilters) -> Result<(Vec<ListingCardRow>, i64), AppError> {
+    async fn find_by_id(&self, id: Uuid) -> Result<Option<Listing>, AppError> {
+        let listing = sqlx::query_as::<_, Listing>("SELECT * FROM listings WHERE id = $1")
+            .bind(id)
+            .fetch_optional(&self.pool)
+            .await?;
+        Ok(listing)
+    }
+
+    async fn search(
+        &self,
+        filters: &ListingFilters,
+    ) -> Result<(Vec<ListingCardRow>, i64), AppError> {
         let query = filters.normalized_query();
         let rows = sqlx::query_as::<_, ListingCardRow>(
             r#"
@@ -288,7 +341,12 @@ impl ListingRepository for PgListingRepository {
         Ok(())
     }
 
-    async fn list_related(&self, category: &str, exclude_id: Uuid, limit: i64) -> Result<Vec<ListingCardRow>, AppError> {
+    async fn list_related(
+        &self,
+        category: &str,
+        exclude_id: Uuid,
+        limit: i64,
+    ) -> Result<Vec<ListingCardRow>, AppError> {
         let rows = sqlx::query_as::<_, ListingCardRow>(
             r#"
             SELECT
@@ -318,5 +376,107 @@ impl ListingRepository for PgListingRepository {
         .fetch_all(&self.pool)
         .await?;
         Ok(rows)
+    }
+
+    async fn update(
+        &self,
+        id: Uuid,
+        owner_id: Uuid,
+        patch: &UpdateListingRequest,
+    ) -> Result<Listing, AppError> {
+        let price_in_patch = patch.price_ron.is_some();
+        let price_value = patch.price_ron.clone().flatten();
+
+        let listing = sqlx::query_as::<_, Listing>(
+            r#"
+            UPDATE listings
+            SET title = COALESCE($3, title),
+                description = COALESCE($4, description),
+                price_ron = CASE WHEN $5 THEN $6 ELSE price_ron END,
+                is_negotiable = COALESCE($7, is_negotiable),
+                category = COALESCE($8, category),
+                city = COALESCE($9, city),
+                active = COALESCE($10, active),
+                updated_at = NOW()
+            WHERE id = $1 AND user_id = $2
+            RETURNING *
+            "#,
+        )
+        .bind(id)
+        .bind(owner_id)
+        .bind(patch.title.as_ref())
+        .bind(patch.description.as_ref())
+        .bind(price_in_patch)
+        .bind(price_value)
+        .bind(patch.is_negotiable)
+        .bind(patch.category.as_ref())
+        .bind(patch.city.as_ref())
+        .bind(patch.active)
+        .fetch_optional(&self.pool)
+        .await?
+        .ok_or(AppError::NotFound)?;
+
+        Ok(listing)
+    }
+
+    async fn renew(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError> {
+        let listing = sqlx::query_as::<_, Listing>(
+            r#"
+            UPDATE listings
+            SET expires_at = NOW() + INTERVAL '30 days',
+                active = TRUE,
+                updated_at = NOW()
+            WHERE id = $1 AND user_id = $2
+            RETURNING *
+            "#,
+        )
+        .bind(id)
+        .bind(owner_id)
+        .fetch_optional(&self.pool)
+        .await?
+        .ok_or(AppError::NotFound)?;
+
+        Ok(listing)
+    }
+
+    async fn set_active(&self, id: Uuid, owner_id: Uuid, active: bool) -> Result<Listing, AppError> {
+        let listing = sqlx::query_as::<_, Listing>(
+            r#"
+            UPDATE listings
+            SET active = $3,
+                updated_at = NOW()
+            WHERE id = $1 AND user_id = $2
+            RETURNING *
+            "#,
+        )
+        .bind(id)
+        .bind(owner_id)
+        .bind(active)
+        .fetch_optional(&self.pool)
+        .await?
+        .ok_or(AppError::NotFound)?;
+
+        Ok(listing)
+    }
+
+    async fn publish(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError> {
+        let listing = sqlx::query_as::<_, Listing>(
+            r#"
+            UPDATE listings
+            SET active = TRUE,
+                expires_at = NOW() + INTERVAL '30 days',
+                created_at = NOW(),
+                updated_at = NOW()
+            WHERE id = $1 AND user_id = $2
+            RETURNING *
+            "#,
+        )
+        .bind(id)
+        .bind(owner_id)
+        .fetch_optional(&self.pool)
+        .await?
+        .ok_or(AppError::NotFound)?;
+
+        Ok(listing)
     }
 }

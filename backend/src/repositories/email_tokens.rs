@@ -1,7 +1,7 @@
+use crate::error::AppError;
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
-use crate::error::AppError;
 
 #[derive(sqlx::FromRow)]
 pub struct EmailVerificationToken {
@@ -21,12 +21,12 @@ impl EmailTokenRepository {
 
     pub async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError> {
         let expires_at = Utc::now() + chrono::Duration::hours(ttl_hours);
-        
+
         sqlx::query(
             r#"
             INSERT INTO email_verification_tokens (user_id, token, expires_at)
             VALUES ($1, $2, $3)
-            "#
+            "#,
         )
         .bind(user_id)
         .bind(token)
@@ -38,13 +38,16 @@ impl EmailTokenRepository {
         Ok(())
     }
 
-    pub async fn find_by_token(&self, token: &str) -> Result<Option<EmailVerificationToken>, AppError> {
+    pub async fn find_by_token(
+        &self,
+        token: &str,
+    ) -> Result<Option<EmailVerificationToken>, AppError> {
         let result = sqlx::query_as::<_, EmailVerificationToken>(
             r#"
             SELECT user_id, expires_at, used_at
             FROM email_verification_tokens
             WHERE token = $1
-            "#
+            "#,
         )
         .bind(token)
         .fetch_optional(&self.pool)
@@ -60,7 +63,7 @@ impl EmailTokenRepository {
             UPDATE email_verification_tokens
             SET used_at = NOW()
             WHERE token = $1 AND used_at IS NULL
-            "#
+            "#,
         )
         .bind(token)
         .execute(&self.pool)
@@ -68,7 +71,9 @@ impl EmailTokenRepository {
         .map_err(|e| AppError::Internal(anyhow::anyhow!("Failed to mark token as used: {}", e)))?;
 
         if result.rows_affected() == 0 {
-            return Err(AppError::Validation("Token already used or not found".into()));
+            return Err(AppError::Validation(
+                "Token already used or not found".into(),
+            ));
         }
 
         Ok(())
@@ -79,7 +84,7 @@ impl EmailTokenRepository {
             r#"
             DELETE FROM email_verification_tokens
             WHERE user_id = $1
-            "#
+            "#,
         )
         .bind(user_id)
         .execute(&self.pool)

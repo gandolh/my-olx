@@ -1,12 +1,8 @@
-use axum::{
-    async_trait,
-    extract::FromRequestParts,
-    http::request::Parts,
-};
+use crate::{error::AppError, state::AppState};
+use axum::{async_trait, extract::FromRequestParts, http::request::Parts};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use crate::{error::AppError, state::AppState};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Claims {
@@ -31,7 +27,10 @@ pub(crate) fn decode_token(token: &str, secret: &str) -> Result<Uuid, AppError> 
 impl FromRequestParts<AppState> for AuthUser {
     type Rejection = AppError;
 
-    async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> {
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
         let auth_header = parts
             .headers
             .get("Authorization")
@@ -52,12 +51,16 @@ mod tests {
         let user_id = Uuid::new_v4();
         let secret = "test-secret";
         let exp = (chrono::Utc::now().timestamp() as u64 + 3600) as usize;
-        let claims = Claims { sub: user_id.to_string(), exp };
+        let claims = Claims {
+            sub: user_id.to_string(),
+            exp,
+        };
         let token = jsonwebtoken::encode(
             &jsonwebtoken::Header::default(),
             &claims,
             &jsonwebtoken::EncodingKey::from_secret(secret.as_bytes()),
-        ).unwrap();
+        )
+        .unwrap();
         let result = decode_token(&token, secret);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), user_id);

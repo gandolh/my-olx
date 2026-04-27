@@ -5,7 +5,9 @@ use uuid::Uuid;
 
 use crate::{
     config::Config,
-    dto::image::{CommitImageRequest, ImageResponse, ReorderRequest, UploadUrlRequest, UploadUrlResponse},
+    dto::image::{
+        CommitImageRequest, ImageResponse, ReorderRequest, UploadUrlRequest, UploadUrlResponse,
+    },
     error::AppError,
     repositories::images::{ImageRepository, ListingImageDb},
 };
@@ -76,12 +78,20 @@ impl<R: ImageRepository> ImageService<R> {
 
         let prefix = format!("listings/{listing_id}/");
         if !body.s3_key.starts_with(&prefix) {
-            return Err(AppError::Validation("invalid s3 key for listing".to_string()));
+            return Err(AppError::Validation(
+                "invalid s3 key for listing".to_string(),
+            ));
         }
 
         let image = self
             .repo
-            .insert_image(listing_id, &body.s3_key, body.width, body.height, body.bytes)
+            .insert_image(
+                listing_id,
+                &body.s3_key,
+                body.width,
+                body.height,
+                body.bytes,
+            )
             .await?;
 
         Ok(to_response(image, &self.config))
@@ -106,7 +116,9 @@ impl<R: ImageRepository> ImageService<R> {
         got_ids.sort_unstable();
 
         if expected_ids != got_ids {
-            return Err(AppError::Validation("image order must include every listing image id".into()));
+            return Err(AppError::Validation(
+                "image order must include every listing image id".into(),
+            ));
         }
 
         let rows = self.repo.reorder(listing_id, &body.order).await?;
@@ -167,7 +179,9 @@ impl<R: ImageRepository> ImageService<R> {
 fn validate_content_type(value: &str) -> Result<(), AppError> {
     match value {
         "image/jpeg" | "image/png" | "image/webp" => Ok(()),
-        _ => Err(AppError::Validation("unsupported image content_type".to_string())),
+        _ => Err(AppError::Validation(
+            "unsupported image content_type".to_string(),
+        )),
     }
 }
 
@@ -194,7 +208,9 @@ fn extension_for(content_type: &str, filename: &str) -> Result<&'static str, App
         return Ok("webp");
     }
 
-    Err(AppError::Validation("unsupported file extension".to_string()))
+    Err(AppError::Validation(
+        "unsupported file extension".to_string(),
+    ))
 }
 
 fn public_url(config: &Config, s3_key: &str) -> String {

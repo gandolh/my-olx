@@ -1,7 +1,11 @@
 import { FavoriteToggle } from "@/modules/favorites/components/FavoriteToggle";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/lib/auth";
 
 interface PricingCardProps {
   listingId: string;
+  sellerId: string;
   title: string;
   priceRon: number | null;
   location: string;
@@ -10,11 +14,15 @@ interface PricingCardProps {
 
 export function PricingCard({
   listingId,
+  sellerId,
   title,
   priceRon,
   location,
   viewCount,
 }: PricingCardProps) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const isOwner = user?.id === sellerId;
   const formattedPrice =
     priceRon != null ? `${priceRon.toLocaleString("ro-RO")} RON` : "Gratuit";
 
@@ -34,14 +42,26 @@ export function PricingCard({
       </div>
 
       <div className="space-y-4">
-        <button className="w-full bg-primary text-on-primary py-4 rounded-full font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all">
-          <span className="material-symbols-outlined">chat</span>
-          Trimite Mesaj
-        </button>
-        <button className="w-full bg-secondary-container text-on-secondary-container py-4 rounded-full font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all">
-          <span className="material-symbols-outlined">call</span>
-          Arată Numărul de Telefon
-        </button>
+        {isOwner ? (
+          <Link
+            to={`/anunturi/${listingId}/editeaza`}
+            className="w-full bg-primary text-on-primary py-4 rounded-full font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all no-underline"
+          >
+            <span className="material-symbols-outlined">edit</span>
+            {t("listing.actions.edit")}
+          </Link>
+        ) : (
+          <>
+            <button className="w-full bg-primary text-on-primary py-4 rounded-full font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all">
+              <span className="material-symbols-outlined">chat</span>
+              Trimite Mesaj
+            </button>
+            <button className="w-full bg-secondary-container text-on-secondary-container py-4 rounded-full font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all">
+              <span className="material-symbols-outlined">call</span>
+              Arată Numărul de Telefon
+            </button>
+          </>
+        )}
       </div>
 
       <div className="flex items-center justify-between pt-4 border-t border-surface-container-high">

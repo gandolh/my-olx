@@ -1,7 +1,7 @@
+use crate::{dto::listing::ListingFilters, error::AppError};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use crate::{dto::listing::ListingFilters, error::AppError};
 
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct FavoriteListingRow {
@@ -22,7 +22,11 @@ pub trait FavoriteRepository: Send + Sync {
     async fn add(&self, user_id: Uuid, listing_id: Uuid) -> Result<(), AppError>;
     async fn remove(&self, user_id: Uuid, listing_id: Uuid) -> Result<(), AppError>;
     async fn list_ids(&self, user_id: Uuid) -> Result<Vec<Uuid>, AppError>;
-    async fn list(&self, user_id: Uuid, filters: &ListingFilters) -> Result<(Vec<FavoriteListingRow>, i64), AppError>;
+    async fn list(
+        &self,
+        user_id: Uuid,
+        filters: &ListingFilters,
+    ) -> Result<(Vec<FavoriteListingRow>, i64), AppError>;
 }
 
 pub struct PgFavoriteRepository {
@@ -66,7 +70,11 @@ impl FavoriteRepository for PgFavoriteRepository {
         Ok(rows.into_iter().map(|row| row.0).collect())
     }
 
-    async fn list(&self, user_id: Uuid, filters: &ListingFilters) -> Result<(Vec<FavoriteListingRow>, i64), AppError> {
+    async fn list(
+        &self,
+        user_id: Uuid,
+        filters: &ListingFilters,
+    ) -> Result<(Vec<FavoriteListingRow>, i64), AppError> {
         let page = filters.page();
         let per_page = filters.per_page();
         let offset = filters.offset();
@@ -98,12 +106,10 @@ impl FavoriteRepository for PgFavoriteRepository {
         .fetch_all(&self.pool)
         .await?;
 
-        let total_row: (i64,) = sqlx::query_as(
-            "SELECT COUNT(*) FROM favorites WHERE user_id = $1",
-        )
-        .bind(user_id)
-        .fetch_one(&self.pool)
-        .await?;
+        let total_row: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM favorites WHERE user_id = $1")
+            .bind(user_id)
+            .fetch_one(&self.pool)
+            .await?;
 
         let _ = page;
         Ok((rows, total_row.0))

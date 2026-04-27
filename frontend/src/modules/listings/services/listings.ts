@@ -1,37 +1,37 @@
-import { axiosInstance } from '@/lib/axios'
-import type { ListingCard, ListingDetail } from '@/types/listing'
-import { mapListingCard } from '@/modules/categories/services/listings'
+import { axiosInstance } from "@/lib/axios";
+import type { ListingCard, ListingDetail } from "@/types/listing";
+import { mapListingCard } from "@/modules/categories/services/listings";
 
 interface ListingImageApi {
-  id: string
-  url: string
-  position: number
+  id: string;
+  url: string;
+  position: number;
 }
 
 interface ListingSellerApi {
-  id: string
-  display_name: string | null
-  avatar_url: string | null
-  phone_verified: boolean
-  member_since: string
-  active_listings_count: number
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  phone_verified: boolean;
+  member_since: string;
+  active_listings_count: number;
 }
 
 interface ListingDetailApi {
-  id: string
-  title: string
-  description: string
-  price_ron: number | null
-  is_negotiable: boolean
-  category: string
-  category_label: string
-  city: string
-  images: ListingImageApi[]
-  view_count: number
-  posted_at: string
-  expires_at: string
-  active: boolean
-  seller: ListingSellerApi
+  id: string;
+  title: string;
+  description: string;
+  price_ron: number | null;
+  is_negotiable: boolean;
+  category: string;
+  category_label: string;
+  city: string;
+  images: ListingImageApi[];
+  view_count: number;
+  posted_at: string;
+  expires_at: string;
+  active: boolean;
+  seller: ListingSellerApi;
 }
 
 export function mapListingDetail(detail: ListingDetailApi): ListingDetail {
@@ -57,27 +57,75 @@ export function mapListingDetail(detail: ListingDetailApi): ListingDetail {
       memberSince: detail.seller.member_since,
       activeListingsCount: detail.seller.active_listings_count,
     },
-  }
+  };
+}
+
+export interface UpdateListingRequest {
+  title?: string;
+  description?: string;
+  price_ron?: number | null;
+  is_negotiable?: boolean;
+  category?: string;
+  city?: string;
+  active?: boolean;
+}
+
+export async function updateListing(
+  id: string,
+  patch: UpdateListingRequest,
+): Promise<ListingDetail> {
+  const response = await axiosInstance.patch<ListingDetailApi>(
+    `/listings/${id}`,
+    patch,
+  );
+  return mapListingDetail(response.data);
+}
+
+export async function renewListing(id: string): Promise<ListingDetail> {
+  const response = await axiosInstance.post<ListingDetailApi>(
+    `/listings/${id}/renew`,
+  );
+  return mapListingDetail(response.data);
+}
+
+export async function deactivateListing(id: string): Promise<ListingDetail> {
+  const response = await axiosInstance.post<ListingDetailApi>(
+    `/listings/${id}/deactivate`,
+  );
+  return mapListingDetail(response.data);
+}
+
+export async function activateListing(id: string): Promise<ListingDetail> {
+  const response = await axiosInstance.post<ListingDetailApi>(
+    `/listings/${id}/activate`,
+  );
+  return mapListingDetail(response.data);
+}
+
+export async function deleteListing(id: string): Promise<void> {
+  await axiosInstance.delete(`/listings/${id}`);
 }
 
 export async function fetchListingDetail(id: string): Promise<ListingDetail> {
-  const response = await axiosInstance.get<ListingDetailApi>(`/listings/${id}`)
-  return mapListingDetail(response.data)
+  const response = await axiosInstance.get<ListingDetailApi>(`/listings/${id}`);
+  return mapListingDetail(response.data);
 }
 
 export async function fetchRelatedListings(id: string): Promise<ListingCard[]> {
-  const response = await axiosInstance.get<Array<{
-    id: string
-    title: string
-    price_ron: number | null
-    city: string
-    category: string
-    cover_url: string | null
-    seller_verified: boolean
-    posted_at: string
-    active: boolean
-    expires_at: string
-  }>>(`/listings/${id}/related`)
+  const response = await axiosInstance.get<
+    Array<{
+      id: string;
+      title: string;
+      price_ron: number | null;
+      city: string;
+      category: string;
+      cover_url: string | null;
+      seller_verified: boolean;
+      posted_at: string;
+      active: boolean;
+      expires_at: string;
+    }>
+  >(`/listings/${id}/related`);
 
-  return response.data.map(mapListingCard)
+  return response.data.map(mapListingCard);
 }
