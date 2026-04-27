@@ -10,6 +10,7 @@ use crate::{
     repositories::listings::{ListingCardRow, ListingImageRow, ListingRepository},
     repositories::users::UserRepository,
 };
+use validator::Validate;
 use chrono::Utc;
 use std::sync::Arc;
 use uuid::Uuid;
@@ -111,7 +112,7 @@ impl<R: ListingRepository, U: UserRepository> ListingService<R, U> {
         }
 
         if active && listing.expires_at <= Utc::now() {
-            return Err(AppError::Conflict);
+            return Err(AppError::Conflict("listing has expired".into()));
         }
 
         let updated = self.repo.set_active(id, owner_id, active).await?;

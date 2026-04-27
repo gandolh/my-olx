@@ -78,7 +78,7 @@ impl MessagingService for MessagingServiceImpl {
         req: StartConversationRequest,
     ) -> Result<(ConversationSummary, MessageResponse), AppError> {
         if PHONE_REGEX.is_match(&req.body) {
-            return Err(AppError::ValidationError("Nu trimite numere de telefon în mesaje".into()));
+            return Err(AppError::Validation("Nu trimite numere de telefon în mesaje".into()));
         }
 
         let listing = self.listing_repo.find_by_id(listing_id).await?
@@ -91,7 +91,7 @@ impl MessagingService for MessagingServiceImpl {
         // Check rate limit
         let count = self.message_repo.count_user_messages_last_hour(buyer_id).await?;
         if count >= 30 {
-            return Err(AppError::TooManyRequests("Prea multe mesaje — încearcă peste câteva minute".into()));
+            return Err(AppError::RateLimit);
         }
 
         let conversation = if let Some(existing) = self.conversation_repo.find_by_listing_and_buyer(listing_id, buyer_id).await? {
@@ -173,7 +173,7 @@ impl MessagingService for MessagingServiceImpl {
         // Check rate limit
         let count = self.message_repo.count_user_messages_last_hour(sender_id).await?;
         if count >= 30 {
-            return Err(AppError::TooManyRequests("Prea multe mesaje — încearcă peste câteva minute".into()));
+            return Err(AppError::RateLimit);
         }
 
         let message_row = self.message_repo.create(conversation_id, sender_id, req.body).await?;
@@ -223,8 +223,10 @@ fn map_summary_row(row: ConversationSummaryRow) -> ConversationSummary {
         },
         counterparty: UserSummary {
             id: row.counterparty_id,
+            email: row.counterparty_email,
             display_name: row.counterparty_display_name,
             avatar_url: row.counterparty_avatar_url,
+            email_verified: row.counterparty_email_verified,
             phone_verified: row.counterparty_phone_verified,
             created_at: row.counterparty_created_at,
         },

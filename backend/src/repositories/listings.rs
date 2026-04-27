@@ -100,12 +100,11 @@ impl ListingRepository for PgListingRepository {
     ) -> Result<Listing, AppError> {
         let listing = sqlx::query_as::<_, Listing>(
             r#"
-            INSERT INTO listings (id, user_id, title, description, price_ron, is_negotiable, category, city, active, view_count, expires_at, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0, NOW() + INTERVAL '30 days', NOW(), NOW())
+            INSERT INTO listings (user_id, title, description, price_ron, is_negotiable, category, city, active, expires_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW() + INTERVAL '30 days')
             RETURNING *
             "#,
         )
-        .bind(Uuid::new_v4())
         .bind(user_id)
         .bind(&data.title)
         .bind(&data.description)

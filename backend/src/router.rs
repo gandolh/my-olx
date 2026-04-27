@@ -1,5 +1,5 @@
 use crate::{routes, state::AppState};
-use axum::Router;
+use axum::{routing::get, Router};
 use tower_http::{
     compression::CompressionLayer,
     cors::{Any, CorsLayer},

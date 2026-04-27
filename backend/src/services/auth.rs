@@ -25,20 +25,20 @@ struct Claims {
     exp: usize,
 }
 
-pub struct AuthService<R: UserRepository> {
+pub struct AuthService<R: UserRepository, E: EmailTokenRepository, P: PasswordTokenRepository> {
     pub user_repo: Arc<R>,
-    pub email_token_repo: EmailTokenRepository,
-    pub password_token_repo: PasswordTokenRepository,
+    pub email_token_repo: Arc<E>,
+    pub password_token_repo: Arc<P>,
     pub email_service: Arc<dyn EmailService>,
     pub jwt_secret: String,
     pub jwt_expiry_seconds: u64,
 }
 
-impl<R: UserRepository> AuthService<R> {
+impl<R: UserRepository, E: EmailTokenRepository, P: PasswordTokenRepository> AuthService<R, E, P> {
     pub fn new(
         user_repo: Arc<R>,
-        email_token_repo: EmailTokenRepository,
-        password_token_repo: PasswordTokenRepository,
+        email_token_repo: Arc<E>,
+        password_token_repo: Arc<P>,
         email_service: Arc<dyn EmailService>,
         jwt_secret: String,
         jwt_expiry_seconds: u64,
@@ -204,9 +204,11 @@ impl<R: UserRepository> AuthService<R> {
         UserSummary {
             id: user.id,
             email: user.email.clone(),
-            display_name: None,
+            display_name: user.display_name.clone(),
+            avatar_url: user.avatar_url.clone(),
             email_verified: user.email_verified,
             phone_verified: user.phone_verified,
+            created_at: user.created_at,
         }
     }
 
@@ -256,6 +258,7 @@ mod tests {
                 email: email.to_string(),
                 password_hash: password_hash.to_string(),
                 display_name: None,
+                avatar_url: None,
                 email_verified: false,
                 phone: None,
                 phone_verified: false,
@@ -275,9 +278,54 @@ mod tests {
         }
     }
 
-    fn make_service(user: Option<User>) -> AuthService<MockUserRepo> {
+    struct MockEmailTokenRepo;
+    #[async_trait]
+    impl EmailTokenRepository for MockEmailTokenRepo {
+        async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError> { 
+            let _ = (user_id, token, ttl_hours);
+            Ok(()) 
+        }
+        async fn find_by_token(&self, token: &str) -> Result<Option<crate::repositories::email_tokens::EmailVerificationToken>, AppError> { 
+            let _ = token;
+            Ok(None) 
+        }
+        async fn mark_used(&self, token: &str) -> Result<(), AppError> { 
+            let _ = token;
+            Ok(()) 
+        }
+        async fn delete_for_user(&self, user_id: Uuid) -> Result<(), AppError> { 
+            let _ = user_id;
+            Ok(()) 
+        }
+    }
+
+    struct MockPasswordTokenRepo;
+    #[async_trait]
+    impl PasswordTokenRepository for MockPasswordTokenRepo {
+        async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError> { 
+            let _ = (user_id, token, ttl_hours);
+            Ok(()) 
+        }
+        async fn find_by_token(&self, token: &str) -> Result<Option<crate::repositories::password_tokens::PasswordResetToken>, AppError> { 
+            let _ = token;
+            Ok(None) 
+        }
+        async fn mark_used(&self, token: &str) -> Result<(), AppError> { 
+            let _ = token;
+            Ok(()) 
+        }
+        async fn delete_for_user(&self, user_id: Uuid) -> Result<(), AppError> { 
+            let _ = user_id;
+            Ok(()) 
+        }
+    }
+
+    fn make_service(user: Option<User>) -> AuthService<MockUserRepo, MockEmailTokenRepo, MockPasswordTokenRepo> {
         AuthService {
             user_repo: Arc::new(MockUserRepo { user }),
+            email_token_repo: Arc::new(MockEmailTokenRepo),
+            password_token_repo: Arc::new(MockPasswordTokenRepo),
+            email_service: Arc::new(crate::services::email::LogOnlyEmailService::new(Arc::new(crate::config::Config::test_default()))),
             jwt_secret: "test-secret".to_string(),
             jwt_expiry_seconds: 3600,
         }
@@ -299,6 +347,7 @@ mod tests {
             email: "user@example.com".into(),
             password_hash: "hash".into(),
             display_name: None,
+            avatar_url: None,
             email_verified: false,
             phone: None,
             phone_verified: false,
@@ -322,6 +371,7 @@ mod tests {
             email: "user@example.com".into(),
             password_hash: hash,
             display_name: None,
+            avatar_url: None,
             email_verified: false,
             phone: None,
             phone_verified: false,

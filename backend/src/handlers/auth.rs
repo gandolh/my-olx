@@ -6,7 +6,8 @@ use crate::{
     error::AppError,
     middleware::auth::AuthUser,
     repositories::{
-        email_tokens::EmailTokenRepository, password_tokens::PasswordTokenRepository,
+        email_tokens::{PgEmailTokenRepository, EmailTokenRepository}, 
+        password_tokens::{PgPasswordTokenRepository, PasswordTokenRepository},
         users::PgUserRepository,
     },
     services::auth::AuthService,
@@ -25,8 +26,8 @@ pub async fn register(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,
@@ -48,8 +49,8 @@ pub async fn login(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,
@@ -73,8 +74,8 @@ pub async fn verify_email(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,
@@ -94,8 +95,8 @@ pub async fn resend_verification(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,
@@ -117,8 +118,8 @@ pub async fn forgot_password(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,
@@ -140,8 +141,8 @@ pub async fn reset_password(
     let repo = Arc::new(PgUserRepository {
         pool: state.db.clone(),
     });
-    let email_token_repo = EmailTokenRepository::new(state.db.clone());
-    let password_token_repo = PasswordTokenRepository::new(state.db.clone());
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
     let svc = AuthService::new(
         repo,
         email_token_repo,

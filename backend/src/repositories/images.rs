@@ -73,21 +73,18 @@ impl ImageRepository for PgImageRepository {
     ) -> Result<ListingImageDb, AppError> {
         let row = sqlx::query_as::<_, ListingImageDb>(
             r#"
-            INSERT INTO listing_images (id, listing_id, s3_key, width, height, bytes, position, created_at)
+            INSERT INTO listing_images (listing_id, s3_key, width, height, bytes, position)
             VALUES (
                 $1,
                 $2,
                 $3,
                 $4,
                 $5,
-                $6,
-                COALESCE((SELECT MAX(position) + 1 FROM listing_images WHERE listing_id = $2), 0),
-                NOW()
+                COALESCE((SELECT MAX(position) + 1 FROM listing_images WHERE listing_id = $1), 0)
             )
             RETURNING id, listing_id, s3_key, position
             "#,
         )
-        .bind(Uuid::new_v4())
         .bind(listing_id)
         .bind(s3_key)
         .bind(width)

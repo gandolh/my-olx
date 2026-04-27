@@ -21,6 +21,27 @@ pub struct Config {
 }
 
 impl Config {
+    #[cfg(test)]
+    pub fn test_default() -> Self {
+        Self {
+            database_url: "postgres://localhost/test".into(),
+            redis_url: "redis://localhost".into(),
+            jwt_secret: "secret".into(),
+            jwt_expiry_seconds: 3600,
+            aws_region: "eu-central-1".into(),
+            aws_s3_bucket: "bucket".into(),
+            s3_public_base_url: "http://localhost:4566/bucket".into(),
+            host: "0.0.0.0".into(),
+            port: 8080,
+            smtp_host: "localhost".into(),
+            smtp_port: 1025,
+            smtp_username: "user".into(),
+            smtp_password: "pass".into(),
+            smtp_from: "noreply@piataro.ro".into(),
+            frontend_base_url: "http://localhost:5173".into(),
+        }
+    }
+
     pub fn from_env() -> Result<Self, config::ConfigError> {
         dotenvy::dotenv().ok();
         config::Config::builder()

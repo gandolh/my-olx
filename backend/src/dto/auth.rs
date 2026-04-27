@@ -28,8 +28,10 @@ pub struct UserSummary {
     pub id: Uuid,
     pub email: String,
     pub display_name: Option<String>,
+    pub avatar_url: Option<String>,
     pub email_verified: bool,
     pub phone_verified: bool,
+    pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
 #[derive(Debug, Deserialize, Validate)]

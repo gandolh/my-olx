@@ -1,4 +1,4 @@
-use crate::{error::AppError, repositories::listings::ListingCardRow};
+use crate::error::AppError;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
@@ -32,8 +32,10 @@ pub struct ConversationSummaryRow {
     pub listing_expires_at: DateTime<Utc>,
     // Counterparty fields
     pub counterparty_id: Uuid,
+    pub counterparty_email: String,
     pub counterparty_display_name: Option<String>,
     pub counterparty_avatar_url: Option<String>,
+    pub counterparty_email_verified: bool,
     pub counterparty_phone_verified: bool,
     pub counterparty_created_at: DateTime<Utc>,
     // Last message fields
@@ -141,8 +143,10 @@ impl ConversationRepository for PgConversationRepository {
                 l.active as listing_active,
                 l.expires_at as listing_expires_at,
                 u_other.id as counterparty_id,
+                u_other.email as counterparty_email,
                 u_other.display_name as counterparty_display_name,
                 u_other.avatar_url as counterparty_avatar_url,
+                u_other.email_verified as counterparty_email_verified,
                 u_other.phone_verified as counterparty_phone_verified,
                 u_other.created_at as counterparty_created_at,
                 m_last.body as last_message_body,
@@ -201,8 +205,10 @@ impl ConversationRepository for PgConversationRepository {
                 l.active as listing_active,
                 l.expires_at as listing_expires_at,
                 u_other.id as counterparty_id,
+                u_other.email as counterparty_email,
                 u_other.display_name as counterparty_display_name,
                 u_other.avatar_url as counterparty_avatar_url,
+                u_other.email_verified as counterparty_email_verified,
                 u_other.phone_verified as counterparty_phone_verified,
                 u_other.created_at as counterparty_created_at,
                 m_last.body as last_message_body,

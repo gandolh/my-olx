@@ -1,4 +1,5 @@
 use crate::error::AppError;
+use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -10,16 +11,27 @@ pub struct PasswordResetToken {
     pub used_at: Option<DateTime<Utc>>,
 }
 
-pub struct PasswordTokenRepository {
+#[async_trait]
+pub trait PasswordTokenRepository: Send + Sync {
+    async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError>;
+    async fn find_by_token(&self, token: &str) -> Result<Option<PasswordResetToken>, AppError>;
+    async fn mark_used(&self, token: &str) -> Result<(), AppError>;
+    async fn delete_for_user(&self, user_id: Uuid) -> Result<(), AppError>;
+}
+
+pub struct PgPasswordTokenRepository {
     pool: PgPool,
 }
 
-impl PasswordTokenRepository {
+impl PgPasswordTokenRepository {
     pub fn new(pool: PgPool) -> Self {
         Self { pool }
     }
+}
 
-    pub async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError> {
+#[async_trait]
+impl PasswordTokenRepository for PgPasswordTokenRepository {
+    async fn create(&self, user_id: Uuid, token: &str, ttl_hours: i64) -> Result<(), AppError> {
         let expires_at = Utc::now() + chrono::Duration::hours(ttl_hours);
 
         sqlx::query(
@@ -40,7 +52,7 @@ impl PasswordTokenRepository {
         Ok(())
     }
 
-    pub async fn find_by_token(&self, token: &str) -> Result<Option<PasswordResetToken>, AppError> {
+    async fn find_by_token(&self, token: &str) -> Result<Option<PasswordResetToken>, AppError> {
         let result = sqlx::query_as::<_, PasswordResetToken>(
             r#"
             SELECT user_id, expires_at, used_at
@@ -56,7 +68,7 @@ impl PasswordTokenRepository {
         Ok(result)
     }
 
-    pub async fn mark_used(&self, token: &str) -> Result<(), AppError> {
+    async fn mark_used(&self, token: &str) -> Result<(), AppError> {
         let result = sqlx::query(
             r#"
             UPDATE password_reset_tokens
@@ -78,7 +90,7 @@ impl PasswordTokenRepository {
         Ok(())
     }
 
-    pub async fn delete_for_user(&self, user_id: Uuid) -> Result<(), AppError> {
+    async fn delete_for_user(&self, user_id: Uuid) -> Result<(), AppError> {
         sqlx::query(
             r#"
             DELETE FROM password_reset_tokens
