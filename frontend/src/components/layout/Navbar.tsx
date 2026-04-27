@@ -88,18 +88,34 @@ export function Navbar() {
                   {showDropdown && (
                     <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-lg shadow-lg py-2 z-50">
                       <Link
-                        to="/cont/setari"
-                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline"
+                        to="/cont"
+                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
                         onClick={() => setShowDropdown(false)}
                       >
-                        Setări
+                        <span className="material-symbols-outlined text-lg">
+                          dashboard
+                        </span>
+                        Contul meu
                       </Link>
                       <Link
-                        to="/anunturile-mele"
-                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline"
+                        to="/cont/anunturi"
+                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
                         onClick={() => setShowDropdown(false)}
                       >
+                        <span className="material-symbols-outlined text-lg">
+                          inventory_2
+                        </span>
                         Anunțurile mele
+                      </Link>
+                      <Link
+                        to="/cont/setari"
+                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        <span className="material-symbols-outlined text-lg">
+                          settings
+                        </span>
+                        Setări
                       </Link>
                       {!user?.email_verified && (
                         <div className="px-4 py-2 text-xs text-on-error-container bg-error-container mx-2 my-1 rounded">
@@ -109,8 +125,11 @@ export function Navbar() {
                       <hr className="my-2 border-outline-variant" />
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-error hover:bg-surface-container transition-colors"
+                        className="w-full text-left px-4 py-2 text-error hover:bg-surface-container transition-colors flex items-center gap-2"
                       >
+                        <span className="material-symbols-outlined text-lg">
+                          logout
+                        </span>
                         Deconectare
                       </button>
                     </div>

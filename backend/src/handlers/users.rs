@@ -1,14 +1,12 @@
 use crate::{
-    dto::auth::UserSummary,
+    dto::{auth::UserSummary, user::MyStatsResponse},
     error::AppError,
     middleware::auth::AuthUser,
     repositories::{
-        email_tokens::PgEmailTokenRepository,
-        password_tokens::PgPasswordTokenRepository,
-        phone_tokens::PgPhoneTokenRepository,
-        users::PgUserRepository,
+        email_tokens::PgEmailTokenRepository, password_tokens::PgPasswordTokenRepository,
+        phone_tokens::PgPhoneTokenRepository, users::PgUserRepository,
     },
-    services::auth::AuthService,
+    services::{auth::AuthService, users::UserService},
     state::AppState,
 };
 use axum::{extract::State, Json};
@@ -35,4 +33,16 @@ pub async fn me(
     );
     let user_summary = svc.get_user_summary(user_id).await?;
     Ok(Json(user_summary))
+}
+
+pub async fn get_stats(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+) -> Result<Json<MyStatsResponse>, AppError> {
+    let repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
+    let svc = UserService::new(repo);
+    let stats = svc.get_stats(user_id).await?;
+    Ok(Json(stats))
 }

@@ -132,6 +132,58 @@
     "notFound": "Categorie inexistentă",
     "categoryNotFound": "Categoria {{slug}} nu a fost găsită."
   },
+  "dashboard": {
+    "greeting": "Bună",
+    "subtitle": "Iată ce se întâmplă cu contul tău astăzi.",
+    "error": "Nu am putut încărca datele panoului de control.",
+    "stats": {
+      "activeListings": "Anunțuri active",
+      "listingsLabel": "anunțuri",
+      "unreadMessages": "Mesaje necitite",
+      "messagesLabel": "noi",
+      "savedFavorites": "Favorite salvate",
+      "favoritesLabel": "anunțuri",
+      "totalConversations": "Conversații",
+      "convLabel": "totale"
+    },
+    "quota": {
+      "title": "Limita săptămânală",
+      "subtitle": "Anunțuri postate în ultimele 7 zile",
+      "resets": "Se resetează în"
+    },
+    "expiringSoon": {
+      "title": "Anunțuri care expiră curând",
+      "expiresIn": "Expiră în",
+      "renewAction": "Reînnoiește acum"
+    },
+    "messages": {
+      "recentTitle": "Conversații recente",
+      "noRecent": "Nu ai conversații recente",
+      "viewAll": "Vezi toate"
+    },
+    "quickActions": {
+      "title": "Acțiuni rapide",
+      "settings": "Setări cont"
+    },
+    "listings": {
+      "title": "Anunțurile mele",
+      "subtitle": "Gestionează și actualizează anunțurile tale.",
+      "error": "Nu am putut încărca anunțurile.",
+      "postedAt": "Postat pe",
+      "expiresIn": "Expiră în",
+      "expired": "Expirat",
+      "deleteConfirm": "Ești sigur că vrei să ștergi acest anunț?",
+      "tabs": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "expired": "Expirate"
+      },
+      "empty": {
+        "title": "Niciun anunț în această categorie",
+        "subtitle": "Inspiră-te și postează primul tău anunț chiar acum!"
+      }
+    }
+  },
   "comingSoon": {
     "title": "În curând",
     "subtitle": "Această pagină este în curs de dezvoltare."

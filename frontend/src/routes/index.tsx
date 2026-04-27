@@ -4,6 +4,9 @@ import { ComingSoon } from "@/components/ui/ComingSoon";
 import { HomePage } from "@/modules/home/pages/HomePage";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 
+import { DashboardPage } from "@/modules/dashboard/pages/DashboardPage";
+import { MyListingsPage } from "@/modules/dashboard/pages/MyListingsPage";
+
 const CategoryPage = lazy(() =>
   import("@/modules/categories/pages/CategoryPage").then((m) => ({
     default: m.CategoryPage,
@@ -123,6 +126,8 @@ export function AppRoutes() {
         <Route path="/verifica-email" element={<EmailVerifyPage />} />
         <Route path="/parola-uitata" element={<ForgotPasswordPage />} />
         <Route path="/reseteaza-parola" element={<ResetPasswordPage />} />
+        <Route path="/cont" element={<DashboardPage />} />
+        <Route path="/cont/anunturi" element={<MyListingsPage />} />
         <Route path="/cont/setari" element={<SettingsPage />} />
         <Route path="/favorite" element={<FavoritesPage />} />
         <Route path="/mesaje" element={<ConversationsPage />} />
