@@ -10,6 +10,18 @@ const CategoryPage = lazy(() =>
   })),
 );
 
+const CategoryIndexPage = lazy(() =>
+  import("@/modules/categories/pages/CategoryIndexPage").then((m) => ({
+    default: m.CategoryIndexPage,
+  })),
+);
+
+const SearchResultsPage = lazy(() =>
+  import("@/modules/search/pages/SearchResultsPage").then((m) => ({
+    default: m.SearchResultsPage,
+  })),
+);
+
 const ListingDetailPage = lazy(() =>
   import("@/modules/listings/pages/ListingDetailPage").then((m) => ({
     default: m.ListingDetailPage,
@@ -99,7 +111,9 @@ export function AppRoutes() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/categorii" element={<CategoryIndexPage />} />
         <Route path="/categorii/:slug" element={<CategoryPage />} />
+        <Route path="/anunturi" element={<SearchResultsPage />} />
         <Route path="/anunturi/:id" element={<ListingDetailPage />} />
         <Route path="/anunturi/:id/editeaza" element={<EditListingPage />} />
         <Route path="/adauga-anunt" element={<CreateListingPage />} />

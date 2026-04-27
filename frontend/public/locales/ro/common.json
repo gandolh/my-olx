@@ -117,6 +117,21 @@
     "send": "Trimite",
     "sending": "Se trimite..."
   },
+  "search": {
+    "resultsTitle": "Rezultate pentru \"{{query}}\"",
+    "allListings": "Toate anunțurile",
+    "noResults": "Nu am găsit niciun anunț care să corespundă căutării tale.",
+    "count_one": "1 anunț găsit",
+    "count_few": "{{count}} anunțuri găsite",
+    "count_other": "{{count}} anunțuri găsite",
+    "loading": "Se încarcă anunțurile..."
+  },
+  "categories": {
+    "browseTitle": "Răsfoiește toate categoriile",
+    "browseSubtitle": "Găsește exact ceea ce cauți printre mii de anunțuri verificate.",
+    "notFound": "Categorie inexistentă",
+    "categoryNotFound": "Categoria {{slug}} nu a fost găsită."
+  },
   "comingSoon": {
     "title": "În curând",
     "subtitle": "Această pagină este în curs de dezvoltare."
