@@ -1,16 +1,33 @@
 use crate::{routes, state::AppState};
-use axum::{routing::get, Router};
+use axum::{http::{HeaderValue, Method}, routing::get, Router};
 use tower_http::{
     compression::CompressionLayer,
-    cors::{Any, CorsLayer},
+    cors::CorsLayer,
     trace::TraceLayer,
 };
 
 pub fn build(state: AppState) -> Router {
+    let origins: Vec<HeaderValue> = state.config
+        .cors_allowed_origins
+        .split(',')
+        .filter_map(|s| s.trim().parse().ok())
+        .collect();
+
     let cors = CorsLayer::new()
-        .allow_origin(Any)
-        .allow_methods(Any)
-        .allow_headers(Any);
+        .allow_origin(origins)
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PATCH,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([
+            axum::http::header::AUTHORIZATION,
+            axum::http::header::CONTENT_TYPE,
+            axum::http::header::ACCEPT,
+        ])
+        .allow_credentials(false);
 
     Router::new()
         .nest("/auth", routes::auth::router())

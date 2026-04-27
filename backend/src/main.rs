@@ -29,7 +29,6 @@ async fn main() -> anyhow::Result<()> {
     let cfg = config::Config::from_env()?;
     let db = sqlx::PgPool::connect(&cfg.database_url).await?;
     sqlx::migrate!("./migrations").run(&db).await?;
-    let redis = redis::Client::open(cfg.redis_url.clone())?;
     let region_provider =
         RegionProviderChain::first_try(Region::new(cfg.aws_region.clone())).or_default_provider();
     let aws_cfg = aws_config::defaults(BehaviorVersion::latest())
@@ -58,7 +57,6 @@ async fn main() -> anyhow::Result<()> {
 
     let state = state::AppState {
         db,
-        redis,
         s3,
         config: Arc::new(cfg.clone()),
         email: email_service,

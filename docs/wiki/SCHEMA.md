@@ -45,12 +45,15 @@ No status field — decisions stand until superseded by a new page that referenc
 **Summary:** One sentence description.
 
 ## Requirements
+
 - Bullet list of requirements
 
 ## Design Notes
+
 Key decisions, constraints, open questions.
 
 ## Acceptance Criteria
+
 What "done" looks like.
 ```
 
@@ -62,9 +65,11 @@ One line per page, grouped by category:
 
 ```markdown
 ## Architecture
+
 - [Decision Title](architecture/filename.md) — one-line summary
 
 ## Features
+
 - [Feature Name](features/filename.md) — one-line summary [Planned|Done]
 ```
 
@@ -81,6 +86,7 @@ Append-only. One line per event:
 Types: `ingest`, `update`, `query`, `lint`, `backfill`
 
 Example:
+
 ```
 [2026-04-23] backfill | architecture pages from existing docs
 [2026-04-23] ingest | requirements-summary.md → feature specs
@@ -107,12 +113,14 @@ Triggered proactively when a significant architecture or feature decision is mad
 ### Handling Contradictions
 
 When new information conflicts with an existing page:
+
 - Surface the contradiction to the user: "This conflicts with [page] which says X — which is authoritative?"
 - Never silently overwrite. Wait for direction.
 
 ### Lint Pass
 
 Periodically check for:
+
 - Orphan pages (not linked from `index.md`)
 - Stale status (feature marked Planned but clearly shipped)
 - Missing pages for concepts frequently referenced but not documented

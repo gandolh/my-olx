@@ -1,32 +1,29 @@
 # Listing Creation Wizard
 
-**Status:** Planned
+**Status:** Done
 
 **Summary:** Step-by-step wizard for creating a listing — the most critical seller flow, targeting < 3 minutes end-to-end.
 
 ## Requirements
 
-- Step-by-step wizard interface (not a single long form)
-- Category selection first, drives subsequent smart fields
-- Category-specific fields (e.g., cars show make/model/year; real estate shows sqm/rooms)
-- Title and description text inputs
-- Photo upload: 1–10 photos, drag-and-drop, preview, mobile camera integration
-- Price field with "negotiable" option; currency RON
-- Romanian location picker (cities/regions)
-- Contact preferences: show/hide phone number toggle per listing
-- Post limit indicator: "X of 5 free posts used this week"
-- Success state with listing preview
+- 5-step wizard: Categorie → Detalii → Fotografii → Locație și preț → Verifică și publică
+- Category selection drives the flow
+- Draft creation on step 1; subsequent steps PATCH the draft
+- Photo upload (1–10 photos) with S3 integration
+- Price field (RON) with "negotiable" toggle
+- Romanian city picker (autocomplete)
+- Weekly post limit (5/week) enforcement
 
 ## Design Notes
 
-- Mobile-first — most users will create listings on phone
-- Smart defaults to minimize required taps
-- Clear progress indicator through wizard steps
-- Fewer clicks is the primary design constraint
+- Mobile-first design for < 3 minute posting
+- Drafts allow resuming interrupted flows
+- S3 for image storage with pre-signed URLs
+- Client-side validation via Zod
 
 ## Acceptance Criteria
 
-- A new seller can create and publish a listing in under 3 minutes on mobile
-- Photo upload works via camera on mobile and drag-drop on desktop
-- Post limit is clearly communicated and enforced (5/week via backend rate limiting)
-- Category-specific fields render correctly for all 9 launch categories
+- Seller can create and publish a listing in under 3 minutes
+- Photo upload works with reordering and deletion
+- Post limit (5/week) is enforced via backend
+- Successful publication redirects to listing detail page

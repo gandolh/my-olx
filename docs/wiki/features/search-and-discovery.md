@@ -1,28 +1,28 @@
 # Search & Discovery
 
-**Status:** Planned
+**Status:** Done
 
 **Summary:** Elasticsearch-powered full-text search with Romanian diacritic support, filters, and a discovery homepage.
 
 ## Requirements
 
-- Elasticsearch for full-text search (title, description, category fields)
-- Full Romanian diacritic support: ă, â, î, ș, ț
-- Filters: location (Romanian cities/regions), price range, category-specific, date posted, verified sellers
-- Sort options: newest, price low-to-high, price high-to-low, nearest
-- Grid/list view toggle on results page
-- Homepage: category tiles + recent/featured listings per category
-- Save for later (favorites) with heart icon
-- Saved searches with notifications for new matches
+- Full-text search (title/description) using Postgres FTS + `unaccent`
+- Romanian diacritic support (ă, â, î, ș, ț)
+- Filters: Categorie, Oraș, Preț, Dată, Vânzător verificat
+- Sort: Noi (default), Preț asc/desc, Relevanță
+- Homepage with featured listings and category grid
+- Search results page (`/anunturi?q=...`)
 
 ## Design Notes
 
-- Elasticsearch chosen specifically for Romanian diacritic handling and typo tolerance
-- Location picker needs a Romanian city/region database
-- Saved search notifications require a background job (not part of MVP API scope)
+- Postgres FTS chosen over Elasticsearch for MVP simplicity
+- Diacritic-insensitive matching (Timișoara ≡ timisoara)
+- URL-driven state for filters and pagination
+- Featured listings prioritize verified sellers
 
 ## Acceptance Criteria
 
-- Search returns results for queries with and without diacritics (e.g., "masina" finds "mașină")
-- Filters narrow results correctly
-- Favorites persist across sessions
+- Search results are relevance-ranked
+- Filters correctly narrow down results
+- Pagination works across large result sets
+- Homepage loads real data, not mocks

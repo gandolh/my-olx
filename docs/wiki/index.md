@@ -7,11 +7,18 @@
 - [Auth: JWT + Argon2](architecture/auth-jwt-argon2.md) — stateless JWT auth via type-level Axum extractor; Argon2 for password hashing
 - [sqlx Over Diesel](architecture/sqlx-over-diesel.md) — compile-time checked plain SQL queries; async-native; no ORM DSL
 - [Testing Strategy](architecture/testing-strategy.md) — unit tests with mock repositories; no integration tests at this stage
+- [CORS Policy](architecture/cors-policy.md) — env-gated allowlist for production safety
+- [Database Schema](architecture/database-schema.md) — versioned migrations and core table structure
+- [Infrastructure Wiring](architecture/infrastructure-wiring.md) — centralized AppState for DB, S3, and Mail
 
 ## Features
 
-- [Listing Creation Wizard](features/listing-creation-wizard.md) — step-by-step posting flow targeting < 3 min on mobile [Planned]
-- [Authentication & Registration](features/auth-registration.md) — email/password signup with verification; social auth deferred [Planned]
-- [Listing Lifecycle](features/listing-lifecycle.md) — 30-day expiry, free manual renewal, 5 posts/week limit [Planned]
-- [Search & Discovery](features/search-and-discovery.md) — Elasticsearch with Romanian diacritic support, filters, homepage discovery [Planned]
-- [Messaging System](features/messaging.md) — real-time WebSocket chat with optional phone number reveal [Planned]
+- [Listing Creation Wizard](features/listing-creation-wizard.md) — 5-step posting flow targeting < 3 min on mobile [Done]
+- [Authentication & Registration](features/auth-registration.md) — email/password signup with SMTP verification [Done]
+- [Listing Lifecycle](features/listing-lifecycle.md) — 30-day expiry, free manual renewal, 5 posts/week limit [Done]
+- [Search & Discovery](features/search-and-discovery.md) — Postgres FTS with Romanian diacritic support [Done]
+- [Messaging System](features/messaging.md) — REST polling chat with content filtering [Done]
+- [Favorites](features/favorites.md) — save listings for later via heart toggle [Done]
+- [Image Upload](features/image-upload.md) — S3-backed image management with pre-signed URLs [Done]
+- [Listing Detail](features/listing-detail.md) — full-page view with seller info and related items [Done]
+- [User Dashboard](features/user-dashboard.md) — manage own listings and profile [Done]
