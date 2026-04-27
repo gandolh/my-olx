@@ -1,9 +1,11 @@
 use crate::{
-    dto::user::{ListingStats, MessagingStats, MyStatsResponse},
+    dto::user::{ListingStats, MessagingStats, MyStatsResponse, PublicUserResponse},
     error::AppError,
+    models::user::User,
 };
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
+use sqlx::Row;
 use uuid::Uuid;
 
 #[async_trait]
@@ -102,8 +104,7 @@ impl UserRepository for PgUserRepository {
     }
 
     async fn get_public_profile(&self, id: Uuid) -> Result<Option<PublicUserResponse>, AppError> {
-        let profile = sqlx::query_as!(
-            PublicUserResponse,
+        let profile = sqlx::query_as::<_, PublicUserResponse>(
             r#"
             SELECT 
                 u.id,
@@ -111,19 +112,19 @@ impl UserRepository for PgUserRepository {
                 u.avatar_url,
                 u.phone_verified,
                 u.created_at as member_since,
-                (SELECT COUNT(*) FROM listings l WHERE l.user_id = u.id AND l.active = true AND l.expires_at > NOW()) as "active_listings_count!"
+                (SELECT COUNT(*) FROM listings l WHERE l.user_id = u.id AND l.active = true AND l.expires_at > NOW()) as active_listings_count
             FROM users u
             WHERE u.id = $1
             "#,
-            id
         )
+        .bind(id)
         .fetch_optional(&self.pool)
         .await?;
         Ok(profile)
     }
 
     async fn get_stats(&self, id: Uuid) -> Result<MyStatsResponse, AppError> {
-        let stats = sqlx::query!(
+        let stats = sqlx::query(
             r#"
             WITH me AS (SELECT $1::uuid AS id)
             SELECT
@@ -138,30 +139,40 @@ impl UserRepository for PgUserRepository {
                 (SELECT COUNT(*) FROM conversations WHERE buyer_id = me.id OR seller_id = me.id) AS conversation_count
             FROM me
             "#,
-            id
         )
+        .bind(id)
         .fetch_one(&self.pool)
         .await?;
 
-        let week_resets_at = stats.oldest_post_this_week
+        let active: i64 = stats.get("active");
+        let inactive: i64 = stats.get("inactive");
+        let expired: i64 = stats.get("expired");
+        let expiring_soon: i64 = stats.get("expiring_soon");
+        let weekly_post_count: i64 = stats.get("weekly_post_count");
+        let oldest_post_this_week: Option<DateTime<Utc>> = stats.get("oldest_post_this_week");
+        let favorites_count: i64 = stats.get("favorites_count");
+        let unread_count: i64 = stats.get("unread_count");
+        let conversation_count: i64 = stats.get("conversation_count");
+
+        let week_resets_at = oldest_post_this_week
             .map(|t| t + chrono::Duration::days(7))
             .unwrap_or_else(|| Utc::now());
 
         Ok(MyStatsResponse {
             listings: ListingStats {
-                active: stats.active.unwrap_or(0),
-                inactive: stats.inactive.unwrap_or(0),
-                expired: stats.expired.unwrap_or(0),
-                expiring_soon: stats.expiring_soon.unwrap_or(0),
-                weekly_post_count: stats.weekly_post_count.unwrap_or(0),
+                active,
+                inactive,
+                expired,
+                expiring_soon,
+                weekly_post_count,
                 weekly_post_limit: 5,
                 week_resets_at,
             },
             messages: MessagingStats {
-                unread_count: stats.unread_count.unwrap_or(0),
-                conversation_count: stats.conversation_count.unwrap_or(0),
+                unread_count,
+                conversation_count,
             },
-            favorites_count: stats.favorites_count.unwrap_or(0),
+            favorites_count,
         })
     }
 }

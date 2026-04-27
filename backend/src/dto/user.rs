@@ -18,7 +18,7 @@ pub struct ChangePasswordRequest {
     pub new_password: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, sqlx::FromRow)]
 pub struct PublicUserResponse {
     pub id: Uuid,
     pub display_name: Option<String>,
