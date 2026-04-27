@@ -97,6 +97,12 @@ const EditListingPage = lazy(() =>
   })),
 );
 
+const PublicProfilePage = lazy(() =>
+  import("@/modules/public-profile/pages/PublicProfilePage").then((m) => ({
+    default: m.default,
+  })),
+);
+
 function PageLoader() {
   return (
     <main className="pt-24 flex-1">
@@ -129,6 +135,7 @@ export function AppRoutes() {
         <Route path="/cont" element={<DashboardPage />} />
         <Route path="/cont/anunturi" element={<MyListingsPage />} />
         <Route path="/cont/setari" element={<SettingsPage />} />
+        <Route path="/utilizator/:id" element={<PublicProfilePage />} />
         <Route path="/favorite" element={<FavoritesPage />} />
         <Route path="/mesaje" element={<ConversationsPage />} />
         <Route path="/mesaje/:conversationId" element={<ConversationsPage />}>

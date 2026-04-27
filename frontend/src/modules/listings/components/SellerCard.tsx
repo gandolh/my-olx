@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { ContactSellerModal } from "@/modules/messaging/components/ContactSellerModal";
@@ -27,7 +28,10 @@ export function SellerCard({ seller, listingId }: SellerCardProps) {
     <div className="bg-surface-container-low p-8 rounded-2xl space-y-6">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0">
+          <Link
+            to={`/utilizator/${seller.id}`}
+            className="w-14 h-14 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0 hover:opacity-80 transition-opacity"
+          >
             {seller.avatarUrl ? (
               <img
                 src={seller.avatarUrl}
@@ -39,9 +43,16 @@ export function SellerCard({ seller, listingId }: SellerCardProps) {
                 <span className="material-symbols-outlined">person</span>
               </div>
             )}
-          </div>
+          </Link>
           <div>
-            <h3 className="font-bold text-lg text-on-surface">{sellerName}</h3>
+            <Link
+              to={`/utilizator/${seller.id}`}
+              className="hover:text-primary transition-colors"
+            >
+              <h3 className="font-bold text-lg text-on-surface">
+                {sellerName}
+              </h3>
+            </Link>
             {seller.phoneVerified && (
               <div className="flex items-center gap-1.5 bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full w-fit mt-1">
                 <span
@@ -60,9 +71,12 @@ export function SellerCard({ seller, listingId }: SellerCardProps) {
             )}
           </div>
         </div>
-        <button className="text-primary hover:underline font-bold text-sm">
+        <Link
+          to={`/utilizator/${seller.id}`}
+          className="text-primary hover:underline font-bold text-sm"
+        >
           Profil
-        </button>
+        </Link>
       </div>
 
       {!isOwner && (

@@ -1,16 +1,34 @@
 use crate::{
-    dto::{auth::UserSummary, user::MyStatsResponse},
+    dto::{
+        auth::UserSummary,
+        image::{UploadUrlRequest, UploadUrlResponse},
+        listing::{ListingFilters, ListingsPageResponse},
+        user::{ChangePasswordRequest, MyStatsResponse, PublicUserResponse, UpdateProfileRequest},
+    },
     error::AppError,
     middleware::auth::AuthUser,
     repositories::{
-        email_tokens::PgEmailTokenRepository, password_tokens::PgPasswordTokenRepository,
-        phone_tokens::PgPhoneTokenRepository, users::PgUserRepository,
+        email_tokens::PgEmailTokenRepository, listings::PgListingRepository,
+        password_tokens::PgPasswordTokenRepository, phone_tokens::PgPhoneTokenRepository,
+        users::PgUserRepository,
     },
-    services::{auth::AuthService, users::UserService},
+    services::{auth::AuthService, listings::ListingService, users::UserService},
     state::AppState,
 };
-use axum::{extract::State, Json};
+use axum::{
+    extract::{Path, Query, State},
+    Json,
+};
 use std::sync::Arc;
+use uuid::Uuid;
+use validator::Validate;
+
+fn user_service(state: &AppState) -> UserService<PgUserRepository> {
+    let repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
+    UserService::new(repo, state.s3.clone(), state.config.clone())
+}
 
 pub async fn me(
     State(state): State<AppState>,
@@ -35,14 +53,74 @@ pub async fn me(
     Ok(Json(user_summary))
 }
 
+pub async fn update_profile(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Json(body): Json<UpdateProfileRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    body.validate()
+        .map_err(|e| AppError::Validation(e.to_string()))?;
+    let svc = user_service(&state);
+    svc.update_profile(user_id, body).await?;
+    Ok(Json(serde_json::json!({ "success": true })))
+}
+
+pub async fn change_password(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Json(body): Json<ChangePasswordRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    body.validate()
+        .map_err(|e| AppError::Validation(e.to_string()))?;
+    let svc = user_service(&state);
+    svc.change_password(user_id, body).await?;
+    Ok(Json(serde_json::json!({ "success": true })))
+}
+
+pub async fn get_avatar_upload_url(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Json(body): Json<UploadUrlRequest>,
+) -> Result<Json<UploadUrlResponse>, AppError> {
+    let svc = user_service(&state);
+    let res = svc.request_avatar_upload_url(user_id, body).await?;
+    Ok(Json(res))
+}
+
+pub async fn get_public_profile(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<PublicUserResponse>, AppError> {
+    let svc = user_service(&state);
+    let profile = svc.get_public_profile(id).await?;
+    Ok(Json(profile))
+}
+
+pub async fn get_user_listings(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Query(mut filters): Query<ListingFilters>,
+) -> Result<Json<ListingsPageResponse>, AppError> {
+    filters.user_id = Some(id);
+    filters.active = Some(true);
+
+    let repo = Arc::new(PgListingRepository {
+        pool: state.db.clone(),
+    });
+    let user_repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
+    let svc = ListingService::new(repo, user_repo, state.config.clone());
+
+    let listings = svc.search(&filters).await?;
+    Ok(Json(listings))
+}
+
 pub async fn get_stats(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,
 ) -> Result<Json<MyStatsResponse>, AppError> {
-    let repo = Arc::new(PgUserRepository {
-        pool: state.db.clone(),
-    });
-    let svc = UserService::new(repo);
+    let svc = user_service(&state);
     let stats = svc.get_stats(user_id).await?;
     Ok(Json(stats))
 }

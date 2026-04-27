@@ -14,6 +14,8 @@ pub trait UserRepository: Send + Sync {
     async fn set_email_verified(&self, id: Uuid) -> Result<(), AppError>;
     async fn update_password_hash(&self, id: Uuid, password_hash: &str) -> Result<(), AppError>;
     async fn set_phone_verified(&self, id: Uuid, phone: &str) -> Result<(), AppError>;
+    async fn update_profile(&self, id: Uuid, display_name: Option<String>, avatar_url: Option<String>) -> Result<(), AppError>;
+    async fn get_public_profile(&self, id: Uuid) -> Result<Option<PublicUserResponse>, AppError>;
     async fn get_stats(&self, id: Uuid) -> Result<MyStatsResponse, AppError>;
 }
 
@@ -78,6 +80,46 @@ impl UserRepository for PgUserRepository {
             .execute(&self.pool)
             .await?;
         Ok(())
+    }
+
+    async fn update_profile(&self, id: Uuid, display_name: Option<String>, avatar_url: Option<String>) -> Result<(), AppError> {
+        sqlx::query(
+            r#"
+            UPDATE users
+            SET 
+                display_name = COALESCE($1, display_name),
+                avatar_url = COALESCE($2, avatar_url),
+                updated_at = NOW()
+            WHERE id = $3
+            "#,
+        )
+        .bind(display_name)
+        .bind(avatar_url)
+        .bind(id)
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
+
+    async fn get_public_profile(&self, id: Uuid) -> Result<Option<PublicUserResponse>, AppError> {
+        let profile = sqlx::query_as!(
+            PublicUserResponse,
+            r#"
+            SELECT 
+                u.id,
+                u.display_name,
+                u.avatar_url,
+                u.phone_verified,
+                u.created_at as member_since,
+                (SELECT COUNT(*) FROM listings l WHERE l.user_id = u.id AND l.active = true AND l.expires_at > NOW()) as "active_listings_count!"
+            FROM users u
+            WHERE u.id = $1
+            "#,
+            id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+        Ok(profile)
     }
 
     async fn get_stats(&self, id: Uuid) -> Result<MyStatsResponse, AppError> {
