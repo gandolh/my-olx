@@ -95,6 +95,23 @@
     "empty_inbox_title": "Niciun mesaj selectat",
     "empty_inbox_description": "Alege o conversație din listă pentru a începe să comunici."
   },
+  "phoneVerify": {
+    "title": "Verifică numărul de telefon",
+    "stepPhone": "Introdu numărul tău de telefon",
+    "stepCode": "Introdu codul de verificare",
+    "phoneLabel": "Număr de telefon",
+    "phonePlaceholder": "07xx xxx xxx",
+    "phoneHelp": "Vom trimite un cod prin SMS pentru a confirma numărul.",
+    "codeLabel": "Cod de 6 cifre",
+    "sendCode": "Trimite codul",
+    "verifyCode": "Verifică codul",
+    "resendCode": "Retrimite codul în {{seconds}} secunde",
+    "resendReady": "Retrimite codul",
+    "success": "Telefon verificat cu succes!",
+    "errorRateLimit": "Prea multe încercări. Te rugăm să aștepți 10 minute.",
+    "errorInvalidCode": "Codul introdus este invalid.",
+    "devHint": "Mod Dezvoltare: Folosește codul 123456"
+  },
   "actions": {
     "cancel": "Anulează",
     "send": "Trimite",

@@ -18,6 +18,7 @@ pub struct Config {
     pub smtp_password: String,
     pub smtp_from: String,
     pub frontend_base_url: String,
+    pub phone_provider: String,
 }
 
 impl Config {
@@ -39,6 +40,7 @@ impl Config {
             smtp_password: "pass".into(),
             smtp_from: "noreply@piataro.ro".into(),
             frontend_base_url: "http://localhost:5173".into(),
+            phone_provider: "stub".into(),
         }
     }
 
@@ -56,6 +58,7 @@ impl Config {
             .set_default("smtp_from", "noreply@piataro.ro")?
             .set_default("frontend_base_url", "http://localhost:5173")?
             .set_default("s3_public_base_url", "http://localhost:4566/my-olx-uploads")?
+            .set_default("phone_provider", "stub")?
             .build()?
             .try_deserialize()
     }
@@ -83,6 +86,7 @@ mod tests {
             smtp_password: "pass".into(),
             smtp_from: "noreply@piataro.ro".into(),
             frontend_base_url: "http://localhost:5173".into(),
+            phone_provider: "stub".into(),
         };
         assert_eq!(cfg.port, 8080);
         assert_eq!(cfg.jwt_expiry_seconds, 3600);

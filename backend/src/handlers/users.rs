@@ -3,8 +3,9 @@ use crate::{
     error::AppError,
     middleware::auth::AuthUser,
     repositories::{
-        email_tokens::{PgEmailTokenRepository, EmailTokenRepository}, 
-        password_tokens::{PgPasswordTokenRepository, PasswordTokenRepository},
+        email_tokens::PgEmailTokenRepository,
+        password_tokens::PgPasswordTokenRepository,
+        phone_tokens::PgPhoneTokenRepository,
         users::PgUserRepository,
     },
     services::auth::AuthService,
@@ -26,7 +27,9 @@ pub async fn me(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );

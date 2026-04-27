@@ -49,12 +49,20 @@ async fn main() -> anyhow::Result<()> {
             ))?)
         };
 
+    let phone_provider: Arc<dyn services::phone::PhoneProvider> = match cfg.phone_provider.as_str() {
+        "stub" => Arc::new(services::phone::StubPhoneProvider),
+        other => {
+            anyhow::bail!("Unsupported phone provider: {}. Only 'stub' is supported in MVP.", other);
+        }
+    };
+
     let state = state::AppState {
         db,
         redis,
         s3,
         config: Arc::new(cfg.clone()),
         email: email_service,
+        phone: phone_provider,
     };
 
     let app = router::build(state);

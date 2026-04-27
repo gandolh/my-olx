@@ -227,6 +227,7 @@ fn map_summary_row(row: ConversationSummaryRow) -> ConversationSummary {
             display_name: row.counterparty_display_name,
             avatar_url: row.counterparty_avatar_url,
             email_verified: row.counterparty_email_verified,
+            phone: row.counterparty_phone,
             phone_verified: row.counterparty_phone_verified,
             created_at: row.counterparty_created_at,
         },

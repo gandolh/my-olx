@@ -1,5 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { ShieldCheck } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import PhoneVerifyModal from "../../auth/components/PhoneVerifyModal";
 import { reviewStepSchema, type ReviewStepInput } from "../schemas";
 import type { ListingDraft } from "../services/drafts";
 import { ListingGallery } from "../../listings/components/ListingGallery";
@@ -20,6 +24,9 @@ export function ReviewStep({
   onBack,
   isPublishing,
 }: ReviewStepProps) {
+  const { user } = useAuth();
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -42,6 +49,30 @@ export function ReviewStep({
         </p>
       </div>
 
+      {!user?.phone_verified && (
+        <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
+          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-6 h-6 text-primary" />
+          </div>
+          <div className="flex-1 text-center md:text-left space-y-1">
+            <h4 className="font-bold text-on-surface">
+              Devino vânzător verificat
+            </h4>
+            <p className="text-sm text-on-surface-variant">
+              Adaugă numărul de telefon verificat pentru a apărea ca vânzător
+              verificat și a câștiga încrederea cumpărătorilor.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsPhoneModalOpen(true)}
+            className="px-6 py-2 rounded-full bg-white border border-primary/20 text-primary font-bold text-sm hover:bg-primary/5 transition-colors shadow-sm whitespace-nowrap"
+          >
+            Verifică acum
+          </button>
+        </div>
+      )}
+
       <div className="bg-surface-container-low rounded-[2rem] overflow-hidden border border-outline-variant shadow-sm">
         <div className="p-4 md:p-8 space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -56,12 +87,13 @@ export function ReviewStep({
             <div className="space-y-6">
               <PricingCard
                 listingId={draft.id}
+                sellerId={draft.seller.id}
                 title={draft.title}
                 priceRon={draft.priceRon}
                 location={draft.city}
                 viewCount={draft.viewCount}
               />
-              <SellerCard seller={draft.seller} />
+              <SellerCard seller={draft.seller} listingId={draft.id} />
             </div>
           </div>
         </div>
@@ -114,6 +146,11 @@ export function ReviewStep({
           </button>
         </div>
       </form>
+
+      <PhoneVerifyModal
+        open={isPhoneModalOpen}
+        onOpenChange={setIsPhoneModalOpen}
+      />
     </div>
   );
 }

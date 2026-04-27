@@ -3,6 +3,7 @@ use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct ConversationRow {
     pub id: Uuid,
@@ -36,6 +37,7 @@ pub struct ConversationSummaryRow {
     pub counterparty_display_name: Option<String>,
     pub counterparty_avatar_url: Option<String>,
     pub counterparty_email_verified: bool,
+    pub counterparty_phone: Option<String>,
     pub counterparty_phone_verified: bool,
     pub counterparty_created_at: DateTime<Utc>,
     // Last message fields
@@ -147,6 +149,7 @@ impl ConversationRepository for PgConversationRepository {
                 u_other.display_name as counterparty_display_name,
                 u_other.avatar_url as counterparty_avatar_url,
                 u_other.email_verified as counterparty_email_verified,
+                u_other.phone as counterparty_phone,
                 u_other.phone_verified as counterparty_phone_verified,
                 u_other.created_at as counterparty_created_at,
                 m_last.body as last_message_body,
@@ -209,6 +212,7 @@ impl ConversationRepository for PgConversationRepository {
                 u_other.display_name as counterparty_display_name,
                 u_other.avatar_url as counterparty_avatar_url,
                 u_other.email_verified as counterparty_email_verified,
+                u_other.phone as counterparty_phone,
                 u_other.phone_verified as counterparty_phone_verified,
                 u_other.created_at as counterparty_created_at,
                 m_last.body as last_message_body,

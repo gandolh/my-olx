@@ -10,4 +10,6 @@ pub fn router() -> Router<AppState> {
         .route("/email/resend", post(auth::resend_verification))
         .route("/password/forgot", post(auth::forgot_password))
         .route("/password/reset", post(auth::reset_password))
+        .route("/phone/request-code", post(auth::request_phone_code))
+        .route("/phone/verify", post(auth::verify_phone))
 }

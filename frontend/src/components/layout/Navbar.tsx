@@ -88,11 +88,11 @@ export function Navbar() {
                   {showDropdown && (
                     <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-lg shadow-lg py-2 z-50">
                       <Link
-                        to="/contul-meu"
+                        to="/cont/setari"
                         className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline"
                         onClick={() => setShowDropdown(false)}
                       >
-                        Contul meu
+                        Setări
                       </Link>
                       <Link
                         to="/anunturile-mele"

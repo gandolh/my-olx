@@ -1,13 +1,14 @@
 use crate::{
     dto::auth::{
-        AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest,
-        VerifyEmailRequest,
+        AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, RequestPhoneCodeRequest,
+        ResetPasswordRequest, VerifyEmailRequest, VerifyPhoneRequest,
     },
     error::AppError,
     middleware::auth::AuthUser,
     repositories::{
-        email_tokens::{PgEmailTokenRepository, EmailTokenRepository}, 
-        password_tokens::{PgPasswordTokenRepository, PasswordTokenRepository},
+        email_tokens::PgEmailTokenRepository,
+        password_tokens::PgPasswordTokenRepository,
+        phone_tokens::PgPhoneTokenRepository,
         users::PgUserRepository,
     },
     services::auth::AuthService,
@@ -32,7 +33,9 @@ pub async fn register(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
@@ -55,7 +58,9 @@ pub async fn login(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
@@ -80,7 +85,9 @@ pub async fn verify_email(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
@@ -101,7 +108,9 @@ pub async fn resend_verification(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
@@ -124,7 +133,9 @@ pub async fn forgot_password(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
@@ -147,10 +158,64 @@ pub async fn reset_password(
         repo,
         email_token_repo,
         password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
         state.email.clone(),
+        state.phone.clone(),
         state.config.jwt_secret.clone(),
         state.config.jwt_expiry_seconds,
     );
     svc.reset_password(&body.token, &body.password).await?;
+    Ok(StatusCode::OK)
+}
+
+pub async fn request_phone_code(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Json(body): Json<RequestPhoneCodeRequest>,
+) -> Result<StatusCode, AppError> {
+    body.validate()
+        .map_err(|e| AppError::Validation(e.to_string()))?;
+    let repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
+    let svc = AuthService::new(
+        repo,
+        email_token_repo,
+        password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
+        state.email.clone(),
+        state.phone.clone(),
+        state.config.jwt_secret.clone(),
+        state.config.jwt_expiry_seconds,
+    );
+    svc.request_phone_code(user_id, &body.phone).await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+pub async fn verify_phone(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Json(body): Json<VerifyPhoneRequest>,
+) -> Result<StatusCode, AppError> {
+    body.validate()
+        .map_err(|e| AppError::Validation(e.to_string()))?;
+    let repo = Arc::new(PgUserRepository {
+        pool: state.db.clone(),
+    });
+    let email_token_repo = Arc::new(PgEmailTokenRepository::new(state.db.clone()));
+    let password_token_repo = Arc::new(PgPasswordTokenRepository::new(state.db.clone()));
+    let svc = AuthService::new(
+        repo,
+        email_token_repo,
+        password_token_repo,
+        Arc::new(PgPhoneTokenRepository::new(state.db.clone())),
+        state.email.clone(),
+        state.phone.clone(),
+        state.config.jwt_secret.clone(),
+        state.config.jwt_expiry_seconds,
+    );
+    svc.verify_phone(user_id, &body.code).await?;
     Ok(StatusCode::OK)
 }

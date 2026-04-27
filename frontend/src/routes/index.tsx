@@ -70,6 +70,12 @@ const ResetPasswordPage = lazy(() =>
   })),
 );
 
+const SettingsPage = lazy(() =>
+  import("@/modules/settings/pages/SettingsPage").then((m) => ({
+    default: m.SettingsPage,
+  })),
+);
+
 const EditListingPage = lazy(() =>
   import("@/modules/listings/pages/EditListingPage").then((m) => ({
     default: m.EditListingPage,
@@ -103,6 +109,7 @@ export function AppRoutes() {
         <Route path="/verifica-email" element={<EmailVerifyPage />} />
         <Route path="/parola-uitata" element={<ForgotPasswordPage />} />
         <Route path="/reseteaza-parola" element={<ResetPasswordPage />} />
+        <Route path="/cont/setari" element={<SettingsPage />} />
         <Route path="/favorite" element={<FavoritesPage />} />
         <Route path="/mesaje" element={<ConversationsPage />} />
         <Route path="/mesaje/:conversationId" element={<ConversationsPage />}>

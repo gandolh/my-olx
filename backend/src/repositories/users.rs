@@ -9,6 +9,7 @@ pub trait UserRepository: Send + Sync {
     async fn create(&self, email: &str, password_hash: &str) -> Result<User, AppError>;
     async fn set_email_verified(&self, id: Uuid) -> Result<(), AppError>;
     async fn update_password_hash(&self, id: Uuid, password_hash: &str) -> Result<(), AppError>;
+    async fn set_phone_verified(&self, id: Uuid, phone: &str) -> Result<(), AppError>;
 }
 
 pub struct PgUserRepository {
@@ -59,6 +60,15 @@ impl UserRepository for PgUserRepository {
     async fn update_password_hash(&self, id: Uuid, password_hash: &str) -> Result<(), AppError> {
         sqlx::query("UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2")
             .bind(password_hash)
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+        Ok(())
+    }
+
+    async fn set_phone_verified(&self, id: Uuid, phone: &str) -> Result<(), AppError> {
+        sqlx::query("UPDATE users SET phone = $1, phone_verified = true, updated_at = NOW() WHERE id = $2")
+            .bind(phone)
             .bind(id)
             .execute(&self.pool)
             .await?;

@@ -6,3 +6,4 @@ pub mod password_tokens;
 pub mod users;
 pub mod conversations;
 pub mod messages;
+pub mod phone_tokens;

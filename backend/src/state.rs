@@ -1,4 +1,7 @@
-use crate::{config::Config, services::email::EmailService};
+use crate::{
+    config::Config, 
+    services::{email::EmailService, phone::PhoneProvider}
+};
 use sqlx::PgPool;
 use std::sync::Arc;
 
@@ -11,4 +14,5 @@ pub struct AppState {
     pub s3: aws_sdk_s3::Client,
     pub config: Arc<Config>,
     pub email: Arc<dyn EmailService>,
+    pub phone: Arc<dyn PhoneProvider>,
 }
