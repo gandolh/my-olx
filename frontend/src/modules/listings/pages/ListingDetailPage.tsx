@@ -157,7 +157,7 @@ export function ListingDetailPage() {
             viewCount={data.viewCount}
           />
 
-          <SellerCard seller={data.seller} />
+          <SellerCard seller={data.seller} listingId={data.id} />
 
           {/* Safety tip */}
           <div className="flex items-start gap-4 px-4">

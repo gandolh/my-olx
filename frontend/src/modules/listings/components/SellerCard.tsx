@@ -1,11 +1,27 @@
+import { useState } from "react";
+import { useAuth } from "@/lib/auth";
+import { ContactSellerModal } from "@/modules/messaging/components/ContactSellerModal";
 import type { SellerSummary } from "../types";
 
 interface SellerCardProps {
   seller: SellerSummary;
+  listingId: string;
 }
 
-export function SellerCard({ seller }: SellerCardProps) {
+export function SellerCard({ seller, listingId }: SellerCardProps) {
+  const { user, isAuthenticated } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const sellerName = seller.displayName || "Vânzător PiațăRo";
+
+  const isOwner = user?.id === seller.id;
+
+  const handleContactClick = () => {
+    if (!isAuthenticated) {
+      window.location.href = `/autentificare?next=/anunturi/${listingId}`;
+      return;
+    }
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="bg-surface-container-low p-8 rounded-2xl space-y-6">
@@ -48,6 +64,23 @@ export function SellerCard({ seller }: SellerCardProps) {
           Profil
         </button>
       </div>
+
+      {!isOwner && (
+        <button
+          onClick={handleContactClick}
+          className="w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2"
+        >
+          <span className="material-symbols-outlined text-[20px]">mail</span>
+          Contactează vânzătorul
+        </button>
+      )}
+
+      <ContactSellerModal
+        listingId={listingId}
+        sellerName={sellerName}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">

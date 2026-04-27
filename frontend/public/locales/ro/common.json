@@ -80,6 +80,26 @@
     "help": "Ajutor",
     "contact": "Contact"
   },
+  "messaging": {
+    "messages": "Mesaje",
+    "no_conversations": "Nu ai nicio conversație încă.",
+    "select_conversation": "Selectează o conversație pentru a vedea mesajele.",
+    "type_message": "Scrie un mesaj...",
+    "unknown_user": "Utilizator necunoscut",
+    "no_messages": "Niciun mesaj",
+    "view_listing": "Vezi anunțul",
+    "reply_to_buyer": "Răspunde-i cumpărătorului...",
+    "reply_to_seller": "Răspunde-i vânzătorului...",
+    "contact_seller_title": "Trimite un mesaj lui {{name}}",
+    "contact_placeholder": "Bună, sunt interesat de acest anunț. Mai este valabil?",
+    "empty_inbox_title": "Niciun mesaj selectat",
+    "empty_inbox_description": "Alege o conversație din listă pentru a începe să comunici."
+  },
+  "actions": {
+    "cancel": "Anulează",
+    "send": "Trimite",
+    "sending": "Se trimite..."
+  },
   "comingSoon": {
     "title": "În curând",
     "subtitle": "Această pagină este în curs de dezvoltare."

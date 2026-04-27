@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/lib/auth";
 import { useLogoutMutation } from "@/modules/auth/hooks/useLogoutMutation";
 import { useFavoriteIds } from "@/modules/favorites/hooks/useFavoriteIds";
+import { useUnreadCount } from "@/modules/messaging/hooks/useUnreadCount";
 
 export function Navbar() {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const logoutMutation = useLogoutMutation();
   const favoriteIds = useFavoriteIds();
+  const unreadCount = useUnreadCount(isAuthenticated);
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -47,9 +49,14 @@ export function Navbar() {
           </Link>
           <Link
             to="/mesaje"
-            className="text-on-surface-variant font-medium hover:text-primary transition-colors no-underline"
+            className="text-on-surface-variant font-medium hover:text-primary transition-colors no-underline flex items-center gap-1"
           >
             {t("nav.messages")}
+            {isAuthenticated && (unreadCount.data ?? 0) > 0 && (
+              <span className="bg-primary text-on-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {unreadCount.data}
+              </span>
+            )}
           </Link>
         </div>
 

@@ -22,5 +22,6 @@ pub fn router() -> Router<AppState> {
         .route("/:id/deactivate", post(listings::deactivate_listing))
         .route("/:id/activate", post(listings::activate_listing))
         .route("/:id/related", get(listings::get_related))
+        .route("/:id/conversations", post(crate::handlers::messaging::start_conversation))
         .nest("/:id/images", images::router())
 }

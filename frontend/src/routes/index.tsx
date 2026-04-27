@@ -52,6 +52,18 @@ const FavoritesPage = lazy(() =>
   })),
 );
 
+const ConversationsPage = lazy(() =>
+  import("@/modules/messaging/pages/ConversationsPage").then((m) => ({
+    default: m.ConversationsPage,
+  })),
+);
+
+const ConversationPage = lazy(() =>
+  import("@/modules/messaging/pages/ConversationPage").then((m) => ({
+    default: m.ConversationPage,
+  })),
+);
+
 const ResetPasswordPage = lazy(() =>
   import("@/modules/auth/pages/ResetPasswordPage").then((m) => ({
     default: m.ResetPasswordPage,
@@ -92,6 +104,10 @@ export function AppRoutes() {
         <Route path="/parola-uitata" element={<ForgotPasswordPage />} />
         <Route path="/reseteaza-parola" element={<ResetPasswordPage />} />
         <Route path="/favorite" element={<FavoritesPage />} />
+        <Route path="/mesaje" element={<ConversationsPage />} />
+        <Route path="/mesaje/:conversationId" element={<ConversationsPage />}>
+          <Route index element={<ConversationPage />} />
+        </Route>
         <Route path="*" element={<ComingSoon />} />
       </Routes>
     </Suspense>

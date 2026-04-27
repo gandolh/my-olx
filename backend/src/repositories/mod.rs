@@ -4,3 +4,5 @@ pub mod images;
 pub mod listings;
 pub mod password_tokens;
 pub mod users;
+pub mod conversations;
+pub mod messages;

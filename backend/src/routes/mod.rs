@@ -4,3 +4,4 @@ pub mod images;
 pub mod listings;
 pub mod me;
 pub mod users;
+pub mod messaging;
