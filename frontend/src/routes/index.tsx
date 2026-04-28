@@ -1,9 +1,9 @@
-import { Suspense } from "react";
+import { Suspense, createElement } from "react";
 import {
   Outlet,
-  Route,
-  RootRoute,
   Router,
+  createRoute,
+  createRootRoute,
   type AnyRoute,
 } from "@tanstack/react-router";
 import type { ModuleRoute } from "@/routes/types";
@@ -83,16 +83,20 @@ function normalizePath(path: string, index?: boolean): string {
   return segments.join("/") || "/";
 }
 
+function resolveComponent(component?: ModuleRoute["component"]) {
+  if (!component) return undefined;
+  return () => createElement(component);
+}
+
 function createRoutes(parent: AnyRoute, routes: ModuleRoute[]): AnyRoute[] {
   return routes.map((route) => {
     const { component, children, index, path, ...rest } = route;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tanstackRoute = new Route({
+    const tanstackRoute = createRoute({
       ...rest,
       getParentRoute: () => parent,
       path: normalizePath(path, index),
-      component,
-    } as any);
+      component: resolveComponent(component),
+    });
 
     if (children?.length) {
       tanstackRoute.addChildren(createRoutes(tanstackRoute, children));
@@ -102,7 +106,7 @@ function createRoutes(parent: AnyRoute, routes: ModuleRoute[]): AnyRoute[] {
   });
 }
 
-const rootRoute = new RootRoute({
+const rootRoute = createRootRoute({
   component: RootLayout,
 });
 
