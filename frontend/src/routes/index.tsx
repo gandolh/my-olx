@@ -1,4 +1,4 @@
-import { Suspense, createElement } from "react";
+import { createElement } from "react";
 import {
   Outlet,
   Router,
@@ -7,11 +7,9 @@ import {
   type AnyRoute,
 } from "@tanstack/react-router";
 import type { ModuleRoute } from "@/routes/types";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { ComingSoon } from "@/components/ui/ComingSoon";
-import { CardSkeleton } from "@/components/ui/Skeleton";
-import { GlobalLoadingIndicator } from "@/components/ui/GlobalLoadingIndicator";
 
 import { homeRoutes } from "@/modules/home/routes";
 import { categoryRoutes } from "@/modules/categories/routes";
@@ -25,13 +23,12 @@ import { settingsRoutes } from "@/modules/settings/routes";
 import { publicProfileRoutes } from "@/modules/public-profile/routes";
 import { messagingRoutes } from "@/modules/messaging/routes";
 
-const moduleRoutes: ModuleRoute[] = [
+const mainModuleRoutes: ModuleRoute[] = [
   ...homeRoutes,
   ...categoryRoutes,
   ...searchRoutes,
   ...listingsRoutes,
   ...createListingRoutes,
-  ...authRoutes,
   ...dashboardRoutes,
   ...settingsRoutes,
   ...favoritesRoutes,
@@ -43,31 +40,6 @@ const fallbackRoute: ModuleRoute = {
   path: "*",
   component: ComingSoon,
 };
-
-function PageLoader() {
-  return (
-    <main className="pt-24 flex-1">
-      <div className="max-w-screen-2xl mx-auto px-8 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <CardSkeleton key={i} />
-        ))}
-      </div>
-    </main>
-  );
-}
-
-function RootLayout() {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <GlobalLoadingIndicator />
-      <Navbar />
-      <Suspense fallback={<PageLoader />}>
-        <Outlet />
-      </Suspense>
-      <Footer />
-    </div>
-  );
-}
 
 function normalizePath(path: string, index?: boolean): string {
   if (index) return "";
@@ -109,12 +81,27 @@ function createRoutes(parent: AnyRoute, routes: ModuleRoute[]): AnyRoute[] {
 }
 
 const rootRoute = createRootRoute({
-  component: RootLayout,
+  component: () => <Outlet />,
 });
 
-const routeTree = rootRoute.addChildren(
-  createRoutes(rootRoute, [...moduleRoutes, fallbackRoute]),
-);
+const mainLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "_main",
+  component: MainLayout,
+});
+
+const authLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "_auth",
+  component: AuthLayout,
+});
+
+const routeTree = rootRoute.addChildren([
+  mainLayoutRoute.addChildren(
+    createRoutes(mainLayoutRoute, [...mainModuleRoutes, fallbackRoute]),
+  ),
+  authLayoutRoute.addChildren(createRoutes(authLayoutRoute, [...authRoutes])),
+]);
 
 export const router = new Router({
   routeTree,
