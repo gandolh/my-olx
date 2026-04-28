@@ -11,6 +11,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ComingSoon } from "@/components/ui/ComingSoon";
 import { CardSkeleton } from "@/components/ui/Skeleton";
+import { GlobalLoadingIndicator } from "@/components/ui/GlobalLoadingIndicator";
 
 import { homeRoutes } from "@/modules/home/routes";
 import { categoryRoutes } from "@/modules/categories/routes";
@@ -58,6 +59,7 @@ function PageLoader() {
 function RootLayout() {
   return (
     <div className="flex min-h-screen flex-col">
+      <GlobalLoadingIndicator />
       <Navbar />
       <Suspense fallback={<PageLoader />}>
         <Outlet />
