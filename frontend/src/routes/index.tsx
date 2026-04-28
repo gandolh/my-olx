@@ -1,107 +1,61 @@
-import { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import type { ReactElement } from "react";
+import { Suspense } from "react";
+import { Routes, Route, type RouteObject } from "react-router-dom";
 import { ComingSoon } from "@/components/ui/ComingSoon";
-import { HomePage } from "@/modules/home/pages/HomePage";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 
-import { DashboardPage } from "@/modules/dashboard/pages/DashboardPage";
-import { MyListingsPage } from "@/modules/dashboard/pages/MyListingsPage";
+import { homeRoutes } from "@/modules/home/routes";
+import { categoryRoutes } from "@/modules/categories/routes";
+import { searchRoutes } from "@/modules/search/routes";
+import { listingsRoutes } from "@/modules/listings/routes";
+import { createListingRoutes } from "@/modules/create-listing/routes";
+import { authRoutes } from "@/modules/auth/routes";
+import { favoritesRoutes } from "@/modules/favorites/routes";
+import { dashboardRoutes } from "@/modules/dashboard/routes";
+import { settingsRoutes } from "@/modules/settings/routes";
+import { publicProfileRoutes } from "@/modules/public-profile/routes";
+import { messagingRoutes } from "@/modules/messaging/routes";
 
-const CategoryPage = lazy(() =>
-  import("@/modules/categories/pages/CategoryPage").then((m) => ({
-    default: m.CategoryPage,
-  })),
-);
+const moduleRoutes: RouteObject[] = [
+  ...homeRoutes,
+  ...categoryRoutes,
+  ...searchRoutes,
+  ...listingsRoutes,
+  ...createListingRoutes,
+  ...authRoutes,
+  ...dashboardRoutes,
+  ...settingsRoutes,
+  ...favoritesRoutes,
+  ...publicProfileRoutes,
+  ...messagingRoutes,
+];
 
-const CategoryIndexPage = lazy(() =>
-  import("@/modules/categories/pages/CategoryIndexPage").then((m) => ({
-    default: m.CategoryIndexPage,
-  })),
-);
+const appRoutes: RouteObject[] = [
+  ...moduleRoutes,
+  {
+    path: "*",
+    element: <ComingSoon />,
+  },
+];
 
-const SearchResultsPage = lazy(() =>
-  import("@/modules/search/pages/SearchResultsPage").then((m) => ({
-    default: m.SearchResultsPage,
-  })),
-);
+function renderRoute(route: RouteObject, key: string): ReactElement {
+  if (route.index) {
+    return <Route key={key} index element={route.element} />;
+  }
 
-const ListingDetailPage = lazy(() =>
-  import("@/modules/listings/pages/ListingDetailPage").then((m) => ({
-    default: m.ListingDetailPage,
-  })),
-);
-
-const CreateListingPage = lazy(() =>
-  import("@/modules/create-listing/pages/CreateListingPage").then((m) => ({
-    default: m.CreateListingPage,
-  })),
-);
-
-const LoginPage = lazy(() =>
-  import("@/modules/auth/pages/LoginPage").then((m) => ({
-    default: m.LoginPage,
-  })),
-);
-
-const RegisterPage = lazy(() =>
-  import("@/modules/auth/pages/RegisterPage").then((m) => ({
-    default: m.RegisterPage,
-  })),
-);
-
-const EmailVerifyPage = lazy(() =>
-  import("@/modules/auth/pages/EmailVerifyPage").then((m) => ({
-    default: m.EmailVerifyPage,
-  })),
-);
-
-const ForgotPasswordPage = lazy(() =>
-  import("@/modules/auth/pages/ForgotPasswordPage").then((m) => ({
-    default: m.ForgotPasswordPage,
-  })),
-);
-
-const FavoritesPage = lazy(() =>
-  import("@/modules/favorites/pages/FavoritesPage").then((m) => ({
-    default: m.FavoritesPage,
-  })),
-);
-
-const ConversationsPage = lazy(() =>
-  import("@/modules/messaging/pages/ConversationsPage").then((m) => ({
-    default: m.ConversationsPage,
-  })),
-);
-
-const ConversationPage = lazy(() =>
-  import("@/modules/messaging/pages/ConversationPage").then((m) => ({
-    default: m.ConversationPage,
-  })),
-);
-
-const ResetPasswordPage = lazy(() =>
-  import("@/modules/auth/pages/ResetPasswordPage").then((m) => ({
-    default: m.ResetPasswordPage,
-  })),
-);
-
-const SettingsPage = lazy(() =>
-  import("@/modules/settings/pages/SettingsPage").then((m) => ({
-    default: m.SettingsPage,
-  })),
-);
-
-const EditListingPage = lazy(() =>
-  import("@/modules/listings/pages/EditListingPage").then((m) => ({
-    default: m.EditListingPage,
-  })),
-);
-
-const PublicProfilePage = lazy(() =>
-  import("@/modules/public-profile/pages/PublicProfilePage").then((m) => ({
-    default: m.default,
-  })),
-);
+  return (
+    <Route
+      key={key}
+      path={route.path}
+      element={route.element}
+      caseSensitive={route.caseSensitive}
+    >
+      {route.children?.map((child, idx) =>
+        renderRoute(child, `${key}-${child.path ?? `index-${idx}`}`),
+      )}
+    </Route>
+  );
+}
 
 function PageLoader() {
   return (
@@ -119,29 +73,9 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/categorii" element={<CategoryIndexPage />} />
-        <Route path="/categorii/:slug" element={<CategoryPage />} />
-        <Route path="/anunturi" element={<SearchResultsPage />} />
-        <Route path="/anunturi/:id" element={<ListingDetailPage />} />
-        <Route path="/anunturi/:id/editeaza" element={<EditListingPage />} />
-        <Route path="/adauga-anunt" element={<CreateListingPage />} />
-        <Route path="/adauga-anunt/:draftId" element={<CreateListingPage />} />
-        <Route path="/autentificare" element={<LoginPage />} />
-        <Route path="/inregistrare" element={<RegisterPage />} />
-        <Route path="/verifica-email" element={<EmailVerifyPage />} />
-        <Route path="/parola-uitata" element={<ForgotPasswordPage />} />
-        <Route path="/reseteaza-parola" element={<ResetPasswordPage />} />
-        <Route path="/cont" element={<DashboardPage />} />
-        <Route path="/cont/anunturi" element={<MyListingsPage />} />
-        <Route path="/cont/setari" element={<SettingsPage />} />
-        <Route path="/utilizator/:id" element={<PublicProfilePage />} />
-        <Route path="/favorite" element={<FavoritesPage />} />
-        <Route path="/mesaje" element={<ConversationsPage />} />
-        <Route path="/mesaje/:conversationId" element={<ConversationsPage />}>
-          <Route index element={<ConversationPage />} />
-        </Route>
-        <Route path="*" element={<ComingSoon />} />
+        {appRoutes.map((route, idx) =>
+          renderRoute(route, `route-${idx}-${route.path ?? "index"}`),
+        )}
       </Routes>
     </Suspense>
   );
