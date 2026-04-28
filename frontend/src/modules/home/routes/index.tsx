@@ -1,15 +1,11 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const HomePage = lazy(() =>
-  import("../pages/HomePage").then((m) => ({ default: m.HomePage })),
-);
-
-export const homeRoutes: RouteObject[] = [
+export const homeRoutes: ModuleRoute[] = [
   {
     path: "/",
-    element: <HomePage />,
+    component: lazy(() =>
+      import("../pages/HomePage").then((m) => ({ default: m.HomePage })),
+    ),
   },
 ];
-
-export default homeRoutes;

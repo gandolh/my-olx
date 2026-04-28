@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { useConversations } from "@/modules/messaging/hooks/useConversations";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";

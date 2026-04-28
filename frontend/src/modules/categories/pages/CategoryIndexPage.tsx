@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 
 const CATEGORIES = [
@@ -25,7 +25,10 @@ export function CategoryIndexPage() {
             {t("categories.browseTitle", "Răsfoiește toate categoriile")}
           </h1>
           <p className="text-lg text-on-surface-variant max-w-2xl mx-auto">
-            {t("categories.browseSubtitle", "Găsește exact ceea ce cauți printre mii de anunțuri verificate.")}
+            {t(
+              "categories.browseSubtitle",
+              "Găsește exact ceea ce cauți printre mii de anunțuri verificate.",
+            )}
           </p>
         </div>
       </section>
@@ -39,7 +42,10 @@ export function CategoryIndexPage() {
               className="bg-surface-container-lowest p-8 rounded-xl flex flex-col items-center justify-center text-center gap-4 hover:shadow-xl transition-all group cursor-pointer border border-outline-variant hover:border-primary"
             >
               <div className="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                <span className="material-symbols-outlined" style={{ fontSize: "32px" }}>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: "32px" }}
+                >
                   {icon}
                 </span>
               </div>

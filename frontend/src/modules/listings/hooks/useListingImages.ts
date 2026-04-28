@@ -14,11 +14,17 @@ const MAX_CONCURRENT_UPLOADS = 3;
 
 export function useListingImagesMutations(listingId: string) {
   const queryClient = useQueryClient();
-  const [progressByFile, setProgressByFile] = useState<Record<string, number>>({});
+  const [progressByFile, setProgressByFile] = useState<Record<string, number>>(
+    {},
+  );
 
   const commitMutation = useMutation({
-    mutationFn: (payload: { s3_key: string; width?: number; height?: number; bytes?: number }) =>
-      commitImage(listingId, payload),
+    mutationFn: (payload: {
+      s3_key: string;
+      width?: number;
+      height?: number;
+      bytes?: number;
+    }) => commitImage(listingId, payload),
     onSuccess: invalidateListing,
   });
 
@@ -36,7 +42,9 @@ export function useListingImagesMutations(listingId: string) {
     const queue = [...files];
     const uploaded: ListingImage[] = [];
 
-    const workers = Array.from({ length: Math.min(MAX_CONCURRENT_UPLOADS, queue.length) }).map(async () => {
+    const workers = Array.from({
+      length: Math.min(MAX_CONCURRENT_UPLOADS, queue.length),
+    }).map(async () => {
       while (queue.length > 0) {
         const file = queue.shift();
         if (!file) {
@@ -84,6 +92,14 @@ export function useListingImagesMutations(listingId: string) {
       isDeleting: deleteMutation.isPending,
       progressByFile,
     }),
-    [deleteMutation.isPending, isUploading, progressByFile, reorderMutation.isPending],
+    [
+      deleteMutation.isPending,
+      deleteMutation.mutateAsync,
+      isUploading,
+      progressByFile,
+      reorderMutation.isPending,
+      reorderMutation.mutateAsync,
+      uploadFiles,
+    ],
   );
 }

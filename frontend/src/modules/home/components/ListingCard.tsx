@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
 import type { ListingCard as ListingCardItem } from "@/types/listing";
 import { FavoriteToggle } from "@/modules/favorites/components/FavoriteToggle";
 
@@ -10,8 +11,9 @@ interface ListingCardProps {
 export function ListingCard({ listing }: ListingCardProps) {
   const { t } = useTranslation();
   const postedAt = formatRelativeTime(listing.postedAt);
-  const isExpired =
-    !listing.active || new Date(listing.expiresAt).getTime() <= Date.now();
+  const isExpired = useMemo(() => {
+    return !listing.active || new Date(listing.expiresAt) <= new Date();
+  }, [listing.active, listing.expiresAt]);
 
   return (
     <Link

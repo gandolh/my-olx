@@ -7,7 +7,7 @@ import { ExpiringSection } from "../components/ExpiringSection";
 import { RecentConversations } from "../components/RecentConversations";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { useMyListings } from "../hooks/useMyListings";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 
 export function DashboardPage() {
   const { t } = useTranslation();
@@ -54,7 +54,7 @@ export function DashboardPage() {
   }
 
   const filteredExpiring =
-    expiringListings?.listings?.filter((l: any) => {
+    expiringListings?.listings?.filter((l: { expiresAt: string }) => {
       const expiresAt = new Date(l.expiresAt);
       const now = new Date();
       const diff = expiresAt.getTime() - now.getTime();

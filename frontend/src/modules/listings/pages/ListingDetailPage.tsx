@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "@/lib/router";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { useListingDetail } from "../hooks/useListingDetail";

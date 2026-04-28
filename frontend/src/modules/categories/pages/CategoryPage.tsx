@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { useCategoryListings } from "../hooks/useCategoryListings";

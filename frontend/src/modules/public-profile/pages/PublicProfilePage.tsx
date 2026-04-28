@@ -1,5 +1,4 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "@/lib/router";
 import { usePublicProfile, useUserListings } from "../hooks/usePublicProfile";
 import { ListingCard } from "@/modules/home/components/ListingCard";
 import { format } from "date-fns";

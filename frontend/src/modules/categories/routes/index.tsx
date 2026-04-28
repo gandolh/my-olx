@@ -1,23 +1,21 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const CategoryIndexPage = lazy(() =>
-  import("../pages/CategoryIndexPage").then((m) => ({ default: m.CategoryIndexPage })),
-);
-
-const CategoryPage = lazy(() =>
-  import("../pages/CategoryPage").then((m) => ({ default: m.CategoryPage })),
-);
-
-export const categoryRoutes: RouteObject[] = [
+export const categoryRoutes: ModuleRoute[] = [
   {
     path: "/categorii",
-    element: <CategoryIndexPage />,
+    component: lazy(() =>
+      import("../pages/CategoryIndexPage").then((m) => ({
+        default: m.CategoryIndexPage,
+      })),
+    ),
   },
   {
     path: "/categorii/:slug",
-    element: <CategoryPage />,
+    component: lazy(() =>
+      import("../pages/CategoryPage").then((m) => ({
+        default: m.CategoryPage,
+      })),
+    ),
   },
 ];
-
-export default categoryRoutes;

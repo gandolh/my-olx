@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -61,11 +61,11 @@ export function EditListingPage() {
     );
   }
 
-  const handleUpdate = async (patch: any) => {
+  const handleUpdate = async (patch: Record<string, unknown>) => {
     try {
       await update.mutateAsync({ id: listing.id, patch });
       toast.success(t("edit.success"));
-    } catch (err) {
+    } catch {
       toast.error("Nu am putut actualiza anunțul.");
     }
   };
@@ -78,7 +78,7 @@ export function EditListingPage() {
         await activate.mutateAsync(listing.id);
       }
       toast.success(t("edit.success"));
-    } catch (err) {
+    } catch {
       toast.error("Nu am putut schimba statusul anunțului.");
     }
   };

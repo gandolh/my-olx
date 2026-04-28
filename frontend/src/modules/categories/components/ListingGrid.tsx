@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { ListingCard } from "@/modules/home/components/ListingCard";
 import { FavoriteToggle } from "@/modules/favorites/components/FavoriteToggle";

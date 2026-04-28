@@ -1,47 +1,43 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const LoginPage = lazy(() =>
-  import("../pages/LoginPage").then((m) => ({ default: m.LoginPage })),
-);
-
-const RegisterPage = lazy(() =>
-  import("../pages/RegisterPage").then((m) => ({ default: m.RegisterPage })),
-);
-
-const EmailVerifyPage = lazy(() =>
-  import("../pages/EmailVerifyPage").then((m) => ({ default: m.EmailVerifyPage })),
-);
-
-const ForgotPasswordPage = lazy(() =>
-  import("../pages/ForgotPasswordPage").then((m) => ({ default: m.ForgotPasswordPage })),
-);
-
-const ResetPasswordPage = lazy(() =>
-  import("../pages/ResetPasswordPage").then((m) => ({ default: m.ResetPasswordPage })),
-);
-
-export const authRoutes: RouteObject[] = [
+export const authRoutes: ModuleRoute[] = [
   {
     path: "/autentificare",
-    element: <LoginPage />,
+    component: lazy(() =>
+      import("../pages/LoginPage").then((m) => ({ default: m.LoginPage })),
+    ),
   },
   {
     path: "/inregistrare",
-    element: <RegisterPage />,
+    component: lazy(() =>
+      import("../pages/RegisterPage").then((m) => ({
+        default: m.RegisterPage,
+      })),
+    ),
   },
   {
     path: "/verifica-email",
-    element: <EmailVerifyPage />,
+    component: lazy(() =>
+      import("../pages/EmailVerifyPage").then((m) => ({
+        default: m.EmailVerifyPage,
+      })),
+    ),
   },
   {
     path: "/parola-uitata",
-    element: <ForgotPasswordPage />,
+    component: lazy(() =>
+      import("../pages/ForgotPasswordPage").then((m) => ({
+        default: m.ForgotPasswordPage,
+      })),
+    ),
   },
   {
     path: "/reseteaza-parola",
-    element: <ResetPasswordPage />,
+    component: lazy(() =>
+      import("../pages/ResetPasswordPage").then((m) => ({
+        default: m.ResetPasswordPage,
+      })),
+    ),
   },
 ];
-
-export default authRoutes;

@@ -1,15 +1,13 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const SearchResultsPage = lazy(() =>
-  import("../pages/SearchResultsPage").then((m) => ({ default: m.SearchResultsPage })),
-);
-
-export const searchRoutes: RouteObject[] = [
+export const searchRoutes: ModuleRoute[] = [
   {
     path: "/anunturi",
-    element: <SearchResultsPage />,
+    component: lazy(() =>
+      import("../pages/SearchResultsPage").then((m) => ({
+        default: m.SearchResultsPage,
+      })),
+    ),
   },
 ];
-
-export default searchRoutes;

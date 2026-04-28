@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { ErrorCard } from "@/components/ui/ErrorCard";

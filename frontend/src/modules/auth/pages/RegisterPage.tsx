@@ -1,22 +1,26 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from 'react-router-dom'
-import { AuthCardShell } from '../components/AuthCardShell'
-import { FormField } from '../components/FormField'
-import { SubmitButton } from '../components/SubmitButton'
-import { registerSchema, type RegisterInput } from '../schemas'
-import { useRegisterMutation } from '../hooks/useRegisterMutation'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "@/lib/router";
+import { AuthCardShell } from "../components/AuthCardShell";
+import { FormField } from "../components/FormField";
+import { SubmitButton } from "../components/SubmitButton";
+import { registerSchema, type RegisterInput } from "../schemas";
+import { useRegisterMutation } from "../hooks/useRegisterMutation";
 
 export function RegisterPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-  })
+  });
 
-  const registerMutation = useRegisterMutation()
+  const registerMutation = useRegisterMutation();
 
   const onSubmit = (data: RegisterInput) => {
-    registerMutation.mutate({ email: data.email, password: data.password })
-  }
+    registerMutation.mutate({ email: data.email, password: data.password });
+  };
 
   return (
     <AuthCardShell
@@ -27,15 +31,15 @@ export function RegisterPage() {
         <FormField
           label="Email"
           type="email"
-          {...register('email')}
+          {...register("email")}
           error={errors.email?.message}
           autoComplete="email"
         />
-        
+
         <FormField
           label="Parolă"
           type="password"
-          {...register('password')}
+          {...register("password")}
           error={errors.password?.message}
           autoComplete="new-password"
         />
@@ -43,7 +47,7 @@ export function RegisterPage() {
         <FormField
           label="Confirmă parola"
           type="password"
-          {...register('passwordConfirm')}
+          {...register("passwordConfirm")}
           error={errors.passwordConfirm?.message}
           autoComplete="new-password"
         />
@@ -65,12 +69,15 @@ export function RegisterPage() {
         </SubmitButton>
 
         <p className="text-center text-sm text-on-surface-variant mt-4">
-          Ai deja cont?{' '}
-          <Link to="/autentificare" className="text-primary font-medium hover:underline">
+          Ai deja cont?{" "}
+          <Link
+            to="/autentificare"
+            className="text-primary font-medium hover:underline"
+          >
             Autentifică-te
           </Link>
         </p>
       </form>
     </AuthCardShell>
-  )
+  );
 }

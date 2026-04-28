@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import * as Dialog from "@base-ui/react";
+import { Dialog } from "@base-ui/react/dialog";
 import { X } from "lucide-react";
 import { messagingService } from "../services/messaging";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router";
 
 interface Props {
   listingId: string;
@@ -37,8 +37,9 @@ export const ContactSellerModal: React.FC<Props> = ({
       );
       onClose();
       navigate(`/mesaje/${conversation.id}`);
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("common:errors.generic"));
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || t("common:errors.generic"));
     } finally {
       setIsSending(false);
     }
@@ -47,16 +48,14 @@ export const ContactSellerModal: React.FC<Props> = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl w-full max-w-md p-6 z-50">
+        <Dialog.Backdrop className="fixed inset-0 bg-black/50 z-50" />
+        <Dialog.Popup className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl w-full max-w-md p-6 z-50">
           <div className="flex justify-between items-center mb-4">
             <Dialog.Title className="text-xl font-bold">
               {t("common:messaging.contact_seller_title", { name: sellerName })}
             </Dialog.Title>
-            <Dialog.Close asChild>
-              <button className="p-1 hover:bg-gray-100 rounded-full">
-                <X size={20} />
-              </button>
+            <Dialog.Close className="p-1 hover:bg-gray-100 rounded-full">
+              <X size={20} />
             </Dialog.Close>
           </div>
 
@@ -92,7 +91,7 @@ export const ContactSellerModal: React.FC<Props> = ({
               </button>
             </div>
           </form>
-        </Dialog.Content>
+        </Dialog.Popup>
       </Dialog.Portal>
     </Dialog.Root>
   );

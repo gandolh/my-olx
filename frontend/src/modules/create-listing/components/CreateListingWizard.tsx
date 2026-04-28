@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { ListingDraft } from "../services/drafts";
@@ -37,7 +37,10 @@ export function CreateListingWizard({
         setStep("details");
       } else if (draft.images.length === 0) {
         setStep("photos");
-      } else if (!draft.city || draft.priceRon === null && !draft.isNegotiable) {
+      } else if (
+        !draft.city ||
+        (draft.priceRon === null && !draft.isNegotiable)
+      ) {
         setStep("location-price");
       } else {
         setStep("review");
@@ -57,8 +60,13 @@ export function CreateListingWizard({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: any }) =>
-      updateDraft(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: Record<string, unknown>;
+    }) => updateDraft(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["listing", draftId] });
     },
@@ -67,15 +75,18 @@ export function CreateListingWizard({
 
   const publishMutation = useMutation({
     mutationFn: publishDraft,
-    onSuccess: (finalListing) => {
+    onSuccess: (finalListing: ListingDraft) => {
       toast.success("Anunțul tău a fost publicat!");
       navigate(`/anunturi/${finalListing.id}`);
     },
-    onError: (error: any) => {
-      if (error.response?.status === 429) {
-        toast.error("Ai atins limita de 5 anunțuri pe săptămână.");
-      } else {
-        toast.error("Nu am putut publica anunțul. Verifică toate câmpurile.");
+    onError: (error: Error) => {
+      if (error instanceof Error) {
+        const err = error as { response?: { status?: number } };
+        if (err.response?.status === 429) {
+          toast.error("Ai atins limita de 5 anunțuri pe săptămână.");
+        } else {
+          toast.error("Nu am putut publica anunțul. Verifică toate câmpurile.");
+        }
       }
     },
   });
@@ -157,7 +168,13 @@ export function CreateListingWizard({
             { id: "location-price", label: "Preț" },
             { id: "review", label: "Final" },
           ].map((s, idx) => {
-            const steps = ["category", "details", "photos", "location-price", "review"];
+            const steps = [
+              "category",
+              "details",
+              "photos",
+              "location-price",
+              "review",
+            ];
             const currentIdx = steps.indexOf(step);
             const isCompleted = idx < currentIdx;
             const isActive = s.id === step;
@@ -169,12 +186,14 @@ export function CreateListingWizard({
                     isActive
                       ? "bg-primary text-on-primary"
                       : isCompleted
-                      ? "bg-primary-container text-on-primary-container"
-                      : "bg-surface-container-high text-outline"
+                        ? "bg-primary-container text-on-primary-container"
+                        : "bg-surface-container-high text-outline"
                   }`}
                 >
                   {isCompleted ? (
-                    <span className="material-symbols-outlined text-sm">check</span>
+                    <span className="material-symbols-outlined text-sm">
+                      check
+                    </span>
                   ) : (
                     idx + 1
                   )}
@@ -218,7 +237,9 @@ export function CreateListingWizard({
               listingId={draftId}
               images={draft?.images || []}
               onImagesChange={() =>
-                queryClient.invalidateQueries({ queryKey: ["listing", draftId] })
+                queryClient.invalidateQueries({
+                  queryKey: ["listing", draftId],
+                })
               }
               onNext={handlePhotosNext}
               onBack={() => setStep("details")}

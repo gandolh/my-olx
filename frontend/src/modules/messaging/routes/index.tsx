@@ -1,29 +1,21 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const ConversationsPage = lazy(() =>
-  import("../pages/ConversationsPage").then((m) => ({ default: m.ConversationsPage })),
-);
-
-const ConversationPage = lazy(() =>
-  import("../pages/ConversationPage").then((m) => ({ default: m.ConversationPage })),
-);
-
-export const messagingRoutes: RouteObject[] = [
+export const messagingRoutes: ModuleRoute[] = [
   {
     path: "/mesaje",
-    element: <ConversationsPage />,
+    component: lazy(() =>
+      import("../pages/ConversationsPage").then((m) => ({
+        default: m.ConversationsPage,
+      })),
+    ),
   },
   {
     path: "/mesaje/:conversationId",
-    element: <ConversationsPage />,
-    children: [
-      {
-        index: true,
-        element: <ConversationPage />,
-      },
-    ],
+    component: lazy(() =>
+      import("../pages/ConversationPage").then((m) => ({
+        default: m.ConversationPage,
+      })),
+    ),
   },
 ];
-
-export default messagingRoutes;

@@ -37,7 +37,7 @@ export const RenewButton: React.FC<RenewButtonProps> = ({
     try {
       await renew.mutateAsync(listingId);
       toast.success(t("renew.success"));
-    } catch (error) {
+    } catch {
       toast.error(t("errors.generic"));
     }
   };

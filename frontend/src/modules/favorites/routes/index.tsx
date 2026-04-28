@@ -1,15 +1,13 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const FavoritesPage = lazy(() =>
-  import("../pages/FavoritesPage").then((m) => ({ default: m.FavoritesPage })),
-);
-
-export const favoritesRoutes: RouteObject[] = [
+export const favoritesRoutes: ModuleRoute[] = [
   {
     path: "/favorite",
-    element: <FavoritesPage />,
+    component: lazy(() =>
+      import("../pages/FavoritesPage").then((m) => ({
+        default: m.FavoritesPage,
+      })),
+    ),
   },
 ];
-
-export default favoritesRoutes;

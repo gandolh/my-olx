@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useMyListings } from "../hooks/useMyListings";
 import { useListingMutations } from "@/modules/listings/hooks/useListingMutations";
 import { formatDistanceToNow, format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { ErrorCard } from "@/components/ui/ErrorCard";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import type { ListingCard as ListingCardType } from "@/types/listing";
 
 type TabType = "active" | "inactive" | "expired";
@@ -14,6 +14,7 @@ export function MyListingsPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("active");
   const [page, setPage] = useState(1);
+  const now = useMemo(() => new Date().getTime(), []);
 
   const { data, isLoading, isError, refetch } = useMyListings({
     active: activeTab === "active",
@@ -23,7 +24,7 @@ export function MyListingsPage() {
 
   const { renew, deactivate, activate, remove } = useListingMutations();
 
-  const handleAction = async (action: () => Promise<any>) => {
+  const handleAction = async (action: () => Promise<unknown>) => {
     try {
       await action();
       refetch();
@@ -252,7 +253,7 @@ export function MyListingsPage() {
 
                 {(activeTab === "expired" ||
                   (activeTab === "active" &&
-                    new Date(listing.expiresAt).getTime() - Date.now() <
+                    new Date(listing.expiresAt).getTime() - now <
                       7 * 24 * 60 * 60 * 1000)) && (
                   <button
                     onClick={() =>

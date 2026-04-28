@@ -1,6 +1,14 @@
-import type { ReactElement } from "react";
 import { Suspense } from "react";
-import { Routes, Route, type RouteObject } from "react-router-dom";
+import {
+  Outlet,
+  Route,
+  RootRoute,
+  Router,
+  type AnyRoute,
+} from "@tanstack/react-router";
+import type { ModuleRoute } from "@/routes/types";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { ComingSoon } from "@/components/ui/ComingSoon";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 
@@ -16,7 +24,7 @@ import { settingsRoutes } from "@/modules/settings/routes";
 import { publicProfileRoutes } from "@/modules/public-profile/routes";
 import { messagingRoutes } from "@/modules/messaging/routes";
 
-const moduleRoutes: RouteObject[] = [
+const moduleRoutes: ModuleRoute[] = [
   ...homeRoutes,
   ...categoryRoutes,
   ...searchRoutes,
@@ -30,32 +38,10 @@ const moduleRoutes: RouteObject[] = [
   ...messagingRoutes,
 ];
 
-const appRoutes: RouteObject[] = [
-  ...moduleRoutes,
-  {
-    path: "*",
-    element: <ComingSoon />,
-  },
-];
-
-function renderRoute(route: RouteObject, key: string): ReactElement {
-  if (route.index) {
-    return <Route key={key} index element={route.element} />;
-  }
-
-  return (
-    <Route
-      key={key}
-      path={route.path}
-      element={route.element}
-      caseSensitive={route.caseSensitive}
-    >
-      {route.children?.map((child, idx) =>
-        renderRoute(child, `${key}-${child.path ?? `index-${idx}`}`),
-      )}
-    </Route>
-  );
-}
+const fallbackRoute: ModuleRoute = {
+  path: "*",
+  component: ComingSoon,
+};
 
 function PageLoader() {
   return (
@@ -69,14 +55,63 @@ function PageLoader() {
   );
 }
 
-export function AppRoutes() {
+function RootLayout() {
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {appRoutes.map((route, idx) =>
-          renderRoute(route, `route-${idx}-${route.path ?? "index"}`),
-        )}
-      </Routes>
-    </Suspense>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <Suspense fallback={<PageLoader />}>
+        <Outlet />
+      </Suspense>
+      <Footer />
+    </div>
   );
 }
+
+function normalizePath(path: string, index?: boolean): string {
+  if (index) return "";
+  if (!path) return "/";
+  if (path === "*" || path === "/") return path;
+
+  const trimmed = path.replace(/^\/+/, "");
+
+  const segments = trimmed
+    .split("/")
+    .map((segment) =>
+      segment.startsWith(":") ? `$${segment.slice(1)}` : segment,
+    );
+
+  return segments.join("/") || "/";
+}
+
+function createRoutes(parent: AnyRoute, routes: ModuleRoute[]): AnyRoute[] {
+  return routes.map((route) => {
+    const { component, children, index, path, ...rest } = route;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tanstackRoute = new Route({
+      ...rest,
+      getParentRoute: () => parent,
+      path: normalizePath(path, index),
+      component,
+    } as any);
+
+    if (children?.length) {
+      tanstackRoute.addChildren(createRoutes(tanstackRoute, children));
+    }
+
+    return tanstackRoute;
+  });
+}
+
+const rootRoute = new RootRoute({
+  component: RootLayout,
+});
+
+const routeTree = rootRoute.addChildren(
+  createRoutes(rootRoute, [...moduleRoutes, fallbackRoute]),
+);
+
+export const router = new Router({
+  routeTree,
+});
+
+export type AppRouter = typeof router;

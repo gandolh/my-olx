@@ -26,18 +26,12 @@ const PhoneVerifyModal: React.FC<PhoneVerifyModalProps> = ({
   const [resendCountdown, setResendCountdown] = useState(0);
 
   useEffect(() => {
-    let timer: any;
+    let timer: number | undefined;
     if (resendCountdown > 0) {
       timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
     }
     return () => clearTimeout(timer);
   }, [resendCountdown]);
-
-  useEffect(() => {
-    if (code.length === 6 && step === "code") {
-      handleVerifyCode({ preventDefault: () => {} } as any);
-    }
-  }, [code, step]);
 
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,8 +39,9 @@ const PhoneVerifyModal: React.FC<PhoneVerifyModalProps> = ({
       await request.mutateAsync(phone);
       setStep("code");
       setResendCountdown(60);
-    } catch (error: any) {
-      if (error.response?.status === 429) {
+    } catch (error: unknown) {
+      const err = error as { response?: { status?: number } };
+      if (err.response?.status === 429) {
         toast.error(t("phoneVerify.errorRateLimit"));
       } else {
         toast.error(t("common.error"));
@@ -61,10 +56,16 @@ const PhoneVerifyModal: React.FC<PhoneVerifyModalProps> = ({
       toast.success(t("phoneVerify.success"));
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
+    } catch {
       toast.error(t("phoneVerify.errorInvalidCode"));
     }
   };
+
+  useEffect(() => {
+    if (code.length === 6 && step === "code") {
+      handleVerifyCode({ preventDefault: () => {} } as React.FormEvent);
+    }
+  }, [code, step]);
 
   const isDev = import.meta.env.DEV;
 
@@ -163,7 +164,9 @@ const PhoneVerifyModal: React.FC<PhoneVerifyModalProps> = ({
                 type="button"
                 onClick={() =>
                   resendCountdown === 0 &&
-                  handleRequestCode({ preventDefault: () => {} } as any)
+                  handleRequestCode({
+                    preventDefault: () => {},
+                  } as React.FormEvent)
                 }
                 disabled={resendCountdown > 0 || request.isPending}
                 className="w-full text-sm text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400 transition-colors py-2"

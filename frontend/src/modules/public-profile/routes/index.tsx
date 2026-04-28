@@ -1,15 +1,9 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const PublicProfilePage = lazy(() =>
-  import("../pages/PublicProfilePage").then((m) => ({ default: m.default })),
-);
-
-export const publicProfileRoutes: RouteObject[] = [
+export const publicProfileRoutes: ModuleRoute[] = [
   {
     path: "/utilizator/:id",
-    element: <PublicProfilePage />,
+    component: lazy(() => import("../pages/PublicProfilePage")),
   },
 ];
-
-export default publicProfileRoutes;

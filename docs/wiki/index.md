@@ -23,3 +23,4 @@
 - [Image Upload](features/image-upload.md) — S3-backed image management with pre-signed URLs [Done]
 - [Listing Detail](features/listing-detail.md) — full-page view with seller info and related items [Done]
 - [User Dashboard](features/user-dashboard.md) — manage own listings and profile [Done]
+- [TanStack Router Migration](features/tanstack-router-migration.md) — plan for replacing react-router-dom with typed TanStack router [Planned]

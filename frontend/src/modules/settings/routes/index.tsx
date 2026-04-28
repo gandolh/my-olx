@@ -1,15 +1,13 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const SettingsPage = lazy(() =>
-  import("../pages/SettingsPage").then((m) => ({ default: m.SettingsPage })),
-);
-
-export const settingsRoutes: RouteObject[] = [
+export const settingsRoutes: ModuleRoute[] = [
   {
     path: "/cont/setari",
-    element: <SettingsPage />,
+    component: lazy(() =>
+      import("../pages/SettingsPage").then((m) => ({
+        default: m.SettingsPage,
+      })),
+    ),
   },
 ];
-
-export default settingsRoutes;

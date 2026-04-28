@@ -44,7 +44,7 @@ export const useAuth = create<AuthState>((set) => ({
     try {
       const response = await axiosInstance.get<User>("/users/me");
       set({ user: response.data, isAuthenticated: true, isHydrating: false });
-    } catch (error) {
+    } catch {
       localStorage.removeItem("auth_token");
       set({ user: null, isAuthenticated: false, isHydrating: false });
     }

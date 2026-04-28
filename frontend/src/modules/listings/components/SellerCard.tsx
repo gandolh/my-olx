@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "@/lib/router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { ContactSellerModal } from "@/modules/messaging/components/ContactSellerModal";
@@ -12,13 +12,14 @@ interface SellerCardProps {
 export function SellerCard({ seller, listingId }: SellerCardProps) {
   const { user, isAuthenticated } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const sellerName = seller.displayName || "Vânzător PiațăRo";
 
   const isOwner = user?.id === seller.id;
 
   const handleContactClick = () => {
     if (!isAuthenticated) {
-      window.location.href = `/autentificare?next=/anunturi/${listingId}`;
+      navigate(`/autentificare?next=/anunturi/${listingId}`);
       return;
     }
     setIsModalOpen(true);

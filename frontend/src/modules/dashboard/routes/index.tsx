@@ -1,23 +1,21 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const DashboardPage = lazy(() =>
-  import("../pages/DashboardPage").then((m) => ({ default: m.DashboardPage })),
-);
-
-const MyListingsPage = lazy(() =>
-  import("../pages/MyListingsPage").then((m) => ({ default: m.MyListingsPage })),
-);
-
-export const dashboardRoutes: RouteObject[] = [
+export const dashboardRoutes: ModuleRoute[] = [
   {
     path: "/cont",
-    element: <DashboardPage />,
+    component: lazy(() =>
+      import("../pages/DashboardPage").then((m) => ({
+        default: m.DashboardPage,
+      })),
+    ),
   },
   {
     path: "/cont/anunturi",
-    element: <MyListingsPage />,
+    component: lazy(() =>
+      import("../pages/MyListingsPage").then((m) => ({
+        default: m.MyListingsPage,
+      })),
+    ),
   },
 ];
-
-export default dashboardRoutes;

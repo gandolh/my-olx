@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/lib/auth";
 import { useLogoutMutation } from "@/modules/auth/hooks/useLogoutMutation";

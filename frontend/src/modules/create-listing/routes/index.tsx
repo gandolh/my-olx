@@ -1,19 +1,21 @@
 import { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { ModuleRoute } from "@/routes/types";
 
-const CreateListingPage = lazy(() =>
-  import("../pages/CreateListingPage").then((m) => ({ default: m.CreateListingPage })),
-);
-
-export const createListingRoutes: RouteObject[] = [
+export const createListingRoutes: ModuleRoute[] = [
   {
     path: "/adauga-anunt",
-    element: <CreateListingPage />,
+    component: lazy(() =>
+      import("../pages/CreateListingPage").then((m) => ({
+        default: m.CreateListingPage,
+      })),
+    ),
   },
   {
     path: "/adauga-anunt/:draftId",
-    element: <CreateListingPage />,
+    component: lazy(() =>
+      import("../pages/CreateListingPage").then((m) => ({
+        default: m.CreateListingPage,
+      })),
+    ),
   },
 ];
-
-export default createListingRoutes;

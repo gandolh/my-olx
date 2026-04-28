@@ -1,4 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
+import type { ListingCard } from "@/types/listing";
 
 export interface PublicUserResponse {
   id: string;
@@ -10,7 +11,7 @@ export interface PublicUserResponse {
 }
 
 export interface ListingsPageResponse {
-  items: any[]; // We'll refine this if needed, or use ListingCardResponse if we define it
+  items: ListingCard[];
   total: number;
   page: number;
   per_page: number;
@@ -26,7 +27,7 @@ export async function getPublicProfile(
 
 export async function getUserListings(
   userId: string,
-  params?: any,
+  params?: Record<string, unknown>,
 ): Promise<ListingsPageResponse> {
   const res = await axiosInstance.get(`/users/${userId}/listings`, { params });
   return res.data;

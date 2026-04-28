@@ -1,22 +1,26 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from 'react-router-dom'
-import { AuthCardShell } from '../components/AuthCardShell'
-import { FormField } from '../components/FormField'
-import { SubmitButton } from '../components/SubmitButton'
-import { loginSchema, type LoginInput } from '../schemas'
-import { useLoginMutation } from '../hooks/useLoginMutation'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "@/lib/router";
+import { AuthCardShell } from "../components/AuthCardShell";
+import { FormField } from "../components/FormField";
+import { SubmitButton } from "../components/SubmitButton";
+import { loginSchema, type LoginInput } from "../schemas";
+import { useLoginMutation } from "../hooks/useLoginMutation";
 
 export function LoginPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
-  })
+  });
 
-  const loginMutation = useLoginMutation()
+  const loginMutation = useLoginMutation();
 
   const onSubmit = (data: LoginInput) => {
-    loginMutation.mutate(data)
-  }
+    loginMutation.mutate(data);
+  };
 
   return (
     <AuthCardShell
@@ -27,15 +31,15 @@ export function LoginPage() {
         <FormField
           label="Email"
           type="email"
-          {...register('email')}
+          {...register("email")}
           error={errors.email?.message}
           autoComplete="email"
         />
-        
+
         <FormField
           label="Parolă"
           type="password"
-          {...register('password')}
+          {...register("password")}
           error={errors.password?.message}
           autoComplete="current-password"
         />
@@ -58,13 +62,16 @@ export function LoginPage() {
             Ai uitat parola?
           </Link>
           <p className="text-sm text-on-surface-variant">
-            Nu ai cont?{' '}
-            <Link to="/inregistrare" className="text-primary font-medium hover:underline">
+            Nu ai cont?{" "}
+            <Link
+              to="/inregistrare"
+              className="text-primary font-medium hover:underline"
+            >
               Înregistrează-te
             </Link>
           </p>
         </div>
       </form>
     </AuthCardShell>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@/lib/router";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useFavoriteIds } from "../hooks/useFavoriteIds";
