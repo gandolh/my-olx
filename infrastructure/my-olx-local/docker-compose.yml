@@ -28,6 +28,7 @@ services:
     volumes:
       - localstack_data:/var/lib/localstack
       - ./initaws:/etc/localstack/init/ready.d
+      - ../../seed-data/images:/seed-images:ro
     networks:
       - my-olx-local
     healthcheck:

@@ -1,16 +1,14 @@
 -- Seed data for demo purposes
 -- This migration adds initial users, listings, images, and favorites.
 
--- Password is 'password123' hashed with Argon2id
--- $argon2id$v=19$m=19456,t=2,p=1$VE9LSk9fU0FMVA$9S0p9r9S0p9r9S0p9r9S0p9r9S0p9r9S0p9r9S0p9r is a dummy, 
--- but we'll use a valid-looking one.
--- Using: $argon2id$v=19$m=16384,t=2,p=1$c2FsdHNhbHQ$v9lR1l6H9Xp9Xp9Xp9Xp9Xp9Xp9Xp9Xp9Xp9Xp9Xp9U
--- (Actual hash for 'password123' with salt 'saltsalt' and default params)
+-- Password is '12345678' hashed with Argon2id (same hash for all seeded users)
+-- $argon2id$v=19$m=19456,t=2,p=1$gZaUUCmO8PXoFiBzyvCJgA$aF1EoN1LsSwC9vSWFhAxdl6ylh8QNL3a61qIBxy5uA8
 
 INSERT INTO users (id, email, password_hash, display_name, phone, phone_verified, email_verified)
 VALUES 
-    ('00000000-0000-0000-0000-000000000001', 'demo@example.com', '$argon2id$v=19$m=19456,t=2,p=1$VE9LSk9fU0FMVA$q7zX5mJ7w7k0B8y2S8R9p0k9Z8j7Q6X5mJ7w7k0B8y2', 'Andrei Popescu', '+40722111222', TRUE, TRUE),
-    ('00000000-0000-0000-0000-000000000002', 'seller@example.com', '$argon2id$v=19$m=19456,t=2,p=1$VE9LSk9fU0FMVA$q7zX5mJ7w7k0B8y2S8R9p0k9Z8j7Q6X5mJ7w7k0B8y2', 'Maria Ionescu', '+40733444555', TRUE, TRUE)
+    ('00000000-0000-0000-0000-000000000001', 'demo@example.com', '$argon2id$v=19$m=19456,t=2,p=1$gZaUUCmO8PXoFiBzyvCJgA$aF1EoN1LsSwC9vSWFhAxdl6ylh8QNL3a61qIBxy5uA8', 'Andrei Popescu', '+40722111222', TRUE, TRUE),
+    ('00000000-0000-0000-0000-000000000002', 'seller@example.com', '$argon2id$v=19$m=19456,t=2,p=1$gZaUUCmO8PXoFiBzyvCJgA$aF1EoN1LsSwC9vSWFhAxdl6ylh8QNL3a61qIBxy5uA8', 'Maria Ionescu', '+40733444555', TRUE, TRUE),
+    ('00000000-0000-0000-0000-000000000003', 'jane.doe@example.com', '$argon2id$v=19$m=19456,t=2,p=1$gZaUUCmO8PXoFiBzyvCJgA$aF1EoN1LsSwC9vSWFhAxdl6ylh8QNL3a61qIBxy5uA8', 'Jane Doe', '+40755666777', TRUE, TRUE)
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO listings (id, user_id, title, description, price_ron, is_negotiable, category, city, expires_at)
@@ -24,12 +22,12 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO listing_images (listing_id, s3_key, position)
 VALUES 
-    ('10000000-0000-0000-0000-000000000001', 'listings/1/iphone1.jpg', 0),
-    ('10000000-0000-0000-0000-000000000001', 'listings/1/iphone2.jpg', 1),
-    ('10000000-0000-0000-0000-000000000002', 'listings/2/bmw1.jpg', 0),
-    ('10000000-0000-0000-0000-000000000003', 'listings/3/apart1.jpg', 0),
-    ('10000000-0000-0000-0000-000000000004', 'listings/4/sofa1.jpg', 0),
-    ('10000000-0000-0000-0000-000000000005', 'listings/5/jacket1.jpg', 0)
+    ('10000000-0000-0000-0000-000000000001', 'iphone1.jpg', 0),
+    ('10000000-0000-0000-0000-000000000001', 'iphone2.jpg', 1),
+    ('10000000-0000-0000-0000-000000000002', 'bmw1.jpg', 0),
+    ('10000000-0000-0000-0000-000000000003', 'apart1.jpg', 0),
+    ('10000000-0000-0000-0000-000000000004', 'sofa1.jpg', 0),
+    ('10000000-0000-0000-0000-000000000005', 'jacket1.jpg', 0)
 ON CONFLICT (listing_id, position) DO NOTHING;
 
 INSERT INTO favorites (user_id, listing_id)
