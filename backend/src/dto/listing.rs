@@ -156,3 +156,8 @@ pub struct ListingDetailResponse {
     pub active: bool,
     pub seller: SellerSummary,
 }
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct SellerPhoneResponse {
+    pub phone: String,
+}

@@ -19,6 +19,7 @@ pub trait UserRepository: Send + Sync {
     async fn update_profile(&self, id: Uuid, display_name: Option<String>, avatar_url: Option<String>) -> Result<(), AppError>;
     async fn get_public_profile(&self, id: Uuid) -> Result<Option<PublicUserResponse>, AppError>;
     async fn get_stats(&self, id: Uuid) -> Result<MyStatsResponse, AppError>;
+    async fn get_phone_by_id(&self, id: Uuid) -> Result<Option<String>, AppError>;
 }
 
 pub struct PgUserRepository {
@@ -174,5 +175,15 @@ impl UserRepository for PgUserRepository {
             },
             favorites_count,
         })
+    }
+
+    async fn get_phone_by_id(&self, id: Uuid) -> Result<Option<String>, AppError> {
+        let row = sqlx::query!(
+            "SELECT phone FROM users WHERE id = $1 AND phone_verified = TRUE",
+            id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+        Ok(row.and_then(|r| r.phone))
     }
 }

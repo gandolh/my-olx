@@ -12,7 +12,6 @@ pub struct ConversationRow {
     pub seller_id: Uuid,
     pub last_message_at: DateTime<Utc>,
     pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Clone, sqlx::FromRow)]
@@ -99,8 +98,8 @@ impl ConversationRepository for PgConversationRepository {
     ) -> Result<ConversationRow, AppError> {
         let row = sqlx::query_as::<_, ConversationRow>(
             r#"
-            INSERT INTO conversations (id, listing_id, buyer_id, seller_id, last_message_at, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, NOW(), NOW(), NOW())
+            INSERT INTO conversations (id, listing_id, buyer_id, seller_id, last_message_at, created_at)
+            VALUES ($1, $2, $3, $4, NOW(), NOW())
             RETURNING *
             "#,
         )
@@ -177,7 +176,7 @@ impl ConversationRepository for PgConversationRepository {
     }
 
     async fn update_last_message_at(&self, id: Uuid) -> Result<(), AppError> {
-        sqlx::query("UPDATE conversations SET last_message_at = NOW(), updated_at = NOW() WHERE id = $1")
+        sqlx::query("UPDATE conversations SET last_message_at = NOW() WHERE id = $1")
             .bind(id)
             .execute(&self.pool)
             .await?;

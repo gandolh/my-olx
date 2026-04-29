@@ -88,6 +88,7 @@ export function ReviewStep({
               <PricingCard
                 listingId={draft.id}
                 sellerId={draft.seller.id}
+                sellerName={draft.seller.displayName ?? ""}
                 title={draft.title}
                 priceRon={draft.priceRon}
                 location={draft.city}

@@ -151,6 +151,7 @@ export function ListingDetailPage() {
           <PricingCard
             listingId={data.id}
             sellerId={data.seller.id}
+            sellerName={data.seller.displayName ?? ""}
             title={data.title}
             priceRon={data.priceRon}
             location={data.city}

@@ -129,3 +129,10 @@ export async function fetchRelatedListings(id: string): Promise<ListingCard[]> {
 
   return response.data.map(mapListingCard);
 }
+
+export async function fetchSellerPhone(listingId: string): Promise<string> {
+  const response = await axiosInstance.get<{ phone: string }>(
+    `/listings/${listingId}/seller-phone`,
+  );
+  return response.data.phone;
+}

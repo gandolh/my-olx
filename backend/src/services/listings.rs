@@ -257,6 +257,27 @@ impl<R: ListingRepository, U: UserRepository> ListingService<R, U> {
     pub async fn suggest_titles(&self, q: &str, limit: i64) -> Result<Vec<String>, AppError> {
         self.repo.suggest_titles(q, limit).await
     }
+
+    pub async fn get_seller_phone(
+        &self,
+        listing_id: Uuid,
+        viewer_id: Uuid,
+    ) -> Result<String, AppError> {
+        let row = self
+            .repo
+            .find_detail(listing_id)
+            .await?
+            .ok_or(AppError::NotFound)?;
+
+        if viewer_id == row.user_id {
+            return Err(AppError::Forbidden);
+        }
+
+        self.user_repo
+            .get_phone_by_id(row.user_id)
+            .await?
+            .ok_or(AppError::NotFound)
+    }
 }
 
 pub fn category_label(slug: &str) -> &'static str {

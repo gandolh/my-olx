@@ -1,7 +1,7 @@
 use crate::{
     dto::listing::{
         CreateListingRequest, ListingCardResponse, ListingDetailResponse, ListingFilters,
-        ListingResponse, ListingsPageResponse, UpdateListingRequest,
+        ListingResponse, ListingsPageResponse, SellerPhoneResponse, UpdateListingRequest,
     },
     error::AppError,
     middleware::auth::AuthUser,
@@ -208,4 +208,14 @@ pub async fn delete_listing(
     let svc = listing_service(&state);
     svc.delete(id, user_id).await?;
     Ok(Json(serde_json::json!({ "deleted": true })))
+}
+
+pub async fn get_seller_phone(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Path(id): Path<Uuid>,
+) -> Result<Json<SellerPhoneResponse>, AppError> {
+    let svc = listing_service(&state);
+    let phone = svc.get_seller_phone(id, user_id).await?;
+    Ok(Json(SellerPhoneResponse { phone }))
 }
