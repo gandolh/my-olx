@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CityAutocomplete } from "@/components/ui/CityAutocomplete";
+import { SearchAutocomplete } from "@/components/ui/SearchAutocomplete";
 import { ListingCard } from "../components/ListingCard";
 import { useFeaturedListings } from "../hooks/useFeaturedListings";
 import type { HomeCategory } from "../types";
@@ -56,16 +57,18 @@ export function HomePage() {
             onSubmit={handleSearch}
             className="max-w-4xl mx-auto bg-surface-container-lowest p-2 rounded-full shadow-[0_20px_50px_rgba(0,64,161,0.08)] flex items-center gap-2"
           >
-            <div className="flex-1 flex items-center px-6 gap-3">
-              <span className="material-symbols-outlined text-outline">
-                search
-              </span>
-              <input
+            <div className="flex-1 flex items-center px-6">
+              <SearchAutocomplete
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-transparent border-none outline-none text-lg py-3 placeholder:text-outline"
+                onChange={setSearch}
+                onSelect={(val) => {
+                  const params = new URLSearchParams();
+                  if (val) params.set("q", val);
+                  if (location) params.set("city", location);
+                  navigate(`/anunturi?${params.toString()}`);
+                }}
                 placeholder={t("home.searchPlaceholder")}
-                type="text"
+                className="w-full"
               />
             </div>
             <div

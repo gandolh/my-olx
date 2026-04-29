@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { useLocation, useNavigate } from "@/lib/router";
+import { useLocation } from "@/lib/router";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
+import { AuthRequiredToast } from "@/components/ui";
 import { useFavoriteIds } from "../hooks/useFavoriteIds";
 import { useToggleFavorite } from "../hooks/useToggleFavorite";
 
@@ -16,7 +17,6 @@ export function FavoriteToggle({
   className = "",
   size = "md",
 }: FavoriteToggleProps) {
-  const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const favoriteIdsQuery = useFavoriteIds();
@@ -36,8 +36,7 @@ export function FavoriteToggle({
 
     if (!isAuthenticated) {
       const next = `${location.pathname}${location.search}`;
-      toast.info("Conectează-te pentru a salva anunțuri.");
-      navigate(`/autentificare?next=${encodeURIComponent(next)}`);
+      toast.custom(() => <AuthRequiredToast next={next} message="Conectează-te pentru a salva anunțuri." />);
       return;
     }
 

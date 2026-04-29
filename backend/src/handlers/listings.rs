@@ -183,6 +183,23 @@ pub async fn publish_listing(
     Ok(Json(listing))
 }
 
+#[derive(Debug, Default, Deserialize)]
+pub struct SuggestQuery {
+    pub q: Option<String>,
+    pub limit: Option<i64>,
+}
+
+pub async fn suggest_titles(
+    State(state): State<AppState>,
+    Query(params): Query<SuggestQuery>,
+) -> Result<Json<Vec<String>>, AppError> {
+    let q = params.q.unwrap_or_default();
+    let limit = params.limit.unwrap_or(20).min(20);
+    let svc = listing_service(&state);
+    let suggestions = svc.suggest_titles(&q, limit).await?;
+    Ok(Json(suggestions))
+}
+
 pub async fn delete_listing(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,

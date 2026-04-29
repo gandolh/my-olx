@@ -85,6 +85,7 @@ pub trait ListingRepository: Send + Sync {
     async fn renew(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError>;
     async fn set_active(&self, id: Uuid, owner_id: Uuid, active: bool) -> Result<Listing, AppError>;
     async fn publish(&self, id: Uuid, owner_id: Uuid) -> Result<Listing, AppError>;
+    async fn suggest_titles(&self, q: &str, limit: i64) -> Result<Vec<String>, AppError>;
 }
 
 pub struct PgListingRepository {
@@ -477,5 +478,25 @@ impl ListingRepository for PgListingRepository {
         .ok_or(AppError::NotFound)?;
 
         Ok(listing)
+    }
+
+    async fn suggest_titles(&self, q: &str, limit: i64) -> Result<Vec<String>, AppError> {
+        let rows = sqlx::query_scalar::<_, String>(
+            r#"
+            SELECT DISTINCT title
+            FROM listings
+            WHERE active = TRUE
+              AND expires_at > NOW()
+              AND ($1 = '' OR title ILIKE $2)
+            ORDER BY title
+            LIMIT $3
+            "#,
+        )
+        .bind(q)
+        .bind(format!("%{}%", q))
+        .bind(limit)
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(rows)
     }
 }

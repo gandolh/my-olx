@@ -253,6 +253,10 @@ impl<R: ListingRepository, U: UserRepository> ListingService<R, U> {
     pub async fn delete(&self, id: Uuid, owner_id: Uuid) -> Result<(), AppError> {
         self.repo.delete(id, owner_id).await
     }
+
+    pub async fn suggest_titles(&self, q: &str, limit: i64) -> Result<Vec<String>, AppError> {
+        self.repo.suggest_titles(q, limit).await
+    }
 }
 
 pub fn category_label(slug: &str) -> &'static str {

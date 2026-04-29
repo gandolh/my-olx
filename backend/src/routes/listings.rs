@@ -11,6 +11,7 @@ pub fn router() -> Router<AppState> {
             get(listings::list_public).post(listings::create_listing),
         )
         .route("/featured", get(listings::list_featured))
+        .route("/suggest", get(listings::suggest_titles))
         .route(
             "/:id",
             get(listings::get_listing)
