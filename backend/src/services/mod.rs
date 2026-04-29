@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod locations;
 pub mod email;
 pub mod favorites;
 pub mod images;

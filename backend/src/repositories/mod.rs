@@ -1,4 +1,5 @@
 pub mod email_tokens;
+pub mod locations;
 pub mod favorites;
 pub mod images;
 pub mod listings;

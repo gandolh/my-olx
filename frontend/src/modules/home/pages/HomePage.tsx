@@ -3,6 +3,7 @@ import { useNavigate } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { ErrorCard } from "@/components/ui/ErrorCard";
+import { CityAutocomplete } from "@/components/ui/CityAutocomplete";
 import { ListingCard } from "../components/ListingCard";
 import { useFeaturedListings } from "../hooks/useFeaturedListings";
 import type { HomeCategory } from "../types";
@@ -74,15 +75,10 @@ export function HomePage() {
                   "1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent)",
               }}
             >
-              <span className="material-symbols-outlined text-outline">
-                location_on
-              </span>
-              <input
+              <CityAutocomplete
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="bg-transparent border-none outline-none text-lg py-3 w-40 placeholder:text-outline"
+                onChange={setLocation}
                 placeholder={t("home.locationPlaceholder")}
-                type="text"
               />
             </div>
             <button

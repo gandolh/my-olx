@@ -37,6 +37,7 @@ pub fn build(state: AppState) -> Router {
         .nest("/favorites", routes::favorites::router())
         .nest("/conversations", routes::messaging::router())
         .nest("/listings", routes::listings::router())
+        .nest("/locations", routes::locations::router())
         .nest("/me", routes::me::router())
         .route("/me/unread-count", get(crate::handlers::messaging::get_unread_count))
         .nest("/users", routes::users::router())
