@@ -14,17 +14,26 @@ export function AuthRequiredToast({
     : "/autentificare";
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-inverse-surface text-inverse-on-surface rounded-xl shadow-ambient min-w-0 max-w-xs">
+    <div
+      style={{
+        background: "var(--color-inverse-surface)",
+        color: "var(--color-inverse-on-surface)",
+        boxShadow: "var(--shadow-ambient)",
+      }}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl w-full max-w-sm font-[Inter]"
+    >
       <span
-        className="material-symbols-outlined text-xl shrink-0"
+        className="material-symbols-outlined shrink-0"
+        style={{ fontSize: "20px", color: "var(--color-inverse-primary)" }}
         aria-hidden="true"
       >
         lock
       </span>
-      <span className="text-sm font-medium leading-snug flex-1">{message}</span>
+      <span className="text-sm leading-snug flex-1">{message}</span>
       <a
         href={loginHref}
-        className="text-sm font-semibold text-primary-container shrink-0 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-container rounded"
+        style={{ color: "var(--color-inverse-primary)" }}
+        className="font-[Manrope] text-sm font-semibold shrink-0 hover:underline focus-visible:outline-none rounded whitespace-nowrap"
       >
         {loginLabel}
       </a>

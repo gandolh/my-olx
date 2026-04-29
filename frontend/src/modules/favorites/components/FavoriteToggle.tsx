@@ -35,7 +35,8 @@ export function FavoriteToggle({
     event.stopPropagation();
 
     if (!isAuthenticated) {
-      const next = `${location.pathname}${location.search}`;
+      const searchStr = new URLSearchParams(location.search as Record<string, string>).toString();
+      const next = searchStr ? `${location.pathname}?${searchStr}` : location.pathname;
       toast.custom(() => <AuthRequiredToast next={next} message="Conectează-te pentru a salva anunțuri." />);
       return;
     }
