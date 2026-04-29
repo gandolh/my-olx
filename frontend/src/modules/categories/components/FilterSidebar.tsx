@@ -1,78 +1,92 @@
-import type { FilterState } from '../types'
-import { CITIES } from '../types'
+import { Select } from "@/components/ui/Select";
+import { Slider } from "@/components/ui/Slider";
+import { Button } from "@/components/ui/Button";
+import type { FilterState } from "../types";
+import { CITIES } from "../types";
 
 interface FilterSidebarProps {
-  filters: FilterState
-  onChange: (key: keyof FilterState, value: FilterState[keyof FilterState]) => void
-  onReset: () => void
+  filters: FilterState;
+  onChange: (
+    key: keyof FilterState,
+    value: FilterState[keyof FilterState],
+  ) => void;
+  onReset: () => void;
 }
 
-export function FilterSidebar({ filters, onChange, onReset }: FilterSidebarProps) {
+const PRICE_MAX = 100_000;
+
+const DATE_OPTIONS = [
+  { value: "oricand", label: "Oricând" },
+  { value: "24h", label: "Ultimele 24 ore" },
+  { value: "saptamana", label: "Ultima săptămână" },
+] as const;
+
+const CITY_OPTIONS = [
+  { value: "", label: "Toată România" },
+  ...CITIES.map((c) => ({ value: c.slug, label: c.label })),
+];
+
+function formatRON(v: number) {
+  return v >= PRICE_MAX
+    ? `${PRICE_MAX.toLocaleString("ro-RO")}+ RON`
+    : `${v.toLocaleString("ro-RO")} RON`;
+}
+
+export function FilterSidebar({
+  filters,
+  onChange,
+  onReset,
+}: FilterSidebarProps) {
+  const priceRange: [number, number] = [
+    filters.pret_min ?? 0,
+    filters.pret_max ?? PRICE_MAX,
+  ];
+
+  function handlePriceChange([min, max]: [number, number]) {
+    onChange("pret_min", min === 0 ? null : min);
+    onChange("pret_max", max === PRICE_MAX ? null : max);
+  }
+
   return (
     <aside className="w-72 flex-shrink-0 hidden md:block">
-      <div className="sticky top-28 space-y-10">
-
+      <div className="sticky top-28 space-y-8">
         {/* Locație */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-outline">Locație</h3>
-          <div className="relative">
-            <select
-              value={filters.loc ?? ''}
-              onChange={(e) => onChange('loc', e.target.value || null)}
-              className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary/20 focus:outline-none"
-            >
-              <option value="">Toată România</option>
-              {CITIES.map((c) => (
-                <option key={c.slug} value={c.slug}>{c.label}</option>
-              ))}
-            </select>
-            <span className="material-symbols-outlined absolute right-3 top-2.5 text-outline pointer-events-none" style={{ fontSize: '20px' }}>expand_more</span>
-          </div>
-        </div>
+        <Select
+          label="Locație"
+          value={filters.loc ?? ""}
+          onChange={(e) => onChange("loc", e.target.value || null)}
+          options={CITY_OPTIONS}
+          fullWidth
+        />
 
         {/* Preț */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-outline">Preț (RON)</h3>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="Min"
-              value={filters.pret_min ?? ''}
-              onChange={(e) => onChange('pret_min', e.target.value ? Number(e.target.value) : null)}
-              className="w-full bg-surface-container-low border-none rounded-xl py-2 px-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none"
-            />
-            <input
-              type="number"
-              placeholder="Max"
-              value={filters.pret_max ?? ''}
-              onChange={(e) => onChange('pret_max', e.target.value ? Number(e.target.value) : null)}
-              className="w-full bg-surface-container-low border-none rounded-xl py-2 px-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none"
-            />
-          </div>
-          {/* decorative range bar */}
-          <div className="h-1.5 bg-surface-container-highest rounded-full relative">
-            <div className="absolute left-1/4 right-1/4 top-0 h-full bg-primary rounded-full" />
-            <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md" />
-            <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md" />
-          </div>
-        </div>
+        <Slider
+          label="Preț (RON)"
+          min={0}
+          max={PRICE_MAX}
+          step={100}
+          value={priceRange}
+          onChange={handlePriceChange}
+          formatValue={formatRON}
+        />
 
         {/* Data publicării */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-outline">Data Publicării</h3>
+        <div className="space-y-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-outline">
+            Data Publicării
+          </h3>
           <div className="space-y-2">
-            {([
-              { value: '24h', label: 'Ultimele 24 ore' },
-              { value: 'saptamana', label: 'Ultima săptămână' },
-              { value: 'oricand', label: 'Oricând' },
-            ] as const).map(({ value, label }) => (
-              <label key={value} className="flex items-center gap-3 cursor-pointer group">
+            {DATE_OPTIONS.map(({ value, label }) => (
+              <label
+                key={value}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
                 <input
                   type="radio"
                   name="data"
                   checked={filters.data === value}
-                  onChange={() => onChange('data', value)}
-                  className="w-4 h-4 text-primary focus:ring-0 border-outline-variant"
+                  onChange={() => onChange("data", value)}
+                  className="w-4 h-4 text-primary focus:ring-0 border-outline-variant accent-primary"
                 />
                 <span className="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">
                   {label}
@@ -85,12 +99,14 @@ export function FilterSidebar({ filters, onChange, onReset }: FilterSidebarProps
         {/* Vânzători verificați */}
         <div className="pt-6 border-t border-surface-container-high">
           <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm font-bold text-on-surface">Vânzători Verificați</span>
+            <span className="text-sm font-bold text-on-surface">
+              Vânzători Verificați
+            </span>
             <div className="relative inline-flex items-center">
               <input
                 type="checkbox"
                 checked={filters.verificat}
-                onChange={(e) => onChange('verificat', e.target.checked)}
+                onChange={(e) => onChange("verificat", e.target.checked)}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-tertiary-container peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all" />
@@ -99,14 +115,10 @@ export function FilterSidebar({ filters, onChange, onReset }: FilterSidebarProps
         </div>
 
         {/* Reset */}
-        <button
-          onClick={onReset}
-          className="w-full py-3 bg-secondary-container text-on-secondary-container rounded-full font-bold text-sm tracking-wide hover:opacity-90 active:scale-95 transition-all"
-        >
+        <Button variant="secondary" className="w-full" onClick={onReset}>
           Resetează Filtre
-        </button>
-
+        </Button>
       </div>
     </aside>
-  )
+  );
 }
