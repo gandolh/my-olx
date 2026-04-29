@@ -7,7 +7,6 @@ import { MessageBubble } from "../components/MessageBubble";
 import { MessageComposer } from "../components/MessageComposer";
 import { messagingService } from "../services/messaging";
 import { useAuth } from "@/lib/auth";
-import { ChevronLeft, Info } from "lucide-react";
 import { formatPrice } from "@/lib/formatters";
 
 export const ConversationPage: React.FC = () => {
@@ -50,23 +49,24 @@ export const ConversationPage: React.FC = () => {
   if (isLoading || !currentConversation) {
     return (
       <div className="flex-1 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-3 bg-white border-b flex items-center gap-3">
+      <div className="px-4 py-3 bg-surface-container-lowest border-b border-surface-container-low flex items-center gap-3">
         <button
           onClick={() => navigate("/mesaje")}
-          className="md:hidden p-1 hover:bg-gray-100 rounded-full"
+          aria-label={t("common:messaging.back_to_messages")}
+          className="md:hidden p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant"
         >
-          <ChevronLeft size={24} />
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
         </button>
 
-        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+        <div className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
           {currentConversation.counterparty.avatar_url ? (
             <img
               src={currentConversation.counterparty.avatar_url}
@@ -74,23 +74,23 @@ export const ConversationPage: React.FC = () => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-gray-500 font-bold">
-              {(currentConversation.counterparty.display_name || "U").charAt(0)}
+            <span className="text-on-surface-variant font-bold text-sm">
+              {(currentConversation.counterparty.display_name || "U").charAt(0).toUpperCase()}
             </span>
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          <h2 className="text-sm font-bold truncate">
+          <h2 className="text-sm font-bold font-[Manrope] text-on-surface truncate">
             {currentConversation.counterparty.display_name ||
               t("common:messaging.unknown_user")}
           </h2>
-          <div className="flex items-center gap-1 text-xs text-gray-500">
+          <div className="flex items-center gap-1 text-xs text-on-surface-variant">
             <span className="truncate">
               {currentConversation.listing.title}
             </span>
-            <span>•</span>
-            <span className="font-semibold text-blue-600">
+            <span>·</span>
+            <span className="font-semibold text-primary flex-shrink-0">
               {currentConversation.listing.price_ron
                 ? formatPrice(currentConversation.listing.price_ron)
                 : t("common:listings.free")}
@@ -100,15 +100,15 @@ export const ConversationPage: React.FC = () => {
 
         <Link
           to={`/anunturi/${currentConversation.listing.id}`}
-          className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+          className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition-colors"
           title={t("common:messaging.view_listing")}
         >
-          <Info size={20} />
+          <span className="material-symbols-outlined text-xl">info</span>
         </Link>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col bg-surface-container-low">
         {messages?.map((msg) => (
           <MessageBubble
             key={msg.id}
@@ -122,11 +122,7 @@ export const ConversationPage: React.FC = () => {
       {/* Composer */}
       <MessageComposer
         onSend={handleSendMessage}
-        placeholder={
-          currentConversation.counterparty.id === currentConversation.listing.id // This check is wrong but we'll use a generic one for now
-            ? t("common:messaging.reply_to_buyer")
-            : t("common:messaging.reply_to_seller")
-        }
+        placeholder={t("common:messaging.type_message")}
       />
     </div>
   );

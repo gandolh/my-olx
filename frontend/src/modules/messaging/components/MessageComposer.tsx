@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Send } from "lucide-react";
 
 interface Props {
   onSend: (body: string) => Promise<void>;
@@ -48,7 +47,7 @@ export const MessageComposer: React.FC<Props> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-4 bg-white border-t flex items-end gap-2"
+      className="p-4 bg-surface-container-lowest border-t border-surface-container-low flex items-end gap-2"
     >
       <textarea
         ref={textareaRef}
@@ -57,15 +56,15 @@ export const MessageComposer: React.FC<Props> = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder || t("common:messaging.type_message")}
         disabled={disabled || isSending}
-        className="flex-1 max-h-32 p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
+        className="flex-1 max-h-32 p-3 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 text-sm"
         rows={1}
       />
       <button
         type="submit"
         disabled={!body.trim() || disabled || isSending}
-        className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-gray-300 transition-colors"
+        className="p-2 bg-primary text-on-primary rounded-full hover:opacity-90 disabled:opacity-30 transition-opacity flex-shrink-0"
       >
-        <Send size={20} />
+        <span className="material-symbols-outlined text-xl">send</span>
       </button>
     </form>
   );

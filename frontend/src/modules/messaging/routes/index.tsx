@@ -9,13 +9,15 @@ export const messagingRoutes: ModuleRoute[] = [
         default: m.ConversationsPage,
       })),
     ),
-  },
-  {
-    path: "/mesaje/:conversationId",
-    component: lazy(() =>
-      import("../pages/ConversationPage").then((m) => ({
-        default: m.ConversationPage,
-      })),
-    ),
+    children: [
+      {
+        path: ":conversationId",
+        component: lazy(() =>
+          import("../pages/ConversationPage").then((m) => ({
+            default: m.ConversationPage,
+          })),
+        ),
+      },
+    ],
   },
 ];
