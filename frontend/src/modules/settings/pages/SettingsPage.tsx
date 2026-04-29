@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { ShieldCheck, Phone, Mail, User } from "lucide-react";
+import { Button } from "@/components/ui";
 import PhoneVerifyModal from "../../auth/components/PhoneVerifyModal";
 
 export function SettingsPage() {
@@ -23,7 +23,7 @@ export function SettingsPage() {
             <section className="bg-surface-container-low rounded-2xl p-6 border border-outline-variant shadow-sm space-y-6">
               <div className="flex items-center gap-4 border-b border-outline-variant pb-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
+                  <span className="material-symbols-outlined text-primary text-xl" aria-hidden="true">person</span>
                 </div>
                 <h2 className="text-xl font-bold text-on-surface">
                   Informații Profil
@@ -45,10 +45,10 @@ export function SettingsPage() {
                     Adresa de email
                   </label>
                   <div className="flex items-center gap-2 bg-surface-container text-on-surface px-4 py-3 rounded-lg border border-outline-variant">
-                    <Mail className="w-4 h-4 text-outline" />
+                    <span className="material-symbols-outlined text-outline text-base" aria-hidden="true">mail</span>
                     <span>{user?.email}</span>
                     {user?.email_verified && (
-                      <span className="ml-auto bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                      <span className="ml-auto bg-tertiary-container text-on-tertiary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                         Verificat
                       </span>
                     )}
@@ -61,7 +61,7 @@ export function SettingsPage() {
             <section className="bg-surface-container-low rounded-2xl p-6 border border-outline-variant shadow-sm space-y-6">
               <div className="flex items-center gap-4 border-b border-outline-variant pb-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-primary" />
+                  <span className="material-symbols-outlined text-primary text-xl" aria-hidden="true">phone</span>
                 </div>
                 <h2 className="text-xl font-bold text-on-surface">
                   Verificare Telefon
@@ -75,11 +75,11 @@ export function SettingsPage() {
                       {user?.phone || "Niciun număr adăugat"}
                     </span>
                     {user?.phone_verified ? (
-                      <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                      <span className="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                         Verificat
                       </span>
                     ) : (
-                      <span className="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                      <span className="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                         Neverificat
                       </span>
                     )}
@@ -92,18 +92,19 @@ export function SettingsPage() {
                 </div>
 
                 {!user?.phone_verified && (
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => setIsPhoneModalOpen(true)}
-                    className="w-full md:w-auto px-6 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap"
+                    className="whitespace-nowrap"
                   >
                     Verifică telefonul
-                  </button>
+                  </Button>
                 )}
               </div>
 
               {user?.phone_verified && (
                 <div className="bg-primary/5 rounded-xl p-4 flex items-start gap-3 border border-primary/10">
-                  <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <span className="material-symbols-outlined text-primary shrink-0 mt-0.5" aria-hidden="true">shield</span>
                   <div className="text-sm text-on-surface-variant">
                     Contul tău are insigna de{" "}
                     <strong>Vânzător Verificat</strong>. Aceasta crește
@@ -120,9 +121,9 @@ export function SettingsPage() {
               <p className="text-sm text-on-surface-variant mb-4">
                 Ai nevoie de ajutor cu setările contului tău?
               </p>
-              <button className="w-full py-2.5 rounded-full border-2 border-outline-variant text-sm font-bold hover:bg-surface-container transition-colors">
+              <Button variant="ghost" className="w-full border-2 border-outline-variant">
                 Contactează Echipa
-              </button>
+              </Button>
             </section>
           </div>
         </div>

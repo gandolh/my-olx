@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@/lib/router";
 import { AuthCardShell } from "../components/AuthCardShell";
-import { FormField } from "../components/FormField";
-import { SubmitButton } from "../components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 import { registerSchema, type RegisterInput } from "../schemas";
 import { useRegisterMutation } from "../hooks/useRegisterMutation";
 
@@ -28,28 +27,31 @@ export function RegisterPage() {
       description="Înregistrează-te pentru a posta anunțuri"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Input
           label="Email"
           type="email"
           {...register("email")}
           error={errors.email?.message}
           autoComplete="email"
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Parolă"
           type="password"
           {...register("password")}
           error={errors.password?.message}
           autoComplete="new-password"
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Confirmă parola"
           type="password"
           {...register("passwordConfirm")}
           error={errors.passwordConfirm?.message}
           autoComplete="new-password"
+          fullWidth
         />
 
         {registerMutation.isError && (
@@ -64,9 +66,9 @@ export function RegisterPage() {
           </div>
         )}
 
-        <SubmitButton isLoading={registerMutation.isPending}>
+        <Button type="submit" loading={registerMutation.isPending} className="w-full">
           Înregistrează-te
-        </SubmitButton>
+        </Button>
 
         <p className="text-center text-sm text-on-surface-variant mt-4">
           Ai deja cont?{" "}

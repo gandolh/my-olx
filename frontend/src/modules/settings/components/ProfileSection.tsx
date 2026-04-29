@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useUpdateProfile } from "../hooks/useProfile";
 import { useAuth } from "@/lib/auth";
-import { FormField } from "@/modules/auth/components/FormField";
-import { SubmitButton } from "@/modules/auth/components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 import PhoneVerifyModal from "@/modules/auth/components/PhoneVerifyModal";
 
 export function ProfileSection() {
@@ -21,12 +20,13 @@ export function ProfileSection() {
       <h3 className="text-xl font-semibold mb-6">Informații Profil</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <FormField
+        <Input
           label="Nume afișat"
           id="display_name"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Cum să te vadă ceilalți?"
+          fullWidth
         />
 
         <div className="space-y-1">
@@ -46,13 +46,14 @@ export function ProfileSection() {
               {user?.phone || "Niciun număr adăugat"}
             </div>
             {!user?.phone_verified && (
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={() => setIsPhoneModalOpen(true)}
-                className="px-4 py-2 bg-secondary text-on-secondary rounded-md font-medium hover:bg-secondary/90 transition-colors"
               >
                 Verifică
-              </button>
+              </Button>
             )}
             {user?.phone_verified && (
               <div className="px-4 py-2 bg-success/10 text-success rounded-md font-medium flex items-center gap-1">
@@ -63,12 +64,9 @@ export function ProfileSection() {
         </div>
 
         <div className="pt-2">
-          <SubmitButton
-            isLoading={updateProfileMutation.isPending}
-            className="w-full md:w-auto"
-          >
+          <Button type="submit" loading={updateProfileMutation.isPending}>
             Salvează modificările
-          </SubmitButton>
+          </Button>
         </div>
       </form>
 

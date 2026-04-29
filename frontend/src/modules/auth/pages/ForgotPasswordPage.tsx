@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@/lib/router";
 import { AuthCardShell } from "../components/AuthCardShell";
-import { FormField } from "../components/FormField";
-import { SubmitButton } from "../components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 import { forgotSchema, type ForgotInput } from "../schemas";
 import { useForgotPasswordMutation } from "../hooks/useForgotPasswordMutation";
 
@@ -40,21 +39,19 @@ export function ForgotPasswordPage() {
             Dacă emailul există în sistemul nostru, vei primi un link de
             resetare a parolei. Verifică-ți inbox-ul și folderul de spam.
           </p>
-          <Link
-            to="/autentificare"
-            className="inline-block px-6 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors"
-          >
-            Înapoi la autentificare
+          <Link to="/autentificare">
+            <Button className="w-full">Înapoi la autentificare</Button>
           </Link>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
+          <Input
             label="Email"
             type="email"
             {...register("email")}
             error={errors.email?.message}
             autoComplete="email"
+            fullWidth
           />
 
           {forgotMutation.isError && (
@@ -63,9 +60,9 @@ export function ForgotPasswordPage() {
             </div>
           )}
 
-          <SubmitButton isLoading={forgotMutation.isPending}>
+          <Button type="submit" loading={forgotMutation.isPending} className="w-full">
             Trimite link de resetare
-          </SubmitButton>
+          </Button>
 
           <p className="text-center text-sm text-on-surface-variant mt-4">
             Îți amintești parola?{" "}

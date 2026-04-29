@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams, useNavigate, Link } from "@/lib/router";
 import { AuthCardShell } from "../components/AuthCardShell";
-import { FormField } from "../components/FormField";
-import { SubmitButton } from "../components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 import { resetSchema, type ResetInput } from "../schemas";
 import { useResetPasswordMutation } from "../hooks/useResetPasswordMutation";
 
@@ -35,11 +34,8 @@ export function ResetPasswordPage() {
           <p className="text-on-surface-variant mb-4">
             Link-ul de resetare este invalid sau lipsește.
           </p>
-          <Link
-            to="/parola-uitata"
-            className="inline-block px-6 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors"
-          >
-            Solicită un nou link
+          <Link to="/parola-uitata">
+            <Button>Solicită un nou link</Button>
           </Link>
         </div>
       </AuthCardShell>
@@ -62,12 +58,9 @@ export function ResetPasswordPage() {
           <p className="text-on-surface-variant text-sm mb-6">
             Acum te poți autentifica cu noua parolă.
           </p>
-          <button
-            onClick={() => navigate("/autentificare")}
-            className="px-6 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors"
-          >
+          <Button onClick={() => navigate("/autentificare")}>
             Autentifică-te
-          </button>
+          </Button>
         </div>
       </AuthCardShell>
     );
@@ -79,20 +72,22 @@ export function ResetPasswordPage() {
       description="Introdu noua ta parolă"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Input
           label="Parolă nouă"
           type="password"
           {...register("password")}
           error={errors.password?.message}
           autoComplete="new-password"
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Confirmă parola nouă"
           type="password"
           {...register("passwordConfirm")}
           error={errors.passwordConfirm?.message}
           autoComplete="new-password"
+          fullWidth
         />
 
         {resetMutation.isError && (
@@ -102,9 +97,9 @@ export function ResetPasswordPage() {
           </div>
         )}
 
-        <SubmitButton isLoading={resetMutation.isPending}>
+        <Button type="submit" loading={resetMutation.isPending} className="w-full">
           Resetează parola
-        </SubmitButton>
+        </Button>
       </form>
     </AuthCardShell>
   );

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@/lib/router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui";
 import { ContactSellerModal } from "@/modules/messaging/components/ContactSellerModal";
 import type { SellerSummary } from "../types";
 
@@ -81,13 +82,13 @@ export function SellerCard({ seller, listingId }: SellerCardProps) {
       </div>
 
       {!isOwner && (
-        <button
+        <Button
           onClick={handleContactClick}
-          className="w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2"
+          iconLeft="mail"
+          className="w-full"
         >
-          <span className="material-symbols-outlined text-[20px]">mail</span>
           Contactează vânzătorul
-        </button>
+        </Button>
       )}
 
       <ContactSellerModal

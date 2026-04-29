@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@/lib/router";
 import { AuthCardShell } from "../components/AuthCardShell";
-import { FormField } from "../components/FormField";
-import { SubmitButton } from "../components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 import { loginSchema, type LoginInput } from "../schemas";
 import { useLoginMutation } from "../hooks/useLoginMutation";
 
@@ -28,20 +27,22 @@ export function LoginPage() {
       description="Intră în contul tău pentru a continua"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Input
           label="Email"
           type="email"
           {...register("email")}
           error={errors.email?.message}
           autoComplete="email"
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Parolă"
           type="password"
           {...register("password")}
           error={errors.password?.message}
           autoComplete="current-password"
+          fullWidth
         />
 
         {loginMutation.isError && (
@@ -50,9 +51,9 @@ export function LoginPage() {
           </div>
         )}
 
-        <SubmitButton isLoading={loginMutation.isPending}>
+        <Button type="submit" loading={loginMutation.isPending} className="w-full">
           Autentifică-te
-        </SubmitButton>
+        </Button>
 
         <div className="text-center space-y-2 mt-4">
           <Link

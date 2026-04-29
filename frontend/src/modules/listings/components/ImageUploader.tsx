@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Button } from "@/components/ui";
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -62,14 +63,17 @@ export function ImageUploader({ existingCount, onUploadFiles }: ImageUploaderPro
         <p className="text-sm text-on-surface-variant mt-1">
           JPG, PNG, WebP. Maxim 10MB per fișier. {remainingSlots} sloturi rămase.
         </p>
-        <button
+        <Button
           type="button"
-          disabled={remainingSlots === 0 || isUploading}
+          size="sm"
+          disabled={remainingSlots === 0}
+          loading={isUploading}
           onClick={() => fileInputRef.current?.click()}
-          className="mt-4 px-5 py-2.5 rounded-full bg-primary text-on-primary font-semibold disabled:opacity-50"
+          className="mt-4"
+          iconLeft="add_photo_alternate"
         >
           {remainingSlots === 0 ? "Ai atins limita de 10 poze" : "Alege poze"}
-        </button>
+        </Button>
       </div>
 
       <input

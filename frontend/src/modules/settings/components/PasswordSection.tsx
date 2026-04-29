@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useChangePassword } from "../hooks/useProfile";
-import { FormField } from "@/modules/auth/components/FormField";
-import { SubmitButton } from "@/modules/auth/components/SubmitButton";
+import { Input, Button } from "@/components/ui";
 
 export function PasswordSection() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -42,42 +41,45 @@ export function PasswordSection() {
       <h3 className="text-xl font-semibold mb-6">Securitate</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <FormField
+        <Input
           label="Parola actuală"
           id="current_password"
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           required
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Parola nouă"
           id="new_password"
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
+          fullWidth
         />
 
-        <FormField
+        <Input
           label="Confirmă parola nouă"
           id="confirm_password"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          fullWidth
         />
 
         {error && <p className="text-error text-sm">{error}</p>}
 
         <div className="pt-2">
-          <SubmitButton
-            isLoading={changePasswordMutation.isPending}
-            className="w-full md:w-auto"
+          <Button
+            type="submit"
+            loading={changePasswordMutation.isPending}
           >
             Schimbă parola
-          </SubmitButton>
+          </Button>
         </div>
       </form>
     </section>
