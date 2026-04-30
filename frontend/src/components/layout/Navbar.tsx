@@ -1,23 +1,49 @@
-import { useState } from "react";
 import { Link } from "@/lib/router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/lib/auth";
 import { useLogoutMutation } from "@/modules/auth/hooks/useLogoutMutation";
 import { useFavoriteIds } from "@/modules/favorites/hooks/useFavoriteIds";
 import { useUnreadCount } from "@/modules/messaging/hooks/useUnreadCount";
+import { useNavigate } from "@/lib/router";
+import { Dropdown, dropdownSeparator } from "@/components/ui";
+import type { DropdownItem } from "@/components/ui";
 
 export function Navbar() {
   const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
-  const [showDropdown, setShowDropdown] = useState(false);
   const logoutMutation = useLogoutMutation();
   const favoriteIds = useFavoriteIds();
   const unreadCount = useUnreadCount(isAuthenticated);
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logoutMutation.mutate();
-    setShowDropdown(false);
-  };
+  const userMenuItems: DropdownItem[] = [
+    {
+      key: "dashboard",
+      label: "Contul meu",
+      icon: "dashboard",
+      onClick: () => navigate("/cont"),
+    },
+    {
+      key: "listings",
+      label: "Anunțurile mele",
+      icon: "inventory_2",
+      onClick: () => navigate("/cont/anunturi"),
+    },
+    {
+      key: "settings",
+      label: "Setări",
+      icon: "settings",
+      onClick: () => navigate("/cont/setari"),
+    },
+    dropdownSeparator(),
+    {
+      key: "logout",
+      label: "Deconectare",
+      icon: "logout",
+      variant: "danger",
+      onClick: () => logoutMutation.mutate(),
+    },
+  ];
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-[var(--shadow-ambient)]">
@@ -72,69 +98,23 @@ export function Navbar() {
                     notifications
                   </span>
                 </button>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDropdown(!showDropdown)}
-                    className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors flex items-center gap-2"
-                    aria-label="Profil"
-                  >
-                    <span className="material-symbols-outlined">person</span>
-                    {user?.email && (
-                      <span className="hidden md:inline text-sm font-medium text-on-surface">
-                        {user.display_name || user.email.split("@")[0]}
-                      </span>
-                    )}
-                  </button>
-                  {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-lg shadow-lg py-2 z-50">
-                      <Link
-                        to="/cont"
-                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          dashboard
+                <Dropdown
+                  trigger={
+                    <button
+                      className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors flex items-center gap-2"
+                      aria-label="Profil"
+                    >
+                      <span className="material-symbols-outlined">person</span>
+                      {user?.email && (
+                        <span className="hidden md:inline text-sm font-medium text-on-surface">
+                          {user.display_name || user.email.split("@")[0]}
                         </span>
-                        Contul meu
-                      </Link>
-                      <Link
-                        to="/cont/anunturi"
-                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          inventory_2
-                        </span>
-                        Anunțurile mele
-                      </Link>
-                      <Link
-                        to="/cont/setari"
-                        className="block px-4 py-2 text-on-surface hover:bg-surface-container transition-colors no-underline flex items-center gap-2"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          settings
-                        </span>
-                        Setări
-                      </Link>
-                      {!user?.email_verified && (
-                        <div className="px-4 py-2 text-xs text-on-error-container bg-error-container mx-2 my-1 rounded">
-                          Email neverificat
-                        </div>
                       )}
-                      <hr className="my-2 border-outline-variant" />
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-error hover:bg-surface-container transition-colors flex items-center gap-2"
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          logout
-                        </span>
-                        Deconectare
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    </button>
+                  }
+                  items={userMenuItems}
+                  align="end"
+                />
               </div>
               <Link
                 to="/adauga-anunt"

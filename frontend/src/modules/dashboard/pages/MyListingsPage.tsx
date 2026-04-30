@@ -5,6 +5,7 @@ import { useListingMutations } from "@/modules/listings/hooks/useListingMutation
 import { formatDistanceToNow, format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { ErrorCard } from "@/components/ui/ErrorCard";
+import { Tabs, ConfirmDialog } from "@/components/ui";
 import { Link } from "@/lib/router";
 import type { ListingCard as ListingCardType } from "@/types/listing";
 
@@ -14,6 +15,7 @@ export function MyListingsPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("active");
   const [page, setPage] = useState(1);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const now = useMemo(() => new Date().getTime(), []);
 
   const { data, isLoading, isError, refetch } = useMyListings({
@@ -33,19 +35,19 @@ export function MyListingsPage() {
     }
   };
 
-  const tabs: { id: TabType; label: string; icon: string }[] = [
+  const tabs = [
     {
-      id: "active",
+      value: "active",
       label: t("dashboard.listings.tabs.active", "Active"),
       icon: "check_circle",
     },
     {
-      id: "inactive",
+      value: "inactive",
       label: t("dashboard.listings.tabs.inactive", "Inactive"),
       icon: "pause_circle",
     },
     {
-      id: "expired",
+      value: "expired",
       label: t("dashboard.listings.tabs.expired", "Expirate"),
       icon: "history",
     },
@@ -77,31 +79,16 @@ export function MyListingsPage() {
         </Link>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-outline-variant overflow-x-auto">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id);
-              setPage(1);
-            }}
-            className={`flex items-center gap-2 px-6 py-4 font-bold text-sm transition-all relative min-w-max ${
-              activeTab === tab.id
-                ? "text-primary"
-                : "text-on-surface-variant hover:text-on-surface"
-            }`}
-          >
-            <span className="material-symbols-outlined text-xl">
-              {tab.icon}
-            </span>
-            {tab.label}
-            {activeTab === tab.id && (
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />
-            )}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => {
+          setActiveTab(v as TabType);
+          setPage(1);
+        }}
+        tabs={tabs}
+      >
+        <></>
+      </Tabs>
 
       {isLoading ? (
         <div className="space-y-4">
@@ -269,18 +256,7 @@ export function MyListingsPage() {
                 )}
 
                 <button
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        t(
-                          "dashboard.listings.deleteConfirm",
-                          "Ești sigur că vrei să ștergi acest anunț?",
-                        ),
-                      )
-                    ) {
-                      handleAction(() => remove.mutateAsync(listing.id));
-                    }
-                  }}
+                  onClick={() => setDeleteTarget(listing.id)}
                   className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 text-error hover:bg-error/10 rounded-xl font-bold transition-colors"
                 >
                   <span className="material-symbols-outlined text-sm">
@@ -293,6 +269,24 @@ export function MyListingsPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          if (deleteTarget) {
+            handleAction(() => remove.mutateAsync(deleteTarget));
+            setDeleteTarget(null);
+          }
+        }}
+        title={t("dashboard.listings.deleteTitle", "Șterge anunțul")}
+        description={t(
+          "dashboard.listings.deleteConfirm",
+          "Ești sigur că vrei să ștergi acest anunț? Această acțiune nu poate fi anulată.",
+        )}
+        confirmLabel={t("listing.actions.delete", "Șterge")}
+        variant="danger"
+      />
     </main>
   );
 }

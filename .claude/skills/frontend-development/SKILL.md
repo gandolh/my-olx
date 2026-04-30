@@ -7,7 +7,7 @@ description: Use when touching any file under /frontend/src — adding pages, co
 
 ## Stack
 
-React 19 · React Router DOM v7 · TanStack Query v5 · Axios · Zustand · React Hook Form · Zod · react-i18next · Tailwind CSS v4 · @base-ui/react · Material Symbols Outlined
+React 19 · TanStack Router v1 · TanStack Query v5 · Axios · Zustand · React Hook Form · Zod · react-i18next · Tailwind CSS v4 · @base-ui/react 1.4.1 · Material Symbols Outlined
 
 ## Directory Structure
 
@@ -15,7 +15,7 @@ React 19 · React Router DOM v7 · TanStack Query v5 · Axios · Zustand · Reac
 src/
 ├── components/          # Shared, reusable across features
 │   ├── layout/          # Navbar, Footer, PageShell
-│   └── ui/              # Button, Input, Card, Skeleton, ErrorCard, EmptyState
+│   └── ui/              # 28 components — see Shared UI Components below
 ├── hooks/               # Global custom hooks (useAuth, useToast)
 ├── types/               # Global TypeScript interfaces/types
 ├── apis/                # (reserved for global API concerns)
@@ -152,11 +152,51 @@ Never use raw `useState` for form fields with more than one input.
 7. Register route in `routes/`
 8. All strings via `t()` with Romanian as default
 
+## Shared UI Components (`components/ui/`)
+
+All exported from `@/components/ui`. Full list:
+
+| Component | Primitive | Notes |
+|-----------|-----------|-------|
+| Button | plain | variant: primary/secondary/tertiary/ghost/danger; size: sm/md/lg |
+| Input | plain | forwardRef; label, error, hint, icon slots |
+| Textarea | plain | forwardRef; same wrapper as Input |
+| Select | plain | native select; options array |
+| PriceInput | plain | RON currency input with negotiable checkbox |
+| Slider | `@base-ui/react/slider` | range; debounced onChange |
+| CityAutocomplete | `@base-ui/react/autocomplete` | Romanian city picker |
+| SearchAutocomplete | `@base-ui/react/autocomplete` | listing title suggestions |
+| **Tabs** | `@base-ui/react/tabs` | `value`/`onValueChange`; tabs: `{value, label, icon?}[]`; `data-[active]` drives style |
+| **ConfirmDialog** | `@base-ui/react/alert-dialog` | open/onClose/onConfirm/title/description/variant |
+| **Dropdown** | `@base-ui/react/menu` | trigger + items `{key, label, icon?, variant?, onClick?}`; link items use `onClick+useNavigate` |
+| **Tooltip** | `@base-ui/react/tooltip` | wraps children; content/side/delay props |
+| **Pagination** | plain | page/totalPages/onPageChange; hides at ≤1 page |
+| **Alert** | plain | inline banner; variant: info/success/warning/error |
+| Badge | plain | variant: primary/secondary/tertiary/error/surface |
+| Chip | plain | filter chip with selected state + optional remove |
+| Avatar | plain | image or initials fallback; 5 sizes |
+| Card / CardHeader | plain | padding: none/sm/md/lg; interactive hover |
+| Modal | plain | backdrop + Escape handling; size: sm/md/lg |
+| Toast / AuthRequiredToast | plain | position-fixed; auto-dismiss; variant: info/success/error/warning |
+| EmptyState | plain | icon + title + description + action slot |
+| Divider | plain | spacing: sm/md/lg |
+| ProgressBar | plain | animated; label + current/max |
+| Skeleton / CardSkeleton | plain | pulse animation |
+| ErrorCard | plain | error display with optional retry |
+| ComingSoon | plain | placeholder page |
+| GlobalLoadingIndicator | plain | app-wide loading overlay |
+
+**base-ui data attributes used for styling:**
+- `data-[active]` — Tabs.Tab when selected
+- `data-[highlighted]` — Menu.Item when keyboard-focused
+- `data-[popup-open]` — Menu/Tooltip Trigger when open
+
 ### New shared component
 1. Place in `components/ui/` (primitive) or `components/layout/` (structural)
 2. Use design token Tailwind classes only — no hex values
-3. Export as named export
+3. Export as named export from `components/ui/index.ts`
 4. Add `aria-label` / semantic HTML
+5. Prefer `@base-ui/react` primitives for interactive/overlay components
 
 ### Connecting a form
 1. Define Zod schema

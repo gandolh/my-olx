@@ -25,3 +25,4 @@
 - [User Dashboard](features/user-dashboard.md) — manage own listings and profile [Done]
 - [Seller Phone Reveal](features/seller-phone-reveal.md) — auth-gated reveal of seller's verified phone number on listing detail [Done]
 - [TanStack Router Migration](features/tanstack-router-migration.md) — plan for replacing react-router-dom with typed TanStack router [Planned]
+- [Shared UI Component Library](features/shared-ui-components.md) — Base-ui-powered shared primitives: Tabs, ConfirmDialog, Dropdown, Tooltip, Pagination, Alert [Done]
